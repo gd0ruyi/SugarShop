@@ -1,0 +1,15 @@
+/* CSS Document */
+
+body {
+  background-color:#eee;
+}
+.login-box{
+  padding-top: 120px;
+  padding-bottom: 60px;
+  max-width:600px;
+}
+.login-box .panel{}
+.login-box .panel-heading{
+	font-size:16px;
+	text-align:center;
+}
