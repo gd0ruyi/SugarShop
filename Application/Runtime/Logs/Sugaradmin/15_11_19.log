@@ -1,9 +1,0 @@
-[ 2015-11-19T12:04:45+08:00 ] 127.0.0.1 /Sugaradmin/install
-ERR: 无法加载控制器:Install
-
-[ 2015-11-19T15:10:45+08:00 ] 127.0.0.1 /Sugaradmin/Login/index.html
-ERR: Syntax error in template "./Application/Sugaradmin/View/Login/index.tpl"  on line 50 "<h3 class="form-title"><font color="#FF80C0">Sugar</font><font color="#393">Shop</font>后台管理系统</h3>"  - Unexpected "form", expected one of: "}>"
-
-[ 2015-11-19T17:20:28+08:00 ] 127.0.0.1 /Sugaradmin/Login/login.html
-ERR: Think\Model\MongoModel:sort方法不存在！
-

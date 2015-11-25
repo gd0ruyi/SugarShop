@@ -1,3 +1,0 @@
-[ 2015-11-20T12:10:30+08:00 ] 127.0.0.1 /Sugaradmin/Login/login.html
-ERR: localhost:27017: bad index key pattern { username: 1, password: 1, other: { a: 1 } }
-
