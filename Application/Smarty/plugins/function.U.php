@@ -6,10 +6,14 @@
  * @param object $template
  */
 function smarty_function_U($params, $template) {
-	$url = $params ['url'];
-	$vars = $params ['vars'];
+	$url = $params ['url'];	
 	$suffix = isset ( $params ['suffix'] ) ? $params ['suffix'] : true;
 	$domain = isset ( $params ['domain'] ) ? $params ['domain'] : false;
+	
+	unset($params ['url']);
+	unset($params ['suffix']);
+	unset($params ['domain']);
+	$vars = $params;
 	return U ( $url, $vars, $suffix, $domain );
 }
 ?>
