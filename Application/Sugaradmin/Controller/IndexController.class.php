@@ -2,8 +2,6 @@
 
 namespace Sugaradmin\Controller;
 
-use Think\Controller;
-
 class IndexController extends BaseController {
 	public function index() {
 		// 默认访问跳转到登录页
