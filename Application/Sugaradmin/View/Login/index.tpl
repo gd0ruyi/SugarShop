@@ -20,7 +20,7 @@
   <div class="panel panel-primary">
     <div class="panel-heading">SugarShop管理登录</div>
     <div class="panel-body">
-      <form class="form-horizontal row" id="login-form" >
+      <form class="form-horizontal row" id="login-form" method="post" action="<{U url='/Sugaradmin/Login/login' size=36}>">
         <div class="form-group col-xs-12">
           <label for="usename" class="col-sm-2 control-label hidden-xs">用户名</label>
           <div class="col-sm-10 input-group">
@@ -38,12 +38,12 @@
         <div class="form-group col-xs-12">
           <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
           <div class="input-group verify-box">
-            <input type="text" class="form-control input-lg" id="verify" name="verify" placeholder="请输入验证码" />
+            <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" />
             <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index' size=36}>" /></span>
           </div>
         </div>
         <div class="form-group text-center">
-            <input type="submit" class="btn btn-lg btn-primary" name="submit" value="登 录" />
+            <button type="submit" class="btn btn-lg btn-primary" name="login-button">登 录</button>
         </div>
       </form>
     </div>
@@ -65,12 +65,9 @@ $(document).ready(function(){
 			invalid: 'glyphicon glyphicon-remove',
 			validating: 'glyphicon glyphicon-refresh'
 		},
-		live: 'enabled',
-		message: '无效的值',
-		submitButtons: 'button[type="submit"]',
 		fields: {
 			username: {
-                message: '用户名无效',
+                //message: '用户名无效',
                 validators: {
                     notEmpty: {
                         message: '用户名不能为空'
@@ -85,8 +82,28 @@ $(document).ready(function(){
                         message: '用户名只能由字母、数字和下划线组成'
                     }
                 }
-            }
-		}
+            },
+			password: {
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    }
+                }
+            },
+			verification: {
+                validators: {
+                    notEmpty: {
+                        message: '验证码不能为空'
+                    },
+					stringLength: {
+                        min: 4,
+                        max: 4,
+                        message: '验证码长度必须为4位'
+                	}
+                },	
+            },
+		},
+		submitButtons: 'button[type="submit"]'
 	});
 })
 </script>

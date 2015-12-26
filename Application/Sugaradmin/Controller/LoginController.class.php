@@ -34,11 +34,21 @@ class LoginController extends BaseController {
 		$sort = array ();
 		$sort ['username'] = 1;
 		$rs = $manager_model->where ( $query )->order ( $sort )->find ( $options );
-		if($rs['usename']){
+		printR ( $rs );
+		if ($rs ['username']) {
 			$sess_data = $rs;
-			unset($sess_data['password']);
-			session_save_values($sess_data);
+			unset ( $sess_data ['password'] );
+			session_save_values ( $sess_data );
+			echo "登录成功！";
+		} else {
+			echo "登录失败！";
 		}
-		
+		$data ['status'] = 1;
+		$data ['info'] = 'info';
+		$data ['size'] = 9;
+		$data ['url'] = $url;
+		//$this->ajaxReturn ( $data, 'JSON' );
+		$this->ajaxReturn($data,'info',1);
+		//printR ( $_SESSION );
 	}
 }

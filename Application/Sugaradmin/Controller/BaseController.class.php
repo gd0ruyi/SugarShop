@@ -11,4 +11,10 @@ class BaseController extends Controller {
 	
 	public function testBaseFun(){
 	}
+	
+	public function checkLogin(){
+		if($_SESSION[''])
+		// 默认访问跳转到登录页
+		$this->redirect ( 'Login/index' );
+	}
 }

@@ -4,8 +4,6 @@ namespace Sugaradmin\Controller;
 
 class IndexController extends BaseController {
 	public function index() {
-		// 默认访问跳转到登录页
-		$this->redirect ( 'Login/index' );
 	}
 	
 	/**
@@ -16,7 +14,7 @@ class IndexController extends BaseController {
 	public function install() {
 		$manager_model = D ( "Manager" );
 		$data = array ();
-		$data ['id'] = 1;
+		//$data ['id'] = 1;
 		$data ['username'] = 'admin';
 		$data ['password'] = 'admin';
 		$data ['password'] = md5 ( $data ['usename'] . $data ['password'] );

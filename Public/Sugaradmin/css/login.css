@@ -21,3 +21,6 @@ body {
 	padding:1px;
 	cursor:pointer;
 }
+.verify-box i{
+	right: 120px !important;
+}
