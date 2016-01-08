@@ -66,6 +66,8 @@ return array (
 		
 		// MongoDB开启自动创建索引（在查询时自动创建）
 		'MONGODB_AUTO_CREATE_INDEX' => false,
+		// MongoDB自增ID的集合名称
+		'MONGODB_AUTO_INC_COLL' => 'counters',
 		
 		/**
 		 * 模版配置

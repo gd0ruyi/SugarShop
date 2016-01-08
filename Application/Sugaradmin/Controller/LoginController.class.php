@@ -11,7 +11,6 @@ class LoginController extends BaseController {
 	 * @author gd0ruyi@163.com 2015-11-18
 	 */
 	public function index() {
-		$this->testBaseFun ();
 		$this->display ();
 	}
 	
@@ -21,6 +20,13 @@ class LoginController extends BaseController {
 	 * @author gd0ruyi@163.com 2015-11-18
 	 */
 	public function login() {
+		//$this->ajaxReturn ( $data, 'JSON' );
+		//$this->ajaxReturn($data,'info',1);
+		//printR ( $_SESSION );
+		$this->_login();
+	}
+	
+	protected function _login(){
 		$manager_model = D ( "Manager" );
 		$pwd = md5 ( $_POST ['username'] . $_POST ['password'] );
 		$query = array ();
@@ -34,21 +40,20 @@ class LoginController extends BaseController {
 		$sort = array ();
 		$sort ['username'] = 1;
 		$rs = $manager_model->where ( $query )->order ( $sort )->find ( $options );
-		printR ( $rs );
+		printR($rs, 1);
+		
+		$data ['error'] = 1;
+		$data ['tit'] = 'info';
+		$data ['size'] = 9;
+		$data ['url'] = $url;
+		
 		if ($rs ['username']) {
 			$sess_data = $rs;
 			unset ( $sess_data ['password'] );
 			session_save_values ( $sess_data );
-			echo "登录成功！";
+			
 		} else {
-			echo "登录失败！";
+			
 		}
-		$data ['status'] = 1;
-		$data ['info'] = 'info';
-		$data ['size'] = 9;
-		$data ['url'] = $url;
-		//$this->ajaxReturn ( $data, 'JSON' );
-		$this->ajaxReturn($data,'info',1);
-		//printR ( $_SESSION );
 	}
 }

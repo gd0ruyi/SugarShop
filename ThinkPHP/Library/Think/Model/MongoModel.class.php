@@ -53,6 +53,9 @@ class MongoModel extends Model {
 	 * @var boolean
 	 */
 	protected $_auto_create_index = false;
+	public function __construct($name = '', $tablePrefix = '', $connection = '') {
+		parent::__construct ( $name, $tablePrefix, $connection );
+	}
 	
 	/**
 	 * 利用__call方法实现一些特殊的Model方法
@@ -235,10 +238,13 @@ class MongoModel extends Model {
 		
 		// 数据处理
 		$data = $this->_facade ( $data );
-		if (false === $this->_before_insert ( $data, $options )) {
-			return false;
-		}
 		
+		// 如果为新增的情况，则不进行插入前的处理（自增）
+		if ($replace == false) {
+			if (false === $this->_before_insert ( $data, $options )) {
+				return false;
+			}
+		}
 		$result = $this->db->insert ( $data, $options, $replace );
 		if (false !== $result) {
 			$this->_after_insert ( $data, $options );
@@ -249,16 +255,51 @@ class MongoModel extends Model {
 		return $result;
 	}
 	
+	/**
+	 * 批量新增数据
+	 * 
+	 * @author gd0ruyi@163.com 2016-01-08
+	 * @access public
+	 * @param mixed $dataList
+	 *        	数据
+	 * @param array $options
+	 *        	表达式
+	 * @return mixed
+	 */
+	public function addAll($dataList = array(), $options = array()) {
+		if (empty ( $dataList )) {
+			$this->error = L ( '_DATA_TYPE_INVALID_' );
+			return false;
+		}
+		
+		// 分析表达式
+		$options = $this->_parseOptions ( $options );
+		
+		// 数据处理
+		foreach ( $dataList as $key => $data ) {
+			if (false === $this->_before_insert ( $data, $options )) {
+				return false;
+			}
+			$dataList [$key] = $data;
+		}
+		// 开始批量插入
+		return $result = $this->db->insertAll ( $dataList, $options, false );
+	}
+	
 	// 插入数据前的回调方法
 	protected function _before_insert(&$data, $options) {
 		// 写入数据到数据库
-		if ($this->_autoinc && $this->_idType == self::TYPE_INT) { // 主键自动增长
-			$pk = $this->getPk ();
-			if (! isset ( $data [$pk] )) {
-				$data [$pk] = $this->db->getMongoNextId ( $pk );
+		if ($this->_autoinc && $this->_idType == self::TYPE_INT) {
+			// 是否使用并获取自增ID，主键自动增长
+			if (! isset ( $data [$this->getPk ()] )) {
+				$data [$this->getPk ()] = $this->db->getMongoNextId ( $this->getPk () );
 			}
 		}
 	}
+	
+	/**
+	 * 数据库清除
+	 */
 	public function clear() {
 		return $this->db->clear ();
 	}

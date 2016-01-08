@@ -20,7 +20,7 @@
   <div class="panel panel-primary">
     <div class="panel-heading">SugarShop管理登录</div>
     <div class="panel-body">
-      <form class="form-horizontal row" id="login-form" method="post" action="<{U url='/Sugaradmin/Login/login' size=36}>">
+      <form class="form-horizontal row" id="login-form" method="post" action="<{U url='/Sugaradmin/Login/login'}>">
         <div class="form-group col-xs-12">
           <label for="usename" class="col-sm-2 control-label hidden-xs">用户名</label>
           <div class="col-sm-10 input-group">
