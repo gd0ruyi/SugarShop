@@ -11,19 +11,19 @@ use Think\Model\MongoModel;
  *        
  */
 class ManagerModel extends MongoModel {
-	protected $pk = 'id';
+	protected $pk = 'manager_id';
 	protected $_idType = self::TYPE_INT;
 	protected $_autoinc = true;
 	protected $fields = array (
 			'_id',
-			'id',
+			'manager_id',
 			'username',
 			'password',
 			'add_time',
 			'upd_time',
 			'las_time',
 			'_type' => array (
-					'id' => 'int',
+					'manager_id' => 'int',
 					'username' => 'string',
 					'password' => 'string',
 					'add_time' => 'int',
