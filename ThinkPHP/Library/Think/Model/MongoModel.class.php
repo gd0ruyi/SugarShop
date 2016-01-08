@@ -40,6 +40,13 @@ class MongoModel extends Model {
 	);
 	
 	/**
+	 * 最终插入的自增ID
+	 *
+	 * @var int
+	 */
+	protected $lastAutoIncId = null;
+	
+	/**
 	 * mongodb当前指针执行的情况
 	 *
 	 * @var array()
@@ -53,6 +60,14 @@ class MongoModel extends Model {
 	 * @var boolean
 	 */
 	protected $_auto_create_index = false;
+	
+	/**
+	 * 初始化
+	 *
+	 * @param string $name        	
+	 * @param string $tablePrefix        	
+	 * @param string $connection        	
+	 */
 	public function __construct($name = '', $tablePrefix = '', $connection = '') {
 		parent::__construct ( $name, $tablePrefix, $connection );
 	}
@@ -208,7 +223,7 @@ class MongoModel extends Model {
 	 *        	表达式
 	 * @param boolean $replace
 	 *        	是否replace
-	 * @return mixed
+	 * @return mixed|array('_id'=>string,'last_id'=>int)
 	 */
 	public function add($data = '', $options = array(), $replace = false) {
 		if (empty ( $data )) {
@@ -228,7 +243,7 @@ class MongoModel extends Model {
 		// 写入数据到数据库(gdruyi@163.com:修正，加入pk名称，因mongoDB在save时无法得知自定义的PK名称)
 		if ($replace && isset ( $data [$this->getPk ()] )) {
 			$query = array ();
-			$query [$this->pk] = $data [$this->pk];
+			$query [$this->getPk ()] = $data [$this->getPk ()];
 			$result = $this->field ( '_id' )->where ( $query )->find ();
 			$_id = $result ['_id'];
 			if ($_id) {
@@ -239,25 +254,42 @@ class MongoModel extends Model {
 		// 数据处理
 		$data = $this->_facade ( $data );
 		
-		// 如果为新增的情况，则不进行插入前的处理（自增）
-		if ($replace == false) {
+		// 如果为新增的情况，又或者（替换保存）无自定义主键的情况，则进行插入前的处理（自增）
+		if ($replace == false || ! isset ( $data [$this->getPk ()] )) {
 			if (false === $this->_before_insert ( $data, $options )) {
 				return false;
 			}
 		}
+		
 		$result = $this->db->insert ( $data, $options, $replace );
-		if (false !== $result) {
-			$this->_after_insert ( $data, $options );
-			if (isset ( $data [$this->getPk ()] )) {
-				return $data [$this->getPk ()];
+		
+		//构造自定义返回结果集
+		$lastInfo = array ();
+		$lastInfo ['_id'] = '';
+		$lastInfo ['last_id'] = 0;
+		$lastInfo ['result'] = $result;
+		
+		if (false !== $result && $result ['ok'] == 1) {
+			$lastInfo ['_id'] = $this->getLastInsID ();
+			$lastInfo ['last_id'] = $this->getLastAutoIncId ();
+			if ($lastInfo ['_id']) {
+				// 自增主键返回插入ID
+				$data [$this->getPk ()] = $lastInfo ['_id'];
+				if (false === $this->_after_insert ( $data, $options )) {
+					return false;
+				}
+				return $lastInfo;
+			}
+			if (false === $this->_after_insert ( $data, $options )) {
+				return false;
 			}
 		}
-		return $result;
+		return $lastInfo;
 	}
 	
 	/**
 	 * 批量新增数据
-	 * 
+	 *
 	 * @author gd0ruyi@163.com 2016-01-08
 	 * @access public
 	 * @param mixed $dataList
@@ -286,15 +318,29 @@ class MongoModel extends Model {
 		return $result = $this->db->insertAll ( $dataList, $options, false );
 	}
 	
-	// 插入数据前的回调方法
+	/**
+	 * 插入数据前的回调方法
+	 *
+	 * @see \Think\Model::_before_insert()
+	 */
 	protected function _before_insert(&$data, $options) {
 		// 写入数据到数据库
 		if ($this->_autoinc && $this->_idType == self::TYPE_INT) {
 			// 是否使用并获取自增ID，主键自动增长
 			if (! isset ( $data [$this->getPk ()] )) {
-				$data [$this->getPk ()] = $this->db->getMongoNextId ( $this->getPk () );
+				$data [$this->getPk ()] = $this->lastAutoIncId = $this->db->getMongoNextId ( $this->getPk () );
 			}
 		}
+	}
+	
+	/**
+	 * 或者最终插入的主键自增ID
+	 *
+	 * @author gd0ruyi@163.com 2016-01-08
+	 * @return number
+	 */
+	public function getLastAutoIncId() {
+		return $this->lastAutoIncId;
 	}
 	
 	/**
