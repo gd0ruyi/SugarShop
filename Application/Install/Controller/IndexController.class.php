@@ -37,14 +37,14 @@ class IndexController extends Controller {
 		$manager_model = D ( "Sugaradmin/Manager" );
 		
 		$data = array ();
-		// $data ['id'] = 1;
+		$data ['manager_id'] = 1;
 		$data ['username'] = 'admin';
 		$data ['password'] = 'admin';
 		$data ['password'] = md5 ( $data ['usename'] . $data ['password'] );
 		$time = time ();
 		$data ['add_time'] = $time;
 		$data ['upd_time'] = $time;
-		$data ['las_time'] = $time;
+		$data ['las_time'] = 0;
 		
 		$options = array ();
 		// $options ['id'] = 1;
