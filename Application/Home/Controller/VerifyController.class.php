@@ -12,12 +12,11 @@ use Think\Controller;
  */
 class VerifyController extends Controller {
 	public function index() {
-		$verify = new \Think\Verify ();
-		$verify->fontSize = intval ( $_GET ['size'] ) ? intval ( $_GET ['size'] ) : 25;
-		$verify->imageW = intval ( $_GET ['w'] ) ? intval ( $_GET ['w'] ) : 0;
-		$verify->imageH = intval ( $_GET ['h'] ) ? intval ( $_GET ['h'] ) : 0;
-		$verify->length = intval ( $_GET ['length'] ) ? intval ( $_GET ['length'] ) : 4;
-		$Verify->fontttf = '6.ttf';
+		$config = C ( 'VERIFY_CONFIG.IMG_CONFIG' );
+		if ($config ['allow_get_set']) {
+			$config = array_merge ( $config, $_GET );
+		}
+		$verify = new \Think\Verify ( $config );
 		$verify->entry ();
 	}
 }

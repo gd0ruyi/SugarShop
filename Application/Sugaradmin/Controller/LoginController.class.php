@@ -20,13 +20,10 @@ class LoginController extends BaseController {
 	 * @author gd0ruyi@163.com 2015-11-18
 	 */
 	public function login() {
-		//$this->ajaxReturn ( $data, 'JSON' );
-		//$this->ajaxReturn($data,'info',1);
-		//printR ( $_SESSION );
-		$this->_login();
-	}
-	
-	protected function _login(){
+		// 校验验证码
+		if (! check_verify ( $_GET ['verification'] )) {
+			$this->error ( "验证码不正确！请重新尝试！" );
+		}
 		$manager_model = D ( "Manager" );
 		$pwd = md5 ( $_POST ['username'] . $_POST ['password'] );
 		$query = array ();
@@ -40,20 +37,13 @@ class LoginController extends BaseController {
 		$sort = array ();
 		$sort ['username'] = 1;
 		$rs = $manager_model->where ( $query )->order ( $sort )->find ( $options );
-		printR($rs, 1);
-		
-		$data ['error'] = 1;
-		$data ['tit'] = 'info';
-		$data ['size'] = 9;
-		$data ['url'] = $url;
 		
 		if ($rs ['username']) {
 			$sess_data = $rs;
 			unset ( $sess_data ['password'] );
 			session_save_values ( $sess_data );
-			
-		} else {
-			
+			$this->success ( '登录成功！', '/Index/index', 3 );
 		}
+		$this->error ( '用户名密码不正确！' );
 	}
 }

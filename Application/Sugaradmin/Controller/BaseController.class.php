@@ -25,11 +25,23 @@ class BaseController extends Controller {
 	 * 通用初始化方法
 	 */
 	public function _initialize() {
+		$this->_before_initialize();
 		// 判断是否需要校验登录的控制器或者具体的方法
 		if (! in_array ( __CONTROLLER__, $this->allow_controller ) && ! in_array ( __ACTION__, $this->allow_action )) {
 			$this->checkLogin ();
 		}
+		$this->_after_initialize();
 	}
+	
+	/**
+	 * 初始化前执行
+	 */
+	public function _before_initialize(){}
+	
+	/**
+	 * 初始化后执行
+	 */
+	public function _after_initialize(){}
 	
 	/**
 	 * 校验登录

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="renderer" content="webkit">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SugarAdmin | Login</title>
+<title>SugarAdmin-登录</title>
 <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet">
@@ -39,7 +39,7 @@
           <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
           <div class="input-group verify-box">
             <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" />
-            <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index' size=36}>" /></span>
+            <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index'}>" /></span>
           </div>
         </div>
         <div class="form-group text-center">

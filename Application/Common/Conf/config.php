@@ -66,6 +66,7 @@ return array (
 		
 		// MongoDB开启自动创建索引（在查询时自动创建）
 		'MONGODB_AUTO_CREATE_INDEX' => false,
+		
 		// MongoDB自增ID的集合名称
 		'MONGODB_AUTO_INC_COLL' => 'counters',
 		
@@ -101,5 +102,43 @@ return array (
 		'SESSION_TYPE' => 'Mongodb',
 		
 		// 显示调试输出
-		'SHOW_PAGE_TRACE' => true 
+		'SHOW_PAGE_TRACE' => true,
+		
+		// 验证码配置
+		'VERIFY_CONFIG' => array (
+				
+				// 是否开启验证码处理
+				'IS_OPEN' => true,
+				
+				// 验证码图片配置
+				'IMG_CONFIG' => array (
+						
+						// 验证码字体大小
+						'fontSize' => 20,
+						
+						// 验证码图片宽度
+						'imageW' => 0,
+						
+						// 验证码图片高度
+						'imageH' => 40,
+						
+						// 验证码位数
+						'length' => 4,
+						
+						// 验证码字体
+						'fontttf' => '5.ttf',
+						
+						// 验证码时效时长（秒）
+						'expire' => 60,
+
+						//是否允许接收GET参数进行自动生成验证
+						'allow_get_set' => true
+				) 
+		),
+		
+		// 默认错误跳转对应的模板文件
+		'TMPL_ACTION_ERROR' => 'Public:notice',
+		
+		// 默认成功跳转对应的模板文件
+		'TMPL_ACTION_SUCCESS' => 'Public:notice' 
 );
