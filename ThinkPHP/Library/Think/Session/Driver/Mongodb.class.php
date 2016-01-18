@@ -93,7 +93,8 @@ class Mongodb {
 	public function read($sessID) {
 		$query = array ();
 		$query ['sessID'] = $sessID;
-		return $this->coll_handle->findOne ( $query );
+		$rs = $this->coll_handle->findOne ( $query );
+		return serialize($rs['sessData']);
 	}
 	
 	/**
@@ -117,6 +118,10 @@ class Mongodb {
 		$options = array ();
 		$options ['fsync'] = true;
 		$options ['safe'] = true;
+		
+		if (empty ( $_SESSION )) {
+			return true;
+		}
 		
 		natsort ( $_SESSION );
 		try {
