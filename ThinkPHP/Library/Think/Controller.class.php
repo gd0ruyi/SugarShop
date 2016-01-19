@@ -357,6 +357,7 @@ abstract class Controller {
 			if (! isset ( $this->jumpUrl ))
 				$this->assign ( "jumpUrl", $_SERVER ["HTTP_REFERER"] );
 			$this->display ( C ( 'TMPL_ACTION_SUCCESS' ) );
+			exit ();
 		}
 	}
 	

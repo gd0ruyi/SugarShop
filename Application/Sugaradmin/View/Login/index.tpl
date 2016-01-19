@@ -54,9 +54,10 @@
 <script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script>
 <script language="javascript" type="text/javascript">
 $(document).ready(function(){
+	var $vimg_src = $('#verify-img').attr('src');
+	$('#verify-img').attr('src', $vimg_src + '?' + Math.random());
 	$('#verify-img').click(function(){
-		var $src = $(this).attr('src');
-		$(this).attr('src', $src + '?' + Math.random());
+		$(this).attr('src', $vimg_src + '?' + Math.random());
 	});
 	$("#login-form").bootstrapValidator({
 		excluded: [':disabled', ':hidden', ':not(:visible)'],
