@@ -35,10 +35,10 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" />
           </div>
         </div>
-        <div class="form-group col-xs-12">
+        <div class="form-group col-xs-12 verify-div">
           <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
           <div class="input-group verify-box">
-            <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" />
+            <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" autocomplete="off" />
             <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index'}>" /></span>
           </div>
         </div>

@@ -1,0 +1,31 @@
+/* CSS Document */
+
+body {
+  background-color:#eee;
+}
+
+/**
+ * 信息提示页面样式
+ */
+.notice-box{
+  padding-top: 120px;
+  padding-bottom: 60px;
+  max-width:500px;
+}
+.notice-box .panel{}
+.notice-box .panel-heading,{
+	font-size:16px;
+	font-weight:bold;
+	text-align:center;
+}
+.notice-box .panel-body{
+	text-align:center;
+}
+.notice-box .panel-body a{
+	color: blue;
+	text-decoration:none;
+}
+.notice-box .panel-body a:hover{
+	color:#F60;
+	text-decoration:none;
+}

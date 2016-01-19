@@ -14,13 +14,28 @@ body {
 	font-weight:bold;
 	text-align:center;
 }
-.input-group{
+.login-box .form-horizontal .form-group{
+	/*margin-bottom:36px;*/
+}
+.login-box .input-group{
 	margin-left:10px;
 }
-.verify-box .input-group-addon{
+.login-box .help-block{
+	position:absolute;
+	top:10%;
+	right:15%;
+	z-index:2;
+}
+.login-box .verify-div .help-block{
+	position:relative;
+	top:auto;
+	right:auto;
+	margin-left:20%;
+}
+.login-box .verify-box .input-group-addon{
 	padding:1px;
 	cursor:pointer;
 }
-.verify-box i{
+.login-box .verify-box i{
 	right: 120px !important;
 }

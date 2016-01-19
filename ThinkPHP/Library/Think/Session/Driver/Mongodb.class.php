@@ -41,7 +41,7 @@ class Mongodb {
 		$server = $config ['dsn'] ? $config ['dsn'] : $server;
 		try {
 			$this->mongo_handle = new \MongoClient ( $server, $config ['params'] );
-			\MongoCursor::$timeout = - 1;
+			// \MongoCursor::$timeout = - 1;
 			
 			$db = $config ['database'] ? $config ['database'] : $config ['params'] ['database'];
 			$this->db_handle = $this->mongo_handle->selectDB ( $db );
@@ -93,7 +93,9 @@ class Mongodb {
 	public function read($sessID) {
 		$query = array ();
 		$query ['sessID'] = $sessID;
-		return $this->coll_handle->findOne ( $query );
+		$rs = $this->coll_handle->findOne ( $query );
+		$_SESSION = $rs ['sessData'];
+		return session_encode ();
 	}
 	
 	/**
@@ -113,22 +115,27 @@ class Mongodb {
 		$field ['_id'] = 1;
 		
 		$rs = $this->coll_handle->findOne ( $query, $field );
-		
 		$options = array ();
-		$options ['fsync'] = true;
-		$options ['safe'] = true;
+		// $options ['fsync'] = true;
+		// $options ['safe'] = true;
 		
-		natsort ( $_SESSION );
+		if (empty ( $_SESSION ) || empty ( $sessData )) {
+			return true;
+		}
+		
+		// natsort ( $_SESSION );
 		try {
 			if (isset ( $rs ['_id'] ) && $rs ['_id']) {
 				$data ['$set'] ['sessID'] = $sessID;
 				$data ['$set'] ['sessData'] = $_SESSION;
+				$data ['$set'] ['last_ip'] = get_client_ip ();
 				$data ['$set'] ['lifeTime'] = time () + $this->lifeTime;
 				$options ['multiple'] = false;
 				return $this->coll_handle->update ( $query, $data, $options );
 			} else {
 				$data ['sessID'] = $sessID;
 				$data ['sessData'] = $_SESSION;
+				$data ['last_ip'] = get_client_ip ();
 				$data ['lifeTime'] = time () + $this->lifeTime;
 				return $this->coll_handle->insert ( $data, $options );
 			}

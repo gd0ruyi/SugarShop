@@ -344,7 +344,7 @@ abstract class Controller {
 				$this->assign ( 'waitSecond', '3' );
 				// 默认发生错误的话自动返回上页
 			if (! isset ( $this->jumpUrl ))
-				$this->assign ( 'jumpUrl', "javascript:history.back(-1);" );
+				$this->assign ( 'jumpUrl', "javascript:history.go(-1);" );
 			$this->display ( C ( 'TMPL_ACTION_ERROR' ) );
 			// 中止执行 避免出错后继续执行
 			exit ();

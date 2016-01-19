@@ -101,6 +101,8 @@ return array (
 		// session配置，使用数据库。
 		'SESSION_TYPE' => 'Mongodb',
 		
+		//'SESSION_PREFIX' => 'sugarShop',
+		
 		// 显示调试输出
 		'SHOW_PAGE_TRACE' => true,
 		
