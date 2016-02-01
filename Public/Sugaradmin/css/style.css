@@ -1,1 +1,96 @@
-/* CSS Document */
+/* 后台样式 */
+div ul li h1 h2 h3 h4 h5{
+	margin:0px;
+	padding:0px;
+}
+body{
+	height:100%;
+	min-height:630px;
+	width:100%;
+	margin:0px;
+	padding:0px;
+}
+
+/* 头部样式 */
+.main-header{
+	display:block;
+	width:100%;
+	height:auto;
+	margin-top:0px;
+	background-color:#9C6;
+}
+
+/* 左侧导航栏样式 */
+.main-sidebar{
+	display:block;
+	float:left;
+	height:100%;
+	min-height:879px;
+	width:230px;
+	overflow:auto;
+	background-color:#F5F5F5;
+}
+
+.main-sidebar .sidebar{
+	height:100%;
+	background-color:#FFF;
+}
+.main-sidebar .sidebar .sidebar-menu{
+	height:100%;
+	
+}
+/*.main-sidebar .sidebar .sidebar-menu li:focus{
+	background-color:#6CF !important;
+}*/
+.main-sidebar .sidebar .sidebar-menu a{
+	background-color:#337ab7;
+	color:#FFF;
+}
+.main-sidebar .sidebar .sidebar-menu a:hover{
+	background-color:#6CF !important;
+}
+.main-sidebar .sidebar .sidebar-menu a.on{
+	background-color:#6CF !important;
+}
+
+.dropdown a span{
+	float:right;
+}
+
+/* 子菜单 */
+.dropdown-menu{
+	position:relative;
+	float:none;
+	margin-left:24px;
+	background-color:#09C;
+}
+.dropdown-menu li{
+}
+.dropdown-menu li a{
+	background-color:#09C !important;
+}
+.dropdown-menu li a:hover{
+	background-image:none;
+}
+.dropdown-menu li a:focus{
+	background-image:none;
+}
+
+/* 框架内容样式 */
+.content-wrapper{
+	float:left;
+	height:100%;
+	width:auto;
+	overflow:auto;
+}
+.content-wrapper .content-header{
+	height:120px;
+	width:100%;
+}
+.content-wrapper .content{
+	height:100%;
+	width:100%;
+}
+
+/* 加载条样式 */
+.loading-box{}

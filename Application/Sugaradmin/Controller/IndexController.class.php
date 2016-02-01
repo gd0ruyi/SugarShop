@@ -10,4 +10,9 @@ class IndexController extends BaseController {
 	public function index() {
 		$this->display();
 	}
+	
+	//测试
+	public function test(){
+		$this->display();
+	}
 }

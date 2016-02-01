@@ -20,7 +20,7 @@
     <div class="panel-heading"><{$msgTitle}></div>
     <div class="panel-body">
     	<p><{$message}></p>
-        <p> <font id="wait_second"><{$waitSecond}></font> 秒后自动<a id="jump" href="<{$jumpUrl}>" target="_top">【返回】</a></p>
+        <p> <font id="wait_second"><{$waitSecond}></font> 秒后自动<a id="jump" href="<{$jumpUrl}>" target="_top"><{if $status eq 0}>【跳转】<{else}>【返回】<{/if}></a></p>
     </div>
   </div>
 </div>

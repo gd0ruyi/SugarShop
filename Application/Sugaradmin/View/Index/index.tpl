@@ -1,37 +1,141 @@
-<style type="text/css">
-* {
-	padding: 0;
-	margin: 0;
-}
-div {
-	padding: 4px 48px;
-}
-body {
-	background: #fff;
-	font-family: "微软雅黑";
-	color: #333;
-	font-size: 24px
-}
-h1 {
-	font-size: 100px;
-	font-weight: normal;
-	margin-bottom: 12px;
-}
-p {
-	line-height: 1.8em;
-	font-size: 36px
-}
-a, a:hover {
-	color: blue;
-}
-</style>
-<div style="padding: 24px 48px;">
-  <h1>:)</h1>
-  <p> 欢迎使用 <b>ThinkPHP</b> ！ </p>
-  <br />
-  版本 V<{$Think.version}></div>
-<script type="text/javascript"
-	src="http://ad.topthink.com/Public/static/client.js"></script>
-<thinkad id="ad_55e75dfae343f5a1"></thinkad>
-<script type="text/javascript"
-	src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SugarAdmin-平台管理</title>
+<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="/Public/Sugaradmin/css/style.css" rel="stylesheet">
+</head>
+<body class="">
+<!--<header class="main-header navbar-fixed-top"> <span>这里是头部</span> </header>-->
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <ul class="sidebar-menu nav nav-pills nav-stacked">
+      <li role="presentation"> <a href="../../test.php" link-target=".main-right .content" >菜单一</a> </li>
+      <li class="dropdown" role="presentation"> <a role="button" href="#"> 下拉菜单一 <span class="glyphicon glyphicon-chevron-up"></span> </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider" role="separator"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </li>
+      <li role="presentation"> <a href="#">菜单二</a> </li>
+      <li class="dropdown" role="presentation"> <a role="button" href="#"> 下拉菜单二 <span class="glyphicon glyphicon-chevron-up"></span> </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider" role="separator"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</aside>
+</div>
+<div class="main-right content-wrapper">
+  <nav class="navbar navbar-default">
+  <section class="content">这里是加载内容</section>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body"> ... </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--框架加载条-->
+<div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="panel loading-box">
+        <div class="panel-body">
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%;"> Loading(<font>1</font>%)... </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/Public/jquery/jquery-1.11.3.min.js"></script> 
+<script src="/Public/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script> 
+<script language="javascript">
+$(function(){
+	// 加载弹出等待条
+	$("[link-target]").on("click", function(){
+		var herf = $(this).attr("href");
+		var layout = $(this).attr("link-target");
+		var laoding_interval = 0;
+		var $i = 1;
+		
+		if(herf == "#"){
+			return false;
+		}
+		
+		$(document).ajaxStart(function(){
+			/*$('#loading').modal({
+				backdrop: 'static'
+			});*/
+			$('#loading').modal("show");
+			laoding_interval = setInterval(function(){
+				if($i > 99){
+					//$i = 1;
+					return false;
+				}
+				$('#loading .progress-bar').width( $i + "%");
+				$('#loading .progress-bar font').text($i);
+				$i++;
+			}, 50);
+		});
+		
+		$(document).ajaxSuccess(function(){
+		   $('#loading .progress-bar').width("100%");
+		   clearInterval(laoding_interval);
+		   $('#loading').modal("hide");
+		});
+		$(layout).load(herf);
+		return false;
+	});
+	
+	//自定义弹出菜单父级特效
+	$(".sidebar-menu li.dropdown").children("a").on('click', function(){
+		if($(this).parent().hasClass("open")){
+			$(this).parent().removeClass("open");
+			$(this).find(".glyphicon").removeClass("glyphicon-chevron-down");
+			$(this).find(".glyphicon").addClass("glyphicon-chevron-up");
+		}else{
+			$(this).parent().addClass("open");
+			$(this).find(".glyphicon").removeClass("glyphicon-chevron-up");
+			$(this).find(".glyphicon").addClass("glyphicon-chevron-down");
+		}
+	});
+	
+	//当前点击显示颜色
+	$(".sidebar-menu li a").on('click', function(){
+		$(".sidebar-menu li a").removeClass("on");
+		if(!$(this).parent().hasClass("dropdown")){
+			$(this).addClass("on");
+		}
+	});
+});
+</script>
+</body>
+</html>
