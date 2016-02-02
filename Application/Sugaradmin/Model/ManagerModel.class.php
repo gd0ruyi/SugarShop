@@ -28,7 +28,7 @@ class ManagerModel extends MongoModel {
 					'password' => 'string',
 					'add_time' => 'int',
 					'upd_time' => 'int',
-					'las_time' => 'int'
+					'las_time' => 'int' 
 			) 
 	);
 	protected $_validate = array (
@@ -45,4 +45,54 @@ class ManagerModel extends MongoModel {
 					self::MUST_VALIDATE 
 			) 
 	);
+	
+	/**
+	 * 分页对象，默认使用ThinkPHP的分页方法
+	 *
+	 * @var object
+	 */
+	protected $pager = null;
+	
+	/**
+	 * 获取当前列表
+	 *
+	 * @param array||string $options
+	 *        	查询条件数组
+	 * @param string $order
+	 *        	排序字符串
+	 * @param number $page        	
+	 * @param number $pice        	
+	 * @return string
+	 */
+	public function getList($options = array(), $order = '', $page = 0, $pice = 10) {
+		$page = intval ( $page );
+		$pice = intval ( $pice );
+		$rs = array ();
+		if ($page > 0) {
+			$count = $this->where ( $options )->count ();
+			$rs = $this->page ( $page, $pice );
+			$this->pager = new \Think\Page ( $count, $pice );
+			$this->pager->show ();
+			// echo $pager->totalPages . "|" . $pager->totalRows;
+		}
+		$rs = $rs->select ( $options );
+		$formart = C ( 'DATE_FORMAT.default' );
+		foreach ( $rs as $key => $value ) {
+			foreach ( $value as $k => $v ) {
+				if (stristr ( $k, '_time' )) {
+					$rs [$key] [$k] = date ( $formart, $v );
+				}
+			}
+		}
+		return $rs;
+	}
+	
+	/**
+	 * 获取分页对象
+	 *
+	 * @return object
+	 */
+	public function getPager() {
+		return $this->pager;
+	}
 }

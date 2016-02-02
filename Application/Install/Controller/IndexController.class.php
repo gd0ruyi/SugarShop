@@ -3,7 +3,6 @@
 namespace Install\Controller;
 
 use Think\Controller;
-use Think\Db\Driver\Mongo;
 
 /**
  * 初始化安装

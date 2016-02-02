@@ -1,8 +1,12 @@
 /* 后台样式 */
-div ul li h1 h2 h3 h4 h5{
+div ul li h1 h2 h3 h4 h5 table tr th td{
 	margin:0px;
 	padding:0px;
 }
+th{
+	text-align:center;
+}
+
 body{
 	height:100%;
 	min-height:630px;
@@ -76,20 +80,12 @@ body{
 	background-image:none;
 }
 
-/* 框架内容样式 */
-.content-wrapper{
-	float:left;
+/* 右侧框架内容样式 */
+.main-right{
 	height:100%;
 	width:auto;
 	overflow:auto;
-}
-.content-wrapper .content-header{
-	height:120px;
-	width:100%;
-}
-.content-wrapper .content{
-	height:100%;
-	width:100%;
+	padding-left: 10px;
 }
 
 /* 加载条样式 */

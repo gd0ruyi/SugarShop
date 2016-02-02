@@ -15,7 +15,7 @@
 <aside class="main-sidebar">
   <section class="sidebar">
     <ul class="sidebar-menu nav nav-pills nav-stacked">
-      <li role="presentation"> <a href="../../test.php" link-target=".main-right .content" >菜单一</a> </li>
+      <li role="presentation"> <a href="/Sugaradmin/Manager/Index" link-target=".main-right .content" >管理员管理</a> </li>
       <li class="dropdown" role="presentation"> <a role="button" href="#"> 下拉菜单一 <span class="glyphicon glyphicon-chevron-up"></span> </a>
         <ul class="dropdown-menu">
           <li><a href="#">Action</a></li>
@@ -40,8 +40,7 @@
 </aside>
 </div>
 <div class="main-right content-wrapper">
-  <nav class="navbar navbar-default">
-  <section class="content">这里是加载内容</section>
+  <div class="content">这里是加载内容</div>
 </div>
 
 <!-- Modal -->
@@ -50,12 +49,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        <h4 class="modal-title" id="error_title">消息提示</h4>
       </div>
-      <div class="modal-body"> ... </div>
+      <div class="modal-body" id="error_msg"> ... </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
       </div>
     </div>
   </div>
@@ -111,6 +110,12 @@ $(function(){
 		   clearInterval(laoding_interval);
 		   $('#loading').modal("hide");
 		});
+		$(document).ajaxError(function(event, XMLHttpRequest, ajaxOptions, thrownError) {
+			$("#error_title").html("警告：请求失败！");
+			$("#error_msg").html("Error(" +XMLHttpRequest.status+ "):" + XMLHttpRequest.readyState);
+			$('#myModal').modal("show");
+            $('#loading').modal("hide");
+        });
 		$(layout).load(herf);
 		return false;
 	});

@@ -101,7 +101,7 @@ return array (
 		// session配置，使用数据库。
 		'SESSION_TYPE' => 'Mongodb',
 		
-		//'SESSION_PREFIX' => 'sugarShop',
+		// 'SESSION_PREFIX' => 'sugarShop',
 		
 		// 显示调试输出
 		'SHOW_PAGE_TRACE' => true,
@@ -132,9 +132,9 @@ return array (
 						
 						// 验证码时效时长（秒）
 						'expire' => 60,
-
-						//是否允许接收GET参数进行自动生成验证
-						'allow_get_set' => true
+						
+						// 是否允许接收GET参数进行自动生成验证
+						'allow_get_set' => true 
 				) 
 		),
 		
@@ -142,5 +142,12 @@ return array (
 		'TMPL_ACTION_ERROR' => 'Public:notice',
 		
 		// 默认成功跳转对应的模板文件
-		'TMPL_ACTION_SUCCESS' => 'Public:notice' 
+		'TMPL_ACTION_SUCCESS' => 'Public:notice',
+		
+		// 默认时间格式
+		'DATE_FORMAT' => array (
+				'default' => 'Y-m-d H:i:s',
+				'day' => 'Y-m-d',
+				'time' =>  'H:i:s'
+		) 
 );
