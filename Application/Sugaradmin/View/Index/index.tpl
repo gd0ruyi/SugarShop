@@ -112,7 +112,7 @@ $(function(){
 		});
 		$(document).ajaxError(function(event, XMLHttpRequest, ajaxOptions, thrownError) {
 			$("#error_title").html("警告：请求失败！");
-			$("#error_msg").html("Error(" +XMLHttpRequest.status+ "):" + XMLHttpRequest.readyState);
+			$("#error_msg").html("Error(" +XMLHttpRequest.status+ "):" + thrownError);
 			$('#myModal').modal("show");
             $('#loading').modal("hide");
         });
