@@ -21,11 +21,11 @@ class LoginController extends BaseController {
 	 */
 	public function login() {
 		// 校验验证码
-		if (! check_verify ( $_POST ['verification'] )) {
-			$this->error ( "验证码不正确！请重新尝试！", '/Sugaradmin/Login/index' );
+		if (! check_verify ( $_GET ['verification'] )) {
+			$this->error ( "验证码不正确！请重新尝试！" );
 		}
 		$manager_model = D ( "Manager" );
-		$pwd = md5 ( $_POST ['username'] . $_POST ['password'] );
+		$pwd = md5 ( $_GET ['username'] . $_GET ['password'] );
 		$query = array ();
 		$query ['username'] = $_POST ['username'];
 		$query ['password'] = md5 ( $_POST ['usename'] . $_POST ['password'] );
@@ -42,8 +42,8 @@ class LoginController extends BaseController {
 			$sess_data = $rs;
 			unset ( $sess_data ['password'] );
 			session_save_values ( $sess_data );
-			$this->success ( '登录成功！', '/Sugaradmin/Index/index' );
+			$this->success ( '登录成功！', '/Index/index', 3 );
 		}
-		$this->error ( '用户名密码不正确！', '/Sugaradmin/Login/index' );
+		$this->error ( '用户名密码不正确！' );
 	}
 }
