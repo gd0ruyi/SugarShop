@@ -122,7 +122,7 @@ class Mongodb {
 		if (empty ( $_SESSION ) || empty ( $sessData )) {
 			return true;
 		}
-		
+		// 修正代码冲突
 		if (empty ( $_SESSION )) {
 			return true;
 		}
