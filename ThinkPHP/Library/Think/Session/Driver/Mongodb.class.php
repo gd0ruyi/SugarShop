@@ -94,12 +94,8 @@ class Mongodb {
 		$query = array ();
 		$query ['sessID'] = $sessID;
 		$rs = $this->coll_handle->findOne ( $query );
-<<<<<<< HEAD
 		$_SESSION = $rs ['sessData'];
 		return session_encode ();
-=======
-		return serialize($rs['sessData']);
->>>>>>> d5d777e3b10f4aba2a979ce8426f1a4d257e70e8
 	}
 	
 	/**
@@ -127,15 +123,11 @@ class Mongodb {
 			return true;
 		}
 		
-<<<<<<< HEAD
-		// natsort ( $_SESSION );
-=======
 		if (empty ( $_SESSION )) {
 			return true;
 		}
 		
 		natsort ( $_SESSION );
->>>>>>> d5d777e3b10f4aba2a979ce8426f1a4d257e70e8
 		try {
 			if (isset ( $rs ['_id'] ) && $rs ['_id']) {
 				$data ['$set'] ['sessID'] = $sessID;
