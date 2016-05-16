@@ -6,7 +6,7 @@
  * @param expression $value 输出值
  * @param string $is_exit 是否退出
  */
-function printR($value, $is_exit = false) {
+function printR($value, $is_exit = true) {
 	echo "<pre>\n";
 	echo "<hr />\n";
 	print_r ( $value );
