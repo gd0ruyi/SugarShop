@@ -6,8 +6,7 @@
 <meta name="renderer" content="webkit">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SugarAdmin-平台管理</title>
-<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
 <link href="/Public/Sugaradmin/css/style.css" rel="stylesheet">
 </head>
 <body class="">
@@ -110,6 +109,7 @@ $(function(){
 		   clearInterval(laoding_interval);
 		   $('#loading').modal("hide");
 		});
+		
 		$(document).ajaxError(function(event, XMLHttpRequest, ajaxOptions, thrownError) {
 			$("#error_title").html("警告：请求失败！");
 			$("#error_msg").html("Error(" +XMLHttpRequest.status+ "):" + thrownError);
