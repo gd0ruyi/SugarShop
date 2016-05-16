@@ -42,8 +42,8 @@ class LoginController extends BaseController {
 			$sess_data = $rs;
 			unset ( $sess_data ['password'] );
 			session_save_values ( $sess_data );
-			$this->success ( '登录成功！', '/Index/index', 3 );
+			$this->success ( '登录成功！', '../Index/index' );
 		}
-		$this->error ( '用户名密码不正确！' );
+		$this->error ( '用户名密码不正确！', '../Login/index' );
 	}
 }
