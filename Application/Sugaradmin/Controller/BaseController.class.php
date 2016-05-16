@@ -26,10 +26,15 @@ class BaseController extends Controller {
 	 */
 	public function _initialize() {
 		$this->_before_initialize();
+		
+		//合并传递参数
+		$_GET = array_merge($_GET, $_POST);
+		
 		// 判断是否需要校验登录的控制器或者具体的方法
 		if (! in_array ( __CONTROLLER__, $this->allow_controller ) && ! in_array ( __ACTION__, $this->allow_action )) {
 			$this->checkLogin ();
 		}
+		
 		$this->_after_initialize();
 	}
 	
