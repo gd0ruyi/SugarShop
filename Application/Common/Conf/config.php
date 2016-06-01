@@ -100,17 +100,18 @@ return array (
 		 */
 		// session配置，使用数据库。
 		'SESSION_TYPE' => 'Mongodb',
+		'SESSION_EXPIRE' => 3600 * 8,
 		
 		// 'SESSION_PREFIX' => 'sugarShop',
 		
 		// 显示调试输出
-		'SHOW_PAGE_TRACE' => true,
+		//'SHOW_PAGE_TRACE' => true,
 		
 		// 验证码配置
 		'VERIFY_CONFIG' => array (
 				
 				// 是否开启验证码处理
-				'IS_OPEN' => true,
+				'IS_OPEN' => false,
 				
 				// 验证码图片配置
 				'IMG_CONFIG' => array (

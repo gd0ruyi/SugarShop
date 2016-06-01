@@ -1,92 +1,189 @@
 /* 后台样式 */
-div ul li h1 h2 h3 h4 h5 table tr th td{
-	margin:0px;
-	padding:0px;
-}
-th{
-	text-align:center;
-}
-
+/****************
+ * body样式 
+ *****************/
 body{
-	height:100%;
-	min-height:630px;
-	width:100%;
-	margin:0px;
-	padding:0px;
+	position: relative;
 }
-
-/* 头部样式 */
-.main-header{
-	display:block;
-	width:100%;
-	height:auto;
-	margin-top:0px;
+.main-body{	
 	background-color:#9C6;
 }
-
-/* 左侧导航栏样式 */
-.main-sidebar{
-	display:block;
-	float:left;
-	height:100%;
-	min-height:879px;
-	width:230px;
-	overflow:auto;
-	background-color:#F5F5F5;
+/****************
+ * 头部样式 
+ *****************/
+.main-header{
+	padding:15px;
+	border:1px solid #999;
+	border-bottom:none;
+	border-radius:6px 6px 0 0;
+	margin-bottom: 0;
 }
-
-.main-sidebar .sidebar{
-	height:100%;
-	background-color:#FFF;
+.main-header .logo{
+	font-size:26px;
+	height:60px;
+	line-height:60px;
 }
-.main-sidebar .sidebar .sidebar-menu{
-	height:100%;
+/* 缩小按钮 */
+.main-header .navbar-header button.navbar-toggle{
+	padding:10px;
+	background-color:#360;
+}
+.main-header .navbar-header button.collapsed{
+	background-color:#9C6;
 	
 }
-/*.main-sidebar .sidebar .sidebar-menu li:focus{
-	background-color:#6CF !important;
-}*/
-.main-sidebar .sidebar .sidebar-menu a{
-	background-color:#337ab7;
+.main-header .navbar-header button.navbar-toggle span{
 	color:#FFF;
 }
-.main-sidebar .sidebar .sidebar-menu a:hover{
-	background-color:#6CF !important;
+
+/* 功能菜单 */
+.main-header .top-manu-bar{
+	padding:5px;
+	background-color:#FFF;
+	border:1px solid #999;
+	border-radius:6px;
+	overflow:inherit;
 }
-.main-sidebar .sidebar .sidebar-menu a.on{
-	background-color:#6CF !important;
+.main-header .top-manu-bar .nav li{
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.main-header .top-manu-bar .nav li a{
+	color:#337ab7;
+	background-color:#E1E1E1;
+}
+.main-header .top-manu-bar .nav li a:hover{
+	color:#FFF;
+	background-color:#09F;	
+}
+.main-header .top-manu-bar .nav li.active a{
+	color:#FFF;
+	background-color:#337ab7;
+}
+/* 功能子菜单 */
+.main-header .top-manu-bar .nav li .dropdown-menu li a{
+	color:#000;
+	background-color:#FFF;
+}
+.main-header .top-manu-bar .nav li .dropdown-menu li a:hover{
+	color:#C00;
+	border:solid 1px #999;
+	border-radius: 6px;
+	background:#E1E1E1;
+}
+.main-header .top-manu-bar .nav li .dropdown-menu li.active a{
+	color:#C00;
+	border:solid 1px #999;
+	border-radius: 6px;
+	background:#E1E1E1;
 }
 
-.dropdown a span{
-	float:right;
+/* 选项卡 */
+.main-header .top-tabs-bar{
+	margin-top:12px;
+	padding:5px;
+	background-color:#FFF;
+	border:1px solid #999;
+	border-radius:6px;
+}
+.main-header .top-tabs-bar .nav li{
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.main-header .top-tabs-bar .nav li a{
+	background-color:#C8E3FF;
+	color:#FFF;
+}
+.main-header .top-tabs-bar .nav li a:hover{
+	background-color:#0080FF;	
+}
+.main-header .top-tabs-bar .nav li.active a{
+	background-color:#00A9FB;
+}
+.main-header .top-tabs-bar .nav li a .glyphicon{
+	margin-left:6px;
+}
+.main-header .top-tabs-bar .nav li a .glyphicon:hover{
+	color:#F00;
 }
 
-/* 子菜单 */
-.dropdown-menu{
-	position:relative;
-	float:none;
-	margin-left:24px;
-	background-color:#09C;
+/* 选项卡下拉样式 */
+.main-header .top-tabs-bar .nav li .dropdown-menu li a{
+	background-color:#FFF;
+	color:#000;
 }
-.dropdown-menu li{
+.main-header .top-tabs-bar .nav li .dropdown-menu li a:hover{
+	color:#C00;
 }
-.dropdown-menu li a{
-	background-color:#09C !important;
+/* 选项卡固定顶部样式 */
+.navbar-fixed-top{
+	left:50px;
+	right:50px;
 }
-.dropdown-menu li a:hover{
-	background-image:none;
+/****************
+ * 内容样式
+ *****************/
+.main-content{
+	background-color:#f8f8f8;
+	border:1px solid #999;
+	border-top:none;
+	border-radius:0 0 6px 6px;
+	margin-top: -1px;
+	padding-top:10px;
+	padding-bottom:10px;
 }
-.dropdown-menu li a:focus{
-	background-image:none;
+/* 选项卡内容 */
+.main-content .tab-content{
+	padding:10px;
+	background-color:#FFF;
+	border:1px solid #999;
+	border-radius:6px;
 }
 
-/* 右侧框架内容样式 */
-.main-right{
-	height:100%;
-	width:auto;
-	overflow:auto;
-	padding-left: 10px;
+/****************
+ * 底部样式
+ *****************/
+.main-footer{
+	display:inline-block;
+	width:100%;
+	margin-top:10px;
+	margin-bottom: 5px;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-align:center;
+	color:#CCC;
+	background-color:#111;
+	border:1px solid #111;
+	border-radius: 4px;
 }
 
-/* 加载条样式 */
-.loading-box{}
+/* 加载等待样式 */
+.loading-waiting{
+	color:#6C0;
+}
+.loading-waiting .glyphicon-refresh{
+	/* 动画效果*/
+	animation:loading-rotation 1s infinite;
+	animation-timing-function:linear;
+}
+
+@keyframes loading-rotation
+{
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* 置顶按钮 */
+#target-top{
+	margin-right:26px;
+}
+#target-top a{
+	color:#360;
+}
+#target-top a:hover{
+	color:#390;
+}
