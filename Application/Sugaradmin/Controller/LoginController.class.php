@@ -3,7 +3,6 @@
 namespace Sugaradmin\Controller;
 
 use Sugaradmin\Controller\BaseController;
-use Sugaradmin\Model\ManagerModel;
 
 class LoginController extends BaseController {
 	/**
@@ -22,12 +21,11 @@ class LoginController extends BaseController {
 	 */
 	public function login() {
 		// 校验验证码
-		if (! check_verify ( $_POST ['verification'] )) {
+		if (! check_verify ( $_GET ['verification'] )) {
 			$this->error ( "验证码不正确！请重新尝试！" );
 		}
 		$manager_model = D ( "Manager" );
-		$manager_model = new ManagerModel ();
-		$pwd = md5 ( $_POST ['username'] . $_POST ['password'] );
+		$pwd = md5 ( $_GET ['username'] . $_GET ['password'] );
 		$query = array ();
 		$query ['username'] = $_POST ['username'];
 		$query ['password'] = md5 ( $_POST ['usename'] . $_POST ['password'] );
@@ -44,24 +42,8 @@ class LoginController extends BaseController {
 			$sess_data = $rs;
 			unset ( $sess_data ['password'] );
 			session_save_values ( $sess_data );
-			
-			// 保存登录更新时间
-			$data = array ();
-			$data ['las_time'] = time ();
-			$rs = $manager_model->where ( $query )->save ( $data );
-			
 			$this->success ( '登录成功！', '../Index/index' );
 		}
 		$this->error ( '用户名密码不正确！', '../Login/index' );
-	}
-	
-	/**
-	 * 退出登录处理
-	 *
-	 * @return void
-	 */
-	public function logout() {
-		session_destroy ();
-		$this->success ( '退出成功！', '../Login/index' );
 	}
 }

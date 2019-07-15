@@ -22,7 +22,7 @@ class Model {
 	const MUST_VALIDATE = 1; // 必须验证
 	const EXISTS_VALIDATE = 0; // 表单存在字段则验证
 	const VALUE_VALIDATE = 2; // 表单值不为空则验证
-	                          
+	                                   
 	// 当前数据库操作对象
 	protected $db = null;
 	// 数据库对象池
@@ -55,7 +55,7 @@ class Model {
 	protected $_auto = array (); // 自动完成定义
 	protected $_map = array (); // 字段映射定义
 	protected $_scope = array (); // 命名范围定义
-	                              // 是否自动检测数据表字段信息
+	                                         // 是否自动检测数据表字段信息
 	protected $autoCheckFields = true;
 	// 是否批处理验证
 	protected $patchValidate = false;
@@ -80,7 +80,7 @@ class Model {
 	/**
 	 * 架构函数
 	 * 取得DB类的实例对象 字段检查
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	模型名称
@@ -119,7 +119,7 @@ class Model {
 	
 	/**
 	 * 自动检测数据表信息
-	 *
+	 * 
 	 * @access protected
 	 * @return void
 	 */
@@ -146,7 +146,7 @@ class Model {
 	
 	/**
 	 * 获取字段信息并缓存
-	 *
+	 * 
 	 * @access public
 	 * @return void
 	 */
@@ -194,7 +194,7 @@ class Model {
 	
 	/**
 	 * 设置数据对象的值
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	名称
@@ -209,7 +209,7 @@ class Model {
 	
 	/**
 	 * 获取数据对象的值
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	名称
@@ -221,7 +221,7 @@ class Model {
 	
 	/**
 	 * 检测数据对象的值
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	名称
@@ -233,7 +233,7 @@ class Model {
 	
 	/**
 	 * 销毁数据对象的值
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	名称
@@ -245,7 +245,7 @@ class Model {
 	
 	/**
 	 * 利用__call方法实现一些特殊的Model方法
-	 *
+	 * 
 	 * @access public
 	 * @param string $method
 	 *        	方法名称
@@ -291,7 +291,7 @@ class Model {
 	
 	/**
 	 * 对保存到数据库的数据进行处理
-	 *
+	 * 
 	 * @access protected
 	 * @param mixed $data
 	 *        	要操作的数据
@@ -338,7 +338,7 @@ class Model {
 	
 	/**
 	 * 新增数据
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $data
 	 *        	数据
@@ -419,7 +419,7 @@ class Model {
 	
 	/**
 	 * 通过Select方式添加记录
-	 *
+	 * 
 	 * @access public
 	 * @param string $fields
 	 *        	要插入的数据表字段名
@@ -445,7 +445,7 @@ class Model {
 	
 	/**
 	 * 保存数据
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $data
 	 *        	数据
@@ -525,7 +525,7 @@ class Model {
 	
 	/**
 	 * 删除数据
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $options
 	 *        	表达式
@@ -603,7 +603,7 @@ class Model {
 	
 	/**
 	 * 查询数据集
-	 *
+	 * 
 	 * @access public
 	 * @param array $options
 	 *        	表达式参数
@@ -640,8 +640,7 @@ class Model {
 			} else {
 				return false;
 			}
-		} elseif (false === $options) { 
-			// 用于子查询 不查询只返回SQL
+		} elseif (false === $options) { // 用于子查询 不查询只返回SQL
 			$options ['fetch_sql'] = true;
 		}
 		// 分析表达式
@@ -667,10 +666,9 @@ class Model {
 			$resultSet = array_map ( array (
 					$this,
 					'_read_data' 
-			), $resultSet );			
-			
-			// 对返回的数据结果集的每行进行索引
-			if (isset ( $options ['index'] )) {
+			), $resultSet );
+			$this->_after_select ( $resultSet, $options );
+			if (isset ( $options ['index'] )) { // 对数据集进行索引
 				$index = explode ( ',', $options ['index'] );
 				foreach ( $resultSet as $result ) {
 					$_key = $result [$index [0]];
@@ -684,29 +682,18 @@ class Model {
 			}
 		}
 		
-		$this->_after_select ( $resultSet, $options );
-		
-		// 存入缓存
 		if (isset ( $cache )) {
 			S ( $key, $resultSet, $cache );
 		}
 		return $resultSet;
 	}
-	
-	/**
-	 * 查询成功后的回调方法，空方法，用于继承实现
-	 * 
-	 * @author gd0ruyi@163.com 2019-1-17
-	 * @param unknown $resultSet
-	 * @param unknown $options
-	 * return_type
-	 */
+	// 查询成功后的回调方法
 	protected function _after_select(&$resultSet, $options) {
 	}
 	
 	/**
 	 * 生成查询SQL 可用于子查询
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -716,7 +703,7 @@ class Model {
 	
 	/**
 	 * 分析表达式
-	 *
+	 * 
 	 * @access protected
 	 * @param array $options
 	 *        	表达式参数
@@ -771,7 +758,7 @@ class Model {
 	
 	/**
 	 * 数据类型检测
-	 *
+	 * 
 	 * @access protected
 	 * @param mixed $data
 	 *        	数据
@@ -796,7 +783,7 @@ class Model {
 	
 	/**
 	 * 数据读取后的处理
-	 *
+	 * 
 	 * @access protected
 	 * @param array $data
 	 *        	当前数据
@@ -817,7 +804,7 @@ class Model {
 	
 	/**
 	 * 查询数据
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $options
 	 *        	表达式参数
@@ -863,7 +850,7 @@ class Model {
 				return $data;
 			}
 		}
-		$resultSet = $this->db->select ( $options );
+		$resultSet = $this->db->select ( $options );		
 		if (false === $resultSet) {
 			return false;
 		}
@@ -906,7 +893,7 @@ class Model {
 	
 	/**
 	 * 处理字段映射
-	 *
+	 * 
 	 * @access public
 	 * @param array $data
 	 *        	当前数据
@@ -937,7 +924,7 @@ class Model {
 	/**
 	 * 设置记录的某个字段值
 	 * 支持使用数据库字段和方法
-	 *
+	 * 
 	 * @access public
 	 * @param string|array $field
 	 *        	字段名
@@ -956,7 +943,7 @@ class Model {
 	
 	/**
 	 * 字段值增长
-	 *
+	 * 
 	 * @access public
 	 * @param string $field
 	 *        	字段名
@@ -985,7 +972,7 @@ class Model {
 	
 	/**
 	 * 字段值减少
-	 *
+	 * 
 	 * @access public
 	 * @param string $field
 	 *        	字段名
@@ -1015,7 +1002,7 @@ class Model {
 	/**
 	 * 延时更新检查 返回false表示需要延时
 	 * 否则返回实际写入的数值
-	 *
+	 * 
 	 * @access public
 	 * @param string $guid
 	 *        	写入标识
@@ -1047,7 +1034,7 @@ class Model {
 	
 	/**
 	 * 获取一条记录的某个字段值
-	 *
+	 * 
 	 * @access public
 	 * @param string $field
 	 *        	字段名
@@ -1097,7 +1084,7 @@ class Model {
 				return $cols;
 			}
 		} else { // 查找一条记录
-		         // 返回数据个数
+		       // 返回数据个数
 			if (true !== $sepa) { // 当sepa指定为true的时候 返回所有数据
 				$options ['limit'] = is_numeric ( $sepa ) ? $sepa : 1;
 			}
@@ -1127,7 +1114,7 @@ class Model {
 	
 	/**
 	 * 创建数据对象 但不保存到数据库
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $data
 	 *        	创建数据
@@ -1235,7 +1222,7 @@ class Model {
 	
 	/**
 	 * 使用正则验证数据
-	 *
+	 * 
 	 * @access public
 	 * @param string $value
 	 *        	要验证的数据
@@ -1263,7 +1250,7 @@ class Model {
 	
 	/**
 	 * 自动表单处理
-	 *
+	 * 
 	 * @access public
 	 * @param array $data
 	 *        	创建数据
@@ -1329,7 +1316,7 @@ class Model {
 	
 	/**
 	 * 自动表单验证
-	 *
+	 * 
 	 * @access protected
 	 * @param array $data
 	 *        	创建数据
@@ -1392,7 +1379,7 @@ class Model {
 	/**
 	 * 验证表单字段 支持批量验证
 	 * 如果批量验证返回错误的数组信息
-	 *
+	 * 
 	 * @access protected
 	 * @param array $data
 	 *        	创建数据
@@ -1416,7 +1403,7 @@ class Model {
 	
 	/**
 	 * 根据验证因子验证字段
-	 *
+	 * 
 	 * @access protected
 	 * @param array $data
 	 *        	创建数据
@@ -1477,7 +1464,7 @@ class Model {
 	
 	/**
 	 * 验证数据 支持 in between equal length regex expire ip_allow ip_deny
-	 *
+	 * 
 	 * @access public
 	 * @param string $value
 	 *        	验证数据
@@ -1527,14 +1514,14 @@ class Model {
 				return ! in_array ( get_client_ip (), explode ( ',', $rule ) );
 			case 'regex' :
 			default : // 默认使用正则验证 可以使用验证类中定义的验证名称
-			          // 检查附加规则
+			         // 检查附加规则
 				return $this->regex ( $value, $rule );
 		}
 	}
 	
 	/**
 	 * 存储过程返回多数据集
-	 *
+	 * 
 	 * @access public
 	 * @param string $sql
 	 *        	SQL指令
@@ -1548,7 +1535,7 @@ class Model {
 	
 	/**
 	 * SQL查询
-	 *
+	 * 
 	 * @access public
 	 * @param string $sql
 	 *        	SQL指令
@@ -1567,7 +1554,7 @@ class Model {
 	
 	/**
 	 * 执行SQL语句
-	 *
+	 * 
 	 * @access public
 	 * @param string $sql
 	 *        	SQL指令
@@ -1586,7 +1573,7 @@ class Model {
 	
 	/**
 	 * 解析SQL语句
-	 *
+	 * 
 	 * @access public
 	 * @param string $sql
 	 *        	SQL指令
@@ -1621,7 +1608,7 @@ class Model {
 	
 	/**
 	 * 切换当前的数据库连接
-	 *
+	 * 
 	 * @access public
 	 * @param integer $linkNum
 	 *        	连接序号
@@ -1662,7 +1649,7 @@ class Model {
 	
 	/**
 	 * 得到当前的数据对象名称
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1680,7 +1667,7 @@ class Model {
 	
 	/**
 	 * 得到完整的数据表名
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1699,7 +1686,7 @@ class Model {
 	
 	/**
 	 * 启动事务
-	 *
+	 * 
 	 * @access public
 	 * @return void
 	 */
@@ -1711,7 +1698,7 @@ class Model {
 	
 	/**
 	 * 提交事务
-	 *
+	 * 
 	 * @access public
 	 * @return boolean
 	 */
@@ -1721,7 +1708,7 @@ class Model {
 	
 	/**
 	 * 事务回滚
-	 *
+	 * 
 	 * @access public
 	 * @return boolean
 	 */
@@ -1731,7 +1718,7 @@ class Model {
 	
 	/**
 	 * 返回模型的错误信息
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1741,7 +1728,7 @@ class Model {
 	
 	/**
 	 * 返回数据库的错误信息
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1751,7 +1738,7 @@ class Model {
 	
 	/**
 	 * 返回最后插入的ID
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1761,7 +1748,7 @@ class Model {
 	
 	/**
 	 * 返回最后执行的sql语句
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1775,7 +1762,7 @@ class Model {
 	
 	/**
 	 * 获取主键名称
-	 *
+	 * 
 	 * @access public
 	 * @return string
 	 */
@@ -1785,7 +1772,7 @@ class Model {
 	
 	/**
 	 * 获取数据表字段信息
-	 *
+	 * 
 	 * @access public
 	 * @return array
 	 */
@@ -1813,7 +1800,7 @@ class Model {
 	
 	/**
 	 * 设置数据对象值
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $data
 	 *        	数据
@@ -1836,7 +1823,7 @@ class Model {
 	
 	/**
 	 * 指定当前的数据表
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $table        	
 	 * @return Model
@@ -1857,7 +1844,7 @@ class Model {
 	
 	/**
 	 * USING支持 用于多表删除
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $using        	
 	 * @return Model
@@ -1878,7 +1865,7 @@ class Model {
 	
 	/**
 	 * 查询SQL组装 join
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $join        	
 	 * @param string $type
@@ -1907,7 +1894,7 @@ class Model {
 	
 	/**
 	 * 查询SQL组装 union
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $union        	
 	 * @param boolean $all        	
@@ -1945,7 +1932,7 @@ class Model {
 	
 	/**
 	 * 查询缓存
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $key        	
 	 * @param integer $expire        	
@@ -1969,7 +1956,7 @@ class Model {
 	
 	/**
 	 * 指定查询字段 支持字段排除
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $field        	
 	 * @param boolean $except
@@ -1993,7 +1980,7 @@ class Model {
 	
 	/**
 	 * 调用命名范围
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $scope
 	 *        	命名范围名称 支持多个 和直接定义
@@ -2032,7 +2019,7 @@ class Model {
 	
 	/**
 	 * 指定查询条件 支持安全过滤
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $where
 	 *        	条件表达式
@@ -2040,7 +2027,7 @@ class Model {
 	 *        	预处理参数
 	 * @return Model
 	 */
-	public function where($where, $parse = null) {
+	public function where($where, $parse = null) {		
 		if (! is_null ( $parse ) && is_string ( $where )) {
 			if (! is_array ( $parse )) {
 				$parse = func_get_args ();
@@ -2070,7 +2057,7 @@ class Model {
 	
 	/**
 	 * 指定查询数量
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $offset
 	 *        	起始位置
@@ -2088,7 +2075,7 @@ class Model {
 	
 	/**
 	 * 指定分页
-	 *
+	 * 
 	 * @access public
 	 * @param mixed $page
 	 *        	页数
@@ -2109,7 +2096,7 @@ class Model {
 	
 	/**
 	 * 查询注释
-	 *
+	 * 
 	 * @access public
 	 * @param string $comment
 	 *        	注释
@@ -2122,7 +2109,7 @@ class Model {
 	
 	/**
 	 * 获取执行的SQL语句
-	 *
+	 * 
 	 * @access public
 	 * @param boolean $fetch
 	 *        	是否返回sql
@@ -2135,7 +2122,7 @@ class Model {
 	
 	/**
 	 * 参数绑定
-	 *
+	 * 
 	 * @access public
 	 * @param string $key
 	 *        	参数名
@@ -2161,7 +2148,7 @@ class Model {
 	
 	/**
 	 * 设置模型的属性值
-	 *
+	 * 
 	 * @access public
 	 * @param string $name
 	 *        	名称

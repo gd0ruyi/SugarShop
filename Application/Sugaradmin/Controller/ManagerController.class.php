@@ -26,16 +26,9 @@ class ManagerController extends BaseController {
 		// $manager_model = new ManagerModel();
 		$manager_list = $manager_model->getList ( array (), '', 1, 10 );
 		$this->assign ( 'manager_list', $manager_list );
-		// $this->display ();
-		// $this->displayAutoAjax();
 		$this->display ();
 	}
-	
-	public function loadAjax(){
-		$data = array();
-		$rs = $this->getList(array());
-		$this->setRes($rs);
-		$this->suc($data, true);
+	public function showJsonData() {
+		die ( $_GET ['callback'] . "(" . '{"page":"1","total":2,"records":"13","rows":[{"id":"13","cell":["13","2007-10-06","Client 3","1000.00","0.00","1000.00",null]},{"id":"12","cell":["12","2007-10-06","Client 2","700.00","140.00","840.00",null]},{"id":"11","cell":["11","2007-10-06","Client 1","600.00","120.00","720.00",null]},{"id":"10","cell":["10","2007-10-06","Client 2","100.00","20.00","120.00",null]},{"id":"9","cell":["9","2007-10-06","Client 1","200.00","40.00","240.00",null]},{"id":"8","cell":["8","2007-10-06","Client 3","200.00","0.00","200.00",null]},{"id":"7","cell":["7","2007-10-05","Client 2","120.00","12.00","134.00",null]},{"id":"6","cell":["6","2007-10-05","Client 1","50.00","10.00","60.00",""]},{"id":"5","cell":["5","2007-10-05","Client 3","100.00","0.00","100.00","no tax at all"]},{"id":"4","cell":["4","2007-10-04","Client 3","150.00","0.00","150.00","no tax"]}],"userdata":{"amount":3220,"tax":342,"total":3564,"name":"Totals:"}}' . ")" );
 	}
-	
 }

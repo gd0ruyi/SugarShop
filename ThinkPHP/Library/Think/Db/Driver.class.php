@@ -1006,12 +1006,11 @@ abstract class Driver {
     /**
      * 获取最近插入的ID
      * @access public
-     * @param string $pk 主键名称，为了与mongodb使用时兼容（gd0ruyi）
      * @return string
      */
-    public function getLastInsID($pk = '') {
-		return $this->lastInsID;
-	}
+    public function getLastInsID() {
+        return $this->lastInsID;
+    }
 
     /**
      * 获取最近的错误信息

@@ -156,7 +156,7 @@ class Mongodb {
 	 */
 	public function destroy($sessID) {
 		$query = array ();
-		$query ['sessID'] = $sessID ? $sessID : session_id();
+		$query ['_id'] = $sessID;
 		$options = array ();
 		$options ['justOne'] = true;
 		return $this->coll_handle->remove ( $query, $options );

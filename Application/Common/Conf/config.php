@@ -1,7 +1,4 @@
 <?php
-/**
- * 通用配置
- */
 return array (
 		
 		/**
@@ -28,10 +25,10 @@ return array (
 		// 数据库名
 		'DB_NAME' => 'sugarShop',
 		
-		// 用户名(root)
+		// 用户名
 		'DB_USER' => 'sugarShop',
 		
-		// 密码(root)
+		// 密码
 		'DB_PWD' => 'sugarShop',
 		
 		// 端口
@@ -68,7 +65,7 @@ return array (
 		'DB_FIELDS_CACHE' => false,
 		
 		// MongoDB开启自动创建索引（在查询时自动创建）
-		'MONGODB_AUTO_CREATE_INDEX' => true,
+		'MONGODB_AUTO_CREATE_INDEX' => false,
 		
 		// MongoDB自增ID的集合名称
 		'MONGODB_AUTO_INC_COLL' => 'counters',
@@ -92,7 +89,6 @@ return array (
 		'TMPL_L_DELIM' => '<{',
 		'TMPL_R_DELIM' => '}>',
 		
-		
 		// 简化模板的目录层次
 		// 'TMPL_FILE_DEPR'=>'_',
 		
@@ -109,7 +105,7 @@ return array (
 		// 'SESSION_PREFIX' => 'sugarShop',
 		
 		// 显示调试输出
-		'SHOW_PAGE_TRACE' => true,
+		//'SHOW_PAGE_TRACE' => true,
 		
 		// 验证码配置
 		'VERIFY_CONFIG' => array (
@@ -149,9 +145,10 @@ return array (
 		// 默认成功跳转对应的模板文件
 		'TMPL_ACTION_SUCCESS' => 'Public:notice',
 		
-		// 是否打开ajax加载时出现进度加载
-		'OPEN_AJAX_LOADING_PROGRESS' => false,
-
-		
-		'LOAD_EXT_CONFIG' => 'output', 
+		// 默认时间格式
+		'DATE_FORMAT' => array (
+				'default' => 'Y-m-d H:i:s',
+				'day' => 'Y-m-d',
+				'time' =>  'H:i:s'
+		) 
 );

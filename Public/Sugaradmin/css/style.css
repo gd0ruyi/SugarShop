@@ -1,32 +1,16 @@
 /* 后台样式 */
-
-/* 通用样式 */
-.hidden, .html-tpl{
-	display: none;
-}
-.text-center{
-	text-align: center;
-}
-.text-left{
-	text-align: left;
-}
-.text-right{
-	text-align: right;
-}
-
-/* body样式 */
+/****************
+ * body样式 
+ *****************/
 body{
 	position: relative;
-	background-color:#9C6;
 }
 .main-body{	
 	background-color:#9C6;
 }
-.main-body .max-box{
-	width:98%;
-	padding:0px;
-}
-/* 头部样式 */
+/****************
+ * 头部样式 
+ *****************/
 .main-header{
 	padding:15px;
 	border:1px solid #999;
@@ -55,8 +39,8 @@ body{
 /* 功能菜单 */
 .main-header .top-manu-bar{
 	padding:5px;
-	background-color:inherit;
-	border:0;
+	background-color:#FFF;
+	border:1px solid #999;
 	border-radius:6px;
 	overflow:inherit;
 }
@@ -96,30 +80,25 @@ body{
 
 /* 选项卡 */
 .main-header .top-tabs-bar{
-	margin-top:0px;
-	padding:0 5px;
-	background-color:#CCC;
+	margin-top:12px;
+	padding:5px;
+	background-color:#FFF;
 	border:1px solid #999;
 	border-radius:6px;
-	box-shadow: 2px 2px 2px #666666;
 }
 .main-header .top-tabs-bar .nav li{
 	margin-top:5px;
 	margin-bottom:5px;
 }
 .main-header .top-tabs-bar .nav li a{
-	background-color:#999;
-	font-size: 10px;
-    height: 16px;
-    padding: 6px;
+	background-color:#C8E3FF;
 	color:#FFF;
 }
 .main-header .top-tabs-bar .nav li a:hover{
-	background-color:#0080FF;
+	background-color:#0080FF;	
 }
 .main-header .top-tabs-bar .nav li.active a{
 	background-color:#00A9FB;
-	color:#FFF;
 }
 .main-header .top-tabs-bar .nav li a .glyphicon{
 	margin-left:6px;
@@ -157,10 +136,9 @@ body{
 .main-content .tab-content{
 	padding:10px;
 	background-color:#FFF;
-	border:none;
+	border:1px solid #999;
 	border-radius:6px;
 }
-
 
 /****************
  * 底部样式
@@ -181,11 +159,9 @@ body{
 
 /* 加载等待样式 */
 .loading-waiting{
-	/* color:#6C0;
-	background-color: #eee;
-	padding: 2px; */
+	color:#6C0;
 }
-.loading-waiting .animation{
+.loading-waiting .glyphicon-refresh{
 	/* 动画效果*/
 	animation:loading-rotation 1s infinite;
 	animation-timing-function:linear;
@@ -204,7 +180,6 @@ body{
 /* 置顶按钮 */
 #target-top{
 	margin-right:26px;
-	width:30px;
 }
 #target-top a{
 	color:#360;
@@ -212,125 +187,3 @@ body{
 #target-top a:hover{
 	color:#390;
 }
-
-/****************
- * 表单功能菜单样式
- *****************/
-.sgtable-toolbar{
-	padding: 6px;
-	background-color:#f8f8f8;
-}
-
-
-/*** 表格样式 ***/
-.table-responsive{
-	margin-top:10px;
-}
-/* 表格头部工具 */
-.table-toolbar{
-}
-.ajax-tables .sort-icon{
-	position:relative;
-	margin-left:16px;
-}
-.ajax-tables .sort-icon .glyphicon{
-	position:absolute;
-	font-size:1px;
-	color:#CCC;
-	cursor: pointer;
-}
-.ajax-tables .sort-icon .glyphicon-triangle-top{
-	top:-2px;
-}
-.ajax-tables .sort-icon .glyphicon-triangle-bottom{
-	top:6px;
-}
-.ajax-tables .sort-icon .on{
-	color: #00A9FB;
-	display:inline-block;
-}
-
-/* 排序按钮禁用样式 */
-.ajax-tables .sort-icon.disabled .glyphicon{
-	cursor: not-allowed;
-}
-.ajax-tables .disabled .on{
-	color: #C00;
-	display:inline-block;
-	cursor: not-allowed;
-	
-}
-
-.form-inline .form-control{
-	font-size:14px;
-	height:18px;
-	line-height:18px;
-}
-
-/*** 分页样式 ***/
-.pager{
-	text-align:left;
-	margin-left:20%;
-	margin-top: -10px;
-}
-.pager li{
-	display:inline-block;
-	margin-top:10px;
-	display:inline-block;
-}
-.pager li.space{
-	width: 36px;
-}
-.pager .small{
-	font-size:12px !important;
-	height:14px !important;
-}
-.pager .color-white{
-	background:#FFF;
-}
-.pager .input-group > .form-control{
-	font-size:14px;
-	height:18px;
-	width:36px;
-	line-height:18px;
-	text-align:center;
-}
-.pager .input-group .input-group-btn{
-	float:left;
-}
-.pager .input-group .input-group-btn button{
-	border-radius:0 16px 16px 0;
-	font-size:14px;
-	height:18px;
-	line-height:18px;
-	/*background:#FFF;*/
-}
-.pager .input-group .border-radius-none{
-	border-radius:0 !important;
-}
-.pager .input-group .input-group-addon{
-	border-radius:16px 0 0 16px;
-}
-.pager ul.dropdown-menu{
-	left: -61px;
-    margin-top: 0px;
-    top: 27px;
-	border:none;
-	background:none;
-	box-shadow:none;
-}
-.pager ul.dropdown-menu li a{
-	display:inline-block;
-	float:left;
-	width:50px;
-	border-radius:0;
-}
-.pager .input-group > select.form-control{
-	font-size:14px;
-	height:18px;
-	line-height:18px;
-	border-left:none;
-	width:42px;
-	border-radius:0 16px 16px 0;
-}
-

@@ -248,12 +248,9 @@ abstract class Controller {
 	 *        	AJAX返回数据格式
 	 * @param int $json_option
 	 *        	传递给json_encode的option参数
-	 * @param bool $is_exit
-	 *        	是否直接退出
 	 * @return void
 	 */
-	protected function ajaxReturn($data, $type = '', $json_option = 0, $is_exit = true) {
-		$is_exit = boolval ( $is_exit );
+	protected function ajaxReturn($data, $type = '', $json_option = 0) {
 		if (empty ( $type ))
 			$type = C ( 'DEFAULT_AJAX_RETURN' );
 		switch (strtoupper ( $type )) {
@@ -261,27 +258,23 @@ abstract class Controller {
 				
 				// 返回JSON数据格式到客户端 包含状态信息
 				header ( 'Content-Type:application/json; charset=utf-8' );
-				echo (json_encode ( $data, $json_option ));
-				$is_exit ? exit () : '';
+				exit ( json_encode ( $data, $json_option ) );
 			case 'XML' :
 				
 				// 返回xml格式数据
 				header ( 'Content-Type:text/xml; charset=utf-8' );
-				echo (xml_encode ( $data ));
-				$is_exit ? exit () : '';
+				exit ( xml_encode ( $data ) );
 			case 'JSONP' :
 				
 				// 返回JSON数据格式到客户端 包含状态信息
 				header ( 'Content-Type:application/json; charset=utf-8' );
 				$handler = isset ( $_GET [C ( 'VAR_JSONP_HANDLER' )] ) ? $_GET [C ( 'VAR_JSONP_HANDLER' )] : C ( 'DEFAULT_JSONP_HANDLER' );
-				echo ($handler . '(' . json_encode ( $data, $json_option ) . ');');
-				$is_exit ? exit () : '';
+				exit ( $handler . '(' . json_encode ( $data, $json_option ) . ');' );
 			case 'EVAL' :
 				
 				// 返回可执行的js脚本
 				header ( 'Content-Type:text/html; charset=utf-8' );
-				echo ($data);
-				$is_exit ? exit () : '';
+				exit ( $data );
 			default :
 				
 				// 用于扩展其他返回格式数据
@@ -346,7 +339,7 @@ abstract class Controller {
 		C ( 'HTML_CACHE_ON', false );
 		if ($status) { // 发送成功信息
 			$this->assign ( 'message', $message ); // 提示信息
-			                                       // 发生错误时候默认停留3秒
+			                                     // 发生错误时候默认停留3秒
 			if (! isset ( $this->waitSecond ))
 				$this->assign ( 'waitSecond', '3' );
 				// 默认发生错误的话自动返回上页

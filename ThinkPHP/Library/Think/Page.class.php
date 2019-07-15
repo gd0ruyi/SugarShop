@@ -23,9 +23,6 @@ class Page{
     private $url     = ''; //当前链接URL
     private $nowPage = 1;
 
-    // 自定义分页对象数组（gd0ruyi）
-    public $pager = array();
-
 	// 分页显示定制
     private $config  = array(
         'header' => '<span class="rows">共 %TOTAL_ROW% 条记录</span>',
@@ -45,45 +42,12 @@ class Page{
     public function __construct($totalRows, $listRows=20, $parameter = array()) {
         C('VAR_PAGE') && $this->p = C('VAR_PAGE'); //设置分页参数名称
         /* 基础设置 */
-        $this->totalRows  = intval($totalRows); //设置总记录数
-        $this->listRows   = intval($listRows);  //设置每页显示行数
+        $this->totalRows  = $totalRows; //设置总记录数
+        $this->listRows   = $listRows;  //设置每页显示行数
         $this->parameter  = empty($parameter) ? $_GET : $parameter;
-        $this->nowPage    = empty($_REQUEST[$this->p]) ? 1 : intval($_REQUEST[$this->p]);
+        $this->nowPage    = empty($_GET[$this->p]) ? 1 : intval($_GET[$this->p]);
         $this->nowPage    = $this->nowPage>0 ? $this->nowPage : 1;
         $this->firstRow   = $this->listRows * ($this->nowPage - 1);
-    }
-
-    /**
-     * 设置当前页值，主要为当出现多个分页时参数不同的复用
-     * @author ruyi <gd0ruyi@163.com> 2019年5月13日
-     *
-     * @param integer $page 默认值为0，使用p作为当前页
-     * @return array pager pager的初始值
-     */
-    public function setNowPage($page = 0) {
-        $page = intval($page);
-        /* 基础设置 */
-        $this->nowPage = empty($page) || $page <= 0 ? intval($_REQUEST[$this->p]) : intval($page);
-        $this->nowPage = $this->nowPage > 0 ? $this->nowPage : 1;
-        $this->firstRow = $this->listRows * ($this->nowPage - 1);
-
-        // 初始化
-        $this->pager['nowPage'] = $this->nowPage;
-        $this->pager['listRows'] = $this->listRows;
-        // 总行数（条数）
-        $this->pager['totalRows'] = $this->totalRows;
-        $this->pager['totalPages'] = $this->totalPages;
-        $this->pager['up_row'] = 0;
-        $this->pager['up_page'] = 0;
-        $this->pager['down_row'] = 0;
-        $this->pager['down_page'] = 0;
-        $this->pager['firstRow'] = $this->firstRow;
-        $this->pager['now_cool_page'] = 0;
-        $this->pager['now_cool_page_ceil'] = 0;
-        $this->pager['the_first'] = 1;
-        $this->pager['the_end'] = $this->totalPages;
-
-        return $this->pager;
     }
 
     /**
@@ -177,49 +141,5 @@ class Page{
             array($this->config['header'], $this->nowPage, $up_page, $down_page, $the_first, $link_page, $the_end, $this->totalRows, $this->totalPages),
             $this->config['theme']);
         return "<div>{$page_str}</div>";
-    }
-
-    /**
-     * 返回分页信息数组，自定义增加方法。（修改）
-     * 
-     * @author ruyi <gd0ruyi@163.com> 2019-05-10
-     * @return array()
-     */
-    public function getInfo($page=0) {
-        $this->setNowPage($page);
-
-        /* 计算分页信息 */
-        //总页数
-        $this->totalPages = ceil($this->totalRows / $this->listRows);
-        if(!empty($this->totalPages) && $this->nowPage > $this->totalPages) {
-            $this->nowPage = $this->totalPages;
-        }
-        $this->pager['totalPages'] = $this->totalPages;
-        $this->pager['nowPage'] = $this->nowPage;
-
-        /* 计算分页临时变量 */
-        $now_cool_page      = $this->rollPage/2;
-		$now_cool_page_ceil = ceil($now_cool_page);        
-        $this->pager['now_cool_page'] = $now_cool_page;
-        $this->pager['now_cool_page_ceil'] = $now_cool_page_ceil;
-
-        //上一页
-        $up_row  = $this->nowPage - 1;
-        $up_page = $up_row > 0 ? $up_row: 1;
-        $this->pager['up_row'] = $up_row;
-        $this->pager['up_page'] = $up_page;
-
-        //下一页
-        $down_row  = $this->nowPage + 1;
-        $down_page = ($down_row <= $this->totalPages) ? $down_row : 1;
-        $this->pager['down_row'] = $down_row;
-        $this->pager['down_page'] = $down_page;
-
-        //第一页
-        $this->pager['the_first'] = 1;
-        //最后一页
-        $this->pager['the_end'] = $this->totalPages;
-        
-        return $this->pager;
     }
 }

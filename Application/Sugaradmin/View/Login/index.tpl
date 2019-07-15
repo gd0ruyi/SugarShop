@@ -53,7 +53,6 @@
 <script src="/Public/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 <script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script>
 <script language="javascript" type="text/javascript">
-// 登录验证
 $(document).ready(function(){
 	var $vimg_src = $('#verify-img').attr('src');
 	$('#verify-img').attr('src', $vimg_src + '?' + Math.random());
