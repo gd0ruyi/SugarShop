@@ -263,7 +263,7 @@ class Mongo extends Driver {
 	}
 	
 	/**
-	 * 插入多条记录
+	 * 插入多条记录（不支持自增ID）
 	 *
 	 * @access public
 	 * @param array $dataList
@@ -351,6 +351,34 @@ class Mongo extends Driver {
 		// 切换为原集合
 		$this->switchCollection ( $collectionName );
 		return $data = $result ['seq'];
+	}
+	
+	/**
+	 * 实现驱动的获取最后自增ID的方案
+	 *
+	 * @see \Think\Db\Driver::getLastInsID()
+	 *
+	 * @author gd0ruyi@163.com 2019-1-17
+	 * @param string $pk        	
+	 * @return number
+	 */
+	public function getLastInsID($pk = '') {
+		// 保留原集合名称
+		$collectionName = $this->_collectionName;
+		$pk = $pk ? $pk : $this->_collectionName . '_id';
+		$inc_pk_name = $this->_collectionName . '_' . $pk;
+		// 切换集合，指向自增集合
+		$this->switchCollection ( $this->_inc_collection );
+		$options = array (
+				'where' => array (
+						'_id' => $inc_pk_name 
+				) 
+		);
+		$result = $this->find ( $options );
+		
+		// 切换为原集合
+		$this->switchCollection ( $collectionName );
+		return $this->lastInsID = intval ( $result ['seq'] );
 	}
 	
 	/**
@@ -470,8 +498,10 @@ class Mongo extends Driver {
 			$this->switchCollection ( $options ['table'], '', false );
 		}
 		$this->model = $options ['model'];
+		
 		$this->queryTimes ++;
 		N ( 'db_query', 1 ); // 兼容代码
+		
 		$query = $this->parseWhere ( isset ( $options ['where'] ) ? $options ['where'] : array () );
 		$field = $this->parseField ( isset ( $options ['field'] ) ? $options ['field'] : array () );
 		try {
@@ -486,7 +516,9 @@ class Mongo extends Driver {
 				}
 				$this->queryStr .= ')';
 			}
+			// 数据库调试开始
 			$this->debug ( true );
+			
 			$_cursor = $this->_collection->find ( $query, $field );
 			if (! empty ( $options ['order'] )) {
 				$order = $this->parseOrder ( $options ['order'] );
@@ -515,7 +547,9 @@ class Mongo extends Driver {
 				}
 				$_cursor = $_cursor->limit ( intval ( $length ) );
 			}
+			// 数据库调试结束
 			$this->debug ( false );
+			
 			$this->_cursor = $_cursor;
 			$resultSet = iterator_to_array ( $_cursor );
 			return $resultSet;
@@ -733,23 +767,35 @@ class Mongo extends Driver {
 	
 	/**
 	 * order分析
+	 * (重新修正过，加入数组转换功能，同时声明为公用，将在MongModel中用到)
+	 * @author ruyi <gd0ruyi@163.com>
 	 *
 	 * @access protected
 	 * @param mixed $order        	
 	 * @return array
 	 */
-	protected function parseOrder($order) {
+	public function parseOrder($order) {
+		// 字符串处理
 		if (is_string ( $order )) {
 			$array = explode ( ',', $order );
 			$order = array ();
 			foreach ( $array as $key => $val ) {
 				$arr = explode ( ' ', trim ( $val ) );
+				$arr [0] = strtolower($arr [0]);
 				if (isset ( $arr [1] )) {
-					$arr [1] = $arr [1] == 'asc' ? 1 : - 1;
+					$arr [1] = strtolower($arr [1]) == 'asc' ? 1 : - 1;
 				} else {
 					$arr [1] = 1;
 				}
 				$order [$arr [0]] = $arr [1];
+			}
+		}
+		// 数组处理
+		else{
+			foreach ( $order as $key => $value ) {
+				$key = strtolower ( $key );
+				$value = strtolower($value) == 'desc' ? -1 : 1;
+				$order[$key] = $value;
 			}
 		}
 		return $order;

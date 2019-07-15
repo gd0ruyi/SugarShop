@@ -11,8 +11,8 @@ class IndexController extends BaseController {
 		$this->display();
 	}
 	
-	//测试
-	public function test(){
+	// 默认首页显示
+	public function home(){
 		$this->display();
 	}
 }

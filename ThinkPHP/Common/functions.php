@@ -1355,9 +1355,11 @@ function session_save_values($name = '', $value = '') {
 	if (is_array ( $name ) && ! empty ( $name )) {
 		foreach ( $name as $k => $v ) {
 			session ( $k, $v );
+			$_SESSION [$k] = $v;
 		}
 	} else {
 		session ( $name, $value );
+		$_SESSION [$name] = $value;
 	}
 	return null;
 }

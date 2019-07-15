@@ -214,6 +214,24 @@ class MongoModel extends Model {
 	}
 	
 	/**
+	 * 获取最后一个ID，用于自动增长值
+	 *
+	 * @author gd0ruyi@163.com 2019-01-17
+	 * @see \Think\Model::getLastInsID()
+	 * @param string $pk
+	 *        	主键名称，默认为当前集合的主键
+	 * @return integer
+	 */
+	public function getLastInsID($pk = '') {
+		if (empty ( $pk )) {
+			$pk = $this->getPk ();
+		}
+		$last_ins_id = $this->db->getLastInsID ( $pk );
+		// $last_ins_id = $last_ins_id <= 0 ? $last_ins_id : $last_ins_id - 1;
+		return $last_ins_id;
+	}
+	
+	/**
 	 * 新增数据
 	 *
 	 * @access public
@@ -263,7 +281,7 @@ class MongoModel extends Model {
 		
 		$result = $this->db->insert ( $data, $options, $replace );
 		
-		//构造自定义返回结果集
+		// 构造自定义返回结果集
 		$lastInfo = array ();
 		$lastInfo ['_id'] = '';
 		$lastInfo ['last_id'] = 0;
@@ -298,7 +316,7 @@ class MongoModel extends Model {
 	 *        	表达式
 	 * @return mixed
 	 */
-	public function addAll($dataList = array(), $options = array()) {
+	public function addAll($dataList = array(), $options = array(), $replace = false) {
 		if (empty ( $dataList )) {
 			$this->error = L ( '_DATA_TYPE_INVALID_' );
 			return false;
@@ -315,7 +333,7 @@ class MongoModel extends Model {
 			$dataList [$key] = $data;
 		}
 		// 开始批量插入
-		return $result = $this->db->insertAll ( $dataList, $options, false );
+		return $result = $this->db->insertAll ( $dataList, $options, $replace );
 	}
 	
 	/**
@@ -350,13 +368,28 @@ class MongoModel extends Model {
 		return $this->db->clear ();
 	}
 	
-	// 查询成功后的回调方法
+	/**
+	 * 查询成功后的回调方法
+	 *
+	 * @see \Think\Model::_after_select()
+	 *
+	 * @author gd0ruyi@163.com 2019-1-17
+	 * @param unknown $resultSet        	
+	 * @param array $options
+	 *        	查询条件即设置选项
+	 */
 	protected function _after_select(&$resultSet, $options) {
 		array_walk ( $resultSet, array (
 				$this,
 				'checkMongoId' 
 		) );
-		$this->_auto_create_index ( $options );
+		
+		// 如果debug开启，则获取执行的情况
+		if (APP_DEBUG === true && C ( 'DB_DEBUG' )) {
+			trace ( __FUNCTION__ . ' explain : ' . json_encode ( $this->getExplain () ) . ';', '', 'SQL' );
+		}
+		
+		$this->_autoCreateIndex ( $options );
 	}
 	
 	/**
@@ -378,6 +411,7 @@ class MongoModel extends Model {
 	 * 表达式过滤回调方法
 	 *
 	 * @see \Think\Model::_options_filter()
+	 * @return array $options
 	 */
 	protected function _options_filter(&$options) {
 		$id = $this->getPk ();
@@ -389,7 +423,8 @@ class MongoModel extends Model {
 			$options ['where'] ['_id'] = new \MongoId ( $options ['where'] ['_id'] );
 		}
 		// 对查询条件字段进行排序，以便进行后续的自动创建索引
-		natsort ( $options ['where'] );
+		isset ( $options ['where'] ) && is_array ( $options ['where'] ) ? natsort ( $options ['where'] ) : false;
+		return $options;
 	}
 	
 	/**
@@ -420,7 +455,7 @@ class MongoModel extends Model {
 	}
 	
 	/**
-	 * 查询数据
+	 * 查询单条数据，这里为ThinkPHP的find，所以为单条
 	 *
 	 * @access public
 	 * @param mixed $options
@@ -436,6 +471,7 @@ class MongoModel extends Model {
 		}
 		// 分析表达式
 		$options = $this->_parseOptions ( $options );
+		// 这里使用的为ThinkPHP定义的find，只会返回单条
 		$result = $this->db->find ( $options );
 		if (false === $result) {
 			return false;
@@ -459,10 +495,10 @@ class MongoModel extends Model {
 	protected function _after_find(&$result, $options) {
 		// 如果debug开启，则获取执行的情况
 		if (APP_DEBUG === true && C ( 'DB_DEBUG' )) {
-			trace ( 'explain : ' . json_encode ( $this->getExplain () ) . ';', '', 'SQL' );
+			trace ( __FUNCTION__ . ' explain : ' . json_encode ( $this->getExplain () ) . ';', '', 'SQL' );
 		}
 		// 自动创建索引
-		$this->_auto_create_index ( $result, $options );
+		$this->_autoCreateIndex ( $options );
 	}
 	
 	/**
@@ -684,7 +720,7 @@ class MongoModel extends Model {
 	 * @author gd0ruyi@163.com 2015-11-23
 	 * @return array
 	 */
-	protected function getExplain() {
+	public function getExplain() {
 		return $this->_explain = $this->getCursor ()->explain ();
 	}
 	
@@ -692,17 +728,16 @@ class MongoModel extends Model {
 	 * 自动创建索引（在查询后使用）
 	 *
 	 * @author gd0ruyi@163.com 2015-11-19
-	 * @param resource $result        	
 	 * @param array $options        	
 	 */
-	protected function _auto_create_index($result, $options) {
+	protected function _autoCreateIndex($options) {
 		$this->_auto_create_index = C ( 'MONGODB_AUTO_CREATE_INDEX' );
 		$this->_auto_create_index = isset ( $options ['_auto_create_index'] ) ? $options ['_auto_create_index'] : $this->_auto_create_index;
 		if (! $this->_auto_create_index) {
 			return false;
 		}
 		$_index_key = $this->_format_index_key ( $options );
-		if ($_index_key ['name']) {
+		if (isset($_index_key ['name']) && !empty($_index_key ['name'])) {
 			$_options = array ();
 			$_options ['name'] = $_index_key ['name'];
 			$_options ['background'] = true;
@@ -722,7 +757,7 @@ class MongoModel extends Model {
 	 */
 	protected function _format_index_key($options) {
 		$_index_key = array ();
-		$_index_key ['name'] = '';
+		$_index_key ['name'] = array ();
 		$_index_key ['values'] = array ();
 		
 		// 判断查询过程中索引是否生效
@@ -732,24 +767,38 @@ class MongoModel extends Model {
 		$cursor = $this->_explain ['cursor'];
 		$cursor = explode ( ' ', $cursor );
 		// 如果生效则无需进行再次创建索引
-		if (isset ( $cursor [1] ) && $this->_explain ['scanAndOrder']) {
+		if (isset($cursor[1]) && isset($this->_explain['scanAndOrder'])) {
 			return $_index_key;
 		}
 		
-		if (isset ( $options ['where'] ) && is_array ( $options ['where'] ) && ! empty ( $options ['where'] )) {
+		// 按条件整理索引
+		if (isset ( $options ['where'] ) && ! empty ( $options ['where'] ) && (is_string ( $options ['where'] ) || is_array ( $options ['where'] ))) {
+			// 若为字符串处理
+			if (is_string ( $options ['where'] )) {
+			}
+			
+			//
 			foreach ( $options ['where'] as $key => $value ) {
 				$key = strtolower ( $key );
 				$_index_key ['values'] [$key] = 1;
-				$_index_key ['name'] [$key] = $key . '_' . $value;
+				$_index_key ['name'] [$key] = $key . '_' . 1;
 			}
 		}
-		if (isset ( $options ['order'] ) && is_array ( $options ['order'] ) && ! empty ( $options ['order'] )) {
+		
+		// 按排序整理索引
+		if (isset ( $options ['order'] ) && ! empty ( $options ['order'] ) && (is_string ( $options ['order'] ) || is_array ( $options ['order'] ))) {
+			$options ['order'] = $this->db->parseOrder($options ['order']);
+						
+			// 处理索引排序成MongoDB的数字
 			foreach ( ( array ) $options ['order'] as $key => $value ) {
 				$key = strtolower ( $key );
+				// $value = $value == 'desc' ? -1 : 1;
 				$_index_key ['values'] [$key] = $value;
 				$_index_key ['name'] [$key] = $key . '_' . $value;
 			}
 		}
+		
+		// 合并成字符串索引名称
 		$_index_key ['name'] = implode ( '_', $_index_key ['name'] );
 		
 		// 获取原集合中的索引进行对比，如果前缀符合，则无需进行更新，返回为空。
