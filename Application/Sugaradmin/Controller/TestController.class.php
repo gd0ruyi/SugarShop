@@ -40,12 +40,9 @@ class TestController extends BaseController
 	 */
 	public function loadSmarty()
 	{
-		$manager_model = D("Sugaradmin/Manager");
-		// $manager_model = new ManagerModel();
-		$manager_list = $manager_model->getList(array(), '', 1, 10);
-		$this->assign('manager_list', $manager_list);
-		// $this->display ();
-		// $this->displayAutoAjax();
+		$rs = $this->getList(array());
+		// printR($rs);
+		$this->assign('data', $rs['data']);
 		$this->display();
 	}
 

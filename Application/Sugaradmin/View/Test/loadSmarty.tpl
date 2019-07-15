@@ -17,7 +17,8 @@
       </div>
       <div class="form-group form-group-sm">
         <label for="exampleInputEmail2">Email</label>
-        <input type="email" class="form-control input-sm" id="exampleInputEmail2" name="email" placeholder="jane.doe@example.com">
+        <input type="email" class="form-control input-sm" id="exampleInputEmail2" name="email"
+          placeholder="jane.doe@example.com">
       </div>
       <button type="submit" class="btn btn-primary">搜 索</button>
       <div class="table-responsive">
@@ -26,27 +27,29 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th><span>账户</span> <span class="sort-icon"><font class="glyphicon glyphicon-triangle-top"></font><font class="glyphicon glyphicon-triangle-bottom on"></font></span></th>
-              <th>创建时间</th>
-              <th>更新时间</th>
-              <th>登录时间</th>
+              <th>名称</th>
+              <th>中文名称</th>
+              <th>状态</th>
+              <th>状态名称</th>
             </tr>
           </thead>
           <tbody>
-          <{foreach from=$manager_list item=list}>
-          <tr>
-            <td><{$list.manager_id}></td>
-            <td><{$list.username}></td>
-            <td><{$list.add_time}></td>
-            <td><{$list.upd_time}></td>
-            <td><{$list.las_time}></td>
-          </tr>
-          <{/foreach}>
-            </tbody>
-          
-        </table>
-        </table>
-      </div>
-    </form>
-  </div>
-</div>
+            <{foreach from=$data item=list}>
+              <tr>
+                <td>
+                  <{$list.test_id}>
+                </td>
+                <td>
+                  <{$list.name}>
+                </td>
+                <td>
+                  <{$list.cname}>
+                </td>
+                <td>
+                  <{$list.status}>
+                </td>
+                <td>
+                  <{$list.status_name}>
+                </td>
+              </tr>
+              <{/foreach}> </tbody> </table> </table> </div> </form> </div> </div>
