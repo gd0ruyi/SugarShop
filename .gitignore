@@ -1,4 +1,4 @@
-/Application/Runtime
+Application/Runtime
 *.bak
 *.md
 .setings
