@@ -56,5 +56,5 @@
   };
   // 联合排序
   // SugarTables.sort_multiply = true;
-  SugarTables.create('#loadAjax-form', '#loadAjax-table', '/Sugaradmin/Test/loadAjaxJeson', columns);
+  SugarTables.create('#loadAjax-form', '#loadAjax-table', '/Sugaradmin/Test/loadAjaxJson', columns);
 </script>

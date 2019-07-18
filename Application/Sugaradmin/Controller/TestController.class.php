@@ -75,7 +75,12 @@ class TestController extends BaseController
 		$this->display();
 	}
 
-	public function loadAjaxJeson()
+	/**
+	 * 表格json加载
+	 *
+	 * @return void
+	 */
+	public function loadAjaxJson()
 	{
 		$data = array();
 		// for ($i = 0; $i < 10; $i++) {

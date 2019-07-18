@@ -35,7 +35,7 @@
             <ul class="nav nav-pills navbar-right">
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-user"></span></a></li>
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-envelope"></span></a></li>
-              <li role="presentation"><a href="#"><span class="glyphicon glyphicon-off"></span></a></li>
+              <li role="presentation"><a href="/Sugaradmin/Login/logout"><span class="glyphicon glyphicon-off"></span></a></li>
               <!--<li><a href="#">Profile<span class="glyphicon glyphicon-remove"></span></a></li>-->
               <!--<li><a href="#">Messages</a></li>-->
             </ul>

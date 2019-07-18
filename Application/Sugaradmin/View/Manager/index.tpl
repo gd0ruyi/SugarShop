@@ -28,16 +28,42 @@
   <div class="panel-body">
     <!-- 表单 -->
     <form class="form-inline" id="manager-form">
+
       <div class="form-group form-group-sm">
-        <label for="exampleInputName2">Name</label>
-        <input type="text" class="form-control" id="exampleInputName2" name="name" placeholder="Jane Doe">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false"><font>关键字</font> <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="#" value="name">姓名</a></li>
+              <li><a href="#" value="email">邮箱</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#" value="all">关键字</a></li>
+            </ul>
+          </div><!-- /btn-group -->
+          <input type="text" class="form-control" id="exampleInputName2" name="name" placeholder="Jane Doe">
+        </div>
       </div>
+
       <div class="form-group form-group-sm">
-        <label for="exampleInputEmail2">Email</label>
-        <input type="email" class="form-control input-sm" id="exampleInputEmail2" name="email"
-          placeholder="jane.doe@example.com">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            <font>全部状态</font> <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#">启用</a></li>
+            <li><a href="#">禁用</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">全部状态</a></li>
+          </ul>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">搜 索</button>
+
+      <div class="form-group form-group-sm">
+        <button type="submit" class="btn btn-primary">搜 索</button>
+      </div>
+
       <div class="table-responsive">
         <table id="manager-table" title="管理员列表-表格内容" class="table table-striped table-bordered table-hover ajax-tables">
         </table>
@@ -53,19 +79,28 @@
       td: { style: "color:red; text-align:center" }
     },
     'username': {
-      th: { title: '账户', sort_icon: true, sort_default: 'desc', class: 'text-center' },
+      th: { title: '帐号', sort_icon: true, class: 'text-left' },
+    },
+    'truename': {
+      th: { title: '姓名', sort_icon: true, class: 'text-left' },
+    },
+    'email': {
+      th: { title: '邮箱', sort_icon: true, class: 'text-left' },
+    },
+    'mobile': {
+      th: { title: '电话', sort_icon: true, class: 'text-center' },
     },
     'add_time': {
       th: { title: '创建时间', class: 'text-center', sort_icon: true },
-      td: { template:"{add_time_format}",class: 'text-center' }
+      td: { template: "{add_time_format}", class: 'text-center' }
     },
     'upd_time': {
       th: { title: '更新时间', class: 'text-center', sort_icon: true },
-      td: { template:"{upd_time_format}",class: 'text-center' }
+      td: { template: "{upd_time_format}", class: 'text-center' }
     },
     'las_time': {
       th: { title: '登录时间', class: 'text-center', sort_icon: true },
-      td: { template:"{las_time_format}",class: 'text-center' }
+      td: { template: "{las_time_format}", class: 'text-center' }
     },
     'other': {
       th: { title: '描述说明', title_length: 12 },
@@ -73,7 +108,7 @@
     },
     'status': {
       th: { title: '状态', sort_icon: true, class: 'text-center' },
-      td: { template:"{status_name}", class: 'text-center' }
+      td: { template: "{status_name}", class: 'text-center' }
     },
     'operation': {
       th: { title: '操作', class: 'text-center' },
