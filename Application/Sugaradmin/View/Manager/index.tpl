@@ -31,32 +31,36 @@
 
       <div class="form-group form-group-sm">
         <div class="input-group">
-          <div class="input-group-btn">
+          <div class="input-group-btn" sugar-selector="true">
             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"><font>关键字</font> <span class="caret"></span></button>
+              aria-expanded="false">
+              <font>关键字</font> <span class="caret"></span>
+            </button>
             <ul class="dropdown-menu">
               <li><a href="#" value="name">姓名</a></li>
               <li><a href="#" value="email">邮箱</a></li>
               <li role="separator" class="divider"></li>
               <li><a href="#" value="all">关键字</a></li>
             </ul>
+            <input type="hidden" name="keyword_type" value="">
           </div><!-- /btn-group -->
-          <input type="text" class="form-control" id="exampleInputName2" name="name" placeholder="Jane Doe">
+          <input type="text" class="form-control" id="manager_keyword" name="manager_keyword" placeholder="请输入关键字">
         </div>
       </div>
 
       <div class="form-group form-group-sm">
-        <div class="btn-group">
+        <div class="btn-group" sugar-selector="true">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             <font>全部状态</font> <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li><a href="#">启用</a></li>
-            <li><a href="#">禁用</a></li>
+            <li><a href="#" value="0">启用</a></li>
+            <li><a href="#" value="1">禁用</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">全部状态</a></li>
+            <li><a href="#" value="all">全部状态</a></li>
           </ul>
+          <input type="hidden" name="status" value="">
         </div>
       </div>
 
@@ -72,7 +76,10 @@
   </div>
 </div>
 <script language="javascript" type="text/javascript">
-  // 执行创建表格（用于测试）
+  // 创建下拉
+  SugarCommons.selectInputCreate();
+
+  // 执行创建表格
   var columns = {
     'manager_id': {
       th: { title: 'ID', sort_icon: true, sort_default: 'asc', class: 'text-center' },
@@ -115,5 +122,5 @@
       td: { class: 'text-center' }
     },
   };
-  SugarTables.create('#manager-form', '#manager-table', '/Sugaradmin/Manager/loadAjax', columns);
+  SugarTables.create('#manager-form', '#manager-table', '/Sugaradmin/Manager/loadAjax', columns);  
 </script>

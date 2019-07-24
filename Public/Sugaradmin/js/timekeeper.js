@@ -23,7 +23,7 @@ var TimeKeeper = {
     // loading加载条默认模版ID
     loading_waiting_tpl: '#loading-waiting-tpl',
     // 弹出窗体容器的模版ID
-    dialog_tpl_id: '#dialog-tpl',
+    dialog_tpl_id: '#task-dialog-tpl',
     // loading加载条默认样式,分为inner和dialog两种
     loading_waiting_style: 'inner',
     // 加载条速度,为毫秒

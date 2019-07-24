@@ -91,6 +91,44 @@ var SugarCommons = {
 	},
 
 	/**
+	 * 创建select下拉，用于表单提交。
+	 * @param {string} target_id Bootstrap下拉元素ID
+	 */
+	selectInputCreate: function () {
+		var target_selector = '[sugar-selector="true"]';
+
+		$(target_selector).each(function (index) {
+			var that = this;
+
+			// 下拉点击事件
+			$(that).find('ul.dropdown-menu li a').click(function (event) {
+				var sval = $(this).attr('value');
+				var stitle = $(this).html();
+
+				// 禁用点击跳转
+				event.preventDefault();
+
+				// 判断value值是否存在
+				if (typeof ($(this).attr('value')) == 'undefined') {
+					SugarCommons.errorMsg($(this).html() + ' value is not find');
+					return false;
+				}
+
+				// 判断是否存在input隐藏输入框
+				if ($(that).is('input[type="hidden"]')) {
+					SugarCommons.errorMsg($(that).html() + ' input[type="hidden"] is not find');
+					return false;
+				}
+
+				// 赋值
+				$(that).find('input[type="hidden"]').val(sval);
+				// 显示选中
+				$(that).find('button[data-toggle="dropdown"] font').html(stitle);
+			});
+		});
+	},
+
+	/**
 	 * 自定义错误提示
 	 * @param {string} error 错误信息
 	 * @param {boolean} is_throw 是否进行throw退出

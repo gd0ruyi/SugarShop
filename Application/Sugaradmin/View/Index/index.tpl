@@ -222,7 +222,7 @@
   <!-- 弹窗容器 -->
   <div class="out-window">
     <!-- 空的弹窗容器 -->
-    <div class="modal" id="dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="dialog-tpl-title">
+    <div class="modal" id="task-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="dialog-tpl-title">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
