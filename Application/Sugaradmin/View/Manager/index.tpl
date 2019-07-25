@@ -86,13 +86,13 @@
       td: { style: "color:red; text-align:center" }
     },
     'username': {
-      th: { title: '帐号', sort_icon: true, class: 'text-left' },
+      th: { title: '帐号', sort_icon: true, class: 'text-center' },
     },
     'truename': {
-      th: { title: '姓名', sort_icon: true, class: 'text-left' },
+      th: { title: '姓名', sort_icon: true, class: 'text-center' },
     },
     'email': {
-      th: { title: '邮箱', sort_icon: true, class: 'text-left' },
+      th: { title: '邮箱', sort_icon: true, class: 'text-center' },
     },
     'mobile': {
       th: { title: '电话', sort_icon: true, class: 'text-center' },
@@ -110,7 +110,7 @@
       td: { template: "{las_time_format}", class: 'text-center' }
     },
     'other': {
-      th: { title: '描述说明', title_length: 12 },
+      th: { title: '描述说明', title_length: 12, class: 'text-center' },
       td: { template: '{username} 用户的登录时间为： {las_time_format}' }
     },
     'status': {

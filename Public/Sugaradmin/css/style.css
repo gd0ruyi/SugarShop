@@ -283,11 +283,13 @@ body {
 
 /* 表格头部工具 */
 .table-toolbar {}
-
+.ajax-tables th{
+	border-bottom: none !important;
+}
 .ajax-tables .sort-icon {
     position: relative;
     margin-left: 6px;
-    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .ajax-tables .sort-icon .glyphicon {
