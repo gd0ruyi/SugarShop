@@ -12,7 +12,7 @@
         </button></p>
 
     <p><button type="button" id="test-modal" class="btn btn-primary btn-lg" data-toggle="modal"
-            data-target="#myModal">
+            data-target="#msg-dialog-tpl">
             测试弹出消息框
         </button></p>
 </div>

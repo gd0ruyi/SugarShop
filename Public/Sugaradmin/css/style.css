@@ -175,17 +175,25 @@ body {
 }
 .loading-waiting .animation {
 	/* 动画效果*/
-animation:loading-rotation 1s infinite;
+	animation:loading-rotation 1s infinite;
 	animation-timing-function:linear;
 }
 @keyframes loading-rotation {
 	from {
 	transform:rotate(0deg);
+	}
+	to {
+		transform:rotate(360deg);
+	}
 }
-to {
-	transform:rotate(360deg);
+
+/* 消息弹出对话框样式 */
+.modal-dialog .modal-title .glyphicon{
+	color: #9C6;
+	padding-right: 12px;
+	font-size: 25px;
 }
-}
+
 /* 置顶按钮 */
 #target-top {
 	margin-right:26px;

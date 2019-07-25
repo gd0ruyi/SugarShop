@@ -4,6 +4,8 @@
 var SugarCommons = {
 	coms: {},
 	commons_name: 'SugarCommons',
+	// 消息对话框ID
+	msg_dialog_tpl_id: '#msg-dialog-tpl',
 
 	/**
 	 * 公用函数库名称设置
@@ -148,6 +150,22 @@ var SugarCommons = {
 			return error;
 		}
 		throw alert(error);
+	},
+
+
+	/**
+	 * 确定对话框弹窗处理
+	 * @param {string} title 对话框标题
+	 * @param {string} content 对话框内容
+	 * @param {function} callback 对话框确定回调方法
+	 */
+	createConfirmDialog: function (title, content, callback) {
+		var target_id = SugarCommons.msg_dialog_tpl_id;
+		$(target_id + ' #msg-title').html(title);
+		$(target_id + ' #msg-content').html(content);
+		$(target_id).modal('show');
+
+		$(target_id + ' .modal-footer .btn-primary').click(callback);
 	},
 
 	/**

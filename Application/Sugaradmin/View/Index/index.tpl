@@ -35,7 +35,8 @@
             <ul class="nav nav-pills navbar-right">
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-user"></span></a></li>
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-envelope"></span></a></li>
-              <li role="presentation"><a href="/Sugaradmin/Login/logout"><span class="glyphicon glyphicon-off"></span></a></li>
+              <li role="presentation"><a href="/Sugaradmin/Login/logout" id="sys-logout"><span
+                    class="glyphicon glyphicon-off"></span></a></li>
               <!--<li><a href="#">Profile<span class="glyphicon glyphicon-remove"></span></a></li>-->
               <!--<li><a href="#">Messages</a></li>-->
             </ul>
@@ -209,8 +210,8 @@
       <div class="table-toolbar form-group form-group-sm btn-group btn-group-xs pull-right">
         <button type="button" class="btn btn-default" aria-label="Sort Multiply" title="联合排序"><span
             class="glyphicon glyphicon-magnet" aria-hidden="true"></span></button>
-        <button type="button" class="btn btn-default" aria-label="Tbale Setting" title="表格设置"><span class="glyphicon glyphicon-cog"
-            aria-hidden="true"></span></button>
+        <button type="button" class="btn btn-default" aria-label="Tbale Setting" title="表格设置"><span
+            class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
       </div>
     </div>
 
@@ -219,10 +220,11 @@
   <!-- ***自定义控件js的模版html内容end*** -->
   <!-- ****************************** -->
 
-  <!-- 弹窗容器 -->
+  <!-- 弹窗模版或容器开始 -->
   <div class="out-window">
-    <!-- 空的弹窗容器 -->
-    <div class="modal" id="task-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="dialog-tpl-title">
+
+    <!-- 任务历史加载条容器 -->
+    <div class="modal" id="task-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Tasks dialog tpl">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -242,31 +244,28 @@
     </div>
 
     <!-- Modal消息提示弹窗 -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="msg-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Messages dialog tpl">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="error_title">消息提示</h4>
+            <h4 class="modal-title">
+              <span class="glyphicon glyphicon-info-sign"></span>
+              <span id="msg-title">消息提示</span>
+            </h4>
           </div>
-          <div class="modal-body" id="error_msg">
-            ...
-            <button type="button" id="test-modal" class="btn btn-primary btn-lg" data-toggle="modal"
-              data-target="#dialog-tpl">
-              显示正在加载的任务(Loading Task)
-            </button>
-          </div>
+          <div class="modal-body" id="msg-content"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            <button type="button" class="btn btn-primary">确 定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
           </div>
         </div>
       </div>
     </div>
 
   </div>
-  <!-- 弹窗容器结束 -->
+  <!-- 弹窗模版或容器结束 -->
 
   <script src="/Public/jquery/jquery-1.11.3.min.js"></script>
   <script src="/Public/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
@@ -293,6 +292,16 @@
           $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
         }, 0);
       });
+
+      // 登录退出处理
+      $("#sys-logout").click(function (event) {
+        var url = $(this).attr("href");
+        event.preventDefault();
+        SugarCommons.createConfirmDialog("登录退出提示", "请您确认是否退出系统？", function () {
+          location = url;
+        });
+      });
+
     });
   </script>
 </body>
