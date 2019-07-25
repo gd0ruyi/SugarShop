@@ -188,6 +188,10 @@ body {
 }
 
 /* 消息弹出对话框样式 */
+.modal-dialog .modal-title span{
+	display: block;
+	float: left;
+}
 .modal-dialog .modal-title .glyphicon{
 	color: #9C6;
 	padding-right: 12px;
