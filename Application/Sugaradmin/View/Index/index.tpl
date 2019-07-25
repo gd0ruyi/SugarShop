@@ -21,22 +21,27 @@
         <!--小屏幕按钮-->
         <div class="container-fluid">
           <div class="navbar-header top-manu-button">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-tabs-bar"
-              aria-expanded="false"><span class="glyphicon glyphicon-file"></span></button>
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-manu-bar"
-              aria-expanded="false"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-up-bar"
-              aria-expanded="false"><span class="glyphicon glyphicon-user"></span></button>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-tabs-bar" aria-expanded="false">
+              <span class="glyphicon glyphicon-file"></span>
+            </button>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-manu-bar" aria-expanded="false">
+              <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-up-bar" aria-expanded="false">
+              <span class="glyphicon glyphicon-user"></span>
+            </button>
             <!-- logo -->
-            <a class="navbar-brand logo" href="#">Logo</a> </div>
+            <a class="navbar-brand logo" href="#">Logo</a>
+          </div>
 
           <!-- 用户操作菜单 -->
           <div class="top-up-bar collapse navbar-collapse" id="top-up-bar">
             <ul class="nav nav-pills navbar-right">
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-user"></span></a></li>
               <li role="presentation"><a href="#"><span class="glyphicon glyphicon-envelope"></span></a></li>
-              <li role="presentation"><a href="/Sugaradmin/Login/logout" id="sys-logout"><span
-                    class="glyphicon glyphicon-off"></span></a></li>
+              <li role="presentation">
+                <a href="/Sugaradmin/Login/logout" id="sys-logout"><span class="glyphicon glyphicon-log-out"></span></a>
+              </li>
               <!--<li><a href="#">Profile<span class="glyphicon glyphicon-remove"></span></a></li>-->
               <!--<li><a href="#">Messages</a></li>-->
             </ul>
@@ -48,24 +53,27 @@
           <div class="top-manu-bar collapse navbar-collapse" id="top-manu-bar">
             <ul class="nav nav-pills">
               <li role="presentation" class="active">
-                <a href="/Sugaradmin/Index/home" sgtab-target="#home" id="default-home-page">首页</a>
+                <a href="/Sugaradmin/Index/home" sgtab-target="#home" id="default-home-page" title="首页">
+                  <span class="glyphicon glyphicon-home"></span> 首页
+                </a>
               </li>
               <li role="presentation">
-                <a href="/Sugaradmin/Manager/index" sgtab-target="#manager-list">管理员管理</a>
+                <a href="/Sugaradmin/Manager/index" sgtab-target="#manager-list" title="管理员管理">管理员管理</a>
               </li>
               <li class="dropdown" role="presentation">
-                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-                  示例 <span class="caret"></span>
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="示例">
+                  示例
+                  <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a href="/Sugaradmin/Test/loadSmarty" sgtab-target="#test-loadSmarty">加载smarty模版示例</a>
+                    <a href="/Sugaradmin/Test/loadSmarty" sgtab-target="#test-loadSmarty" title="加载smarty模版示例">加载smarty模版示例</a>
                   </li>
                   <li>
-                    <a href="/Sugaradmin/Test/loadAjax" sgtab-target="#test-loadAjax">加载Ajax动态表格示例</a>
+                    <a href="/Sugaradmin/Test/loadAjax" sgtab-target="#test-loadAjax" title="加载Ajax动态表格示例">加载Ajax动态表格示例</a>
                   </li>
                   <li>
-                    <a href="/Sugaradmin/Test/loadProgress" sgtab-target="#login-index">进度条加载测试</a>
+                    <a href="/Sugaradmin/Test/loadProgress" sgtab-target="#login-index" title="进度条加载测试">进度条加载测试</a>
                   </li>
                   <!-- <li><a href="/test.php" sgtab-target="#login-index">百分比加载</a></li> -->
                   <li>
@@ -86,8 +94,7 @@
           <div class="top-tabs-bar collapse navbar-collapse" id="top-tabs-bar">
             <ul class="nav nav-pills" role="tablist" id="top-tabs-bar-list">
               <li role="presentation" class="hidden" id="tabs-tab-tpl">
-                <a href="#target" role="tab" id="target-tab" data-toggle="tab" aria-controls="target"
-                  aria-expanded="false">
+                <a href="#target" role="tab" id="target-tab" data-toggle="tab" aria-controls="target" aria-expanded="false">
                   <span class="top-tab-name">Template tab</span>
                   <span class="glyphicon glyphicon-remove hidden"></span>
                 </a>
@@ -107,9 +114,7 @@
       <!--底部-->
       <footer class="main-footer">
         <p>Sugar后台管理系统</p>
-        <p> Copyright <span class="glyphicon glyphicon-copyright-mark"></span> 2016 <a
-            href="mailto:gd0ruyi@163.com">gd0ruyi@163.com</a>
-          版权所有</p>
+        <p> Copyright <span class="glyphicon glyphicon-copyright-mark"></span> 2016 <a href="mailto:gd0ruyi@163.com">gd0ruyi@163.com</a> 版权所有</p>
       </footer>
       <!--置顶按钮-->
       <div id="target-top" class="container-fluid navbar-fixed-bottom text-right">
@@ -162,8 +167,7 @@
           </p>
         </div>
         <div class="progress">
-          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0"
-            aria-valuemax="100" style="min-width: 0%;">
+          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0%;">
             <span>
               <font class="loading-percent">0</font>
               <font>%</font>
@@ -208,10 +212,8 @@
     <!-- 表格工具模版 -->
     <div class="html-tpl" id="table-toolbar-tpl-id">
       <div class="table-toolbar form-group form-group-sm btn-group btn-group-xs pull-right">
-        <button type="button" class="btn btn-default" aria-label="Sort Multiply" title="联合排序"><span
-            class="glyphicon glyphicon-magnet" aria-hidden="true"></span></button>
-        <button type="button" class="btn btn-default" aria-label="Tbale Setting" title="表格设置"><span
-            class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+        <button type="button" class="btn btn-default" aria-label="Sort Multiply" title="联合排序"><span class="glyphicon glyphicon-magnet" aria-hidden="true"></span></button>
+        <button type="button" class="btn btn-default" aria-label="Tbale Setting" title="表格设置"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
       </div>
     </div>
 
@@ -244,12 +246,12 @@
     </div>
 
     <!-- Modal消息提示弹窗 -->
-    <div class="modal fade" id="msg-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Messages dialog tpl">
-      <div class="modal-dialog" role="document">
+    <div class="modal fade bs-example-modal-sm" id="msg-dialog-tpl" tabindex="-1" role="dialog"
+      aria-labelledby="Messages dialog tpl">
+      <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">
               <span class="glyphicon glyphicon-info-sign"></span>
               <span id="msg-title">消息提示</span>

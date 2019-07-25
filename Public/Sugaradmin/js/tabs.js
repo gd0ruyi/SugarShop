@@ -47,7 +47,7 @@ var SugarTabs = {
 			// 不使用跳转
 			e.preventDefault();
 			var target = $(this).attr("sgtab-target");
-			var title = $(this).html();
+			var title = $(this).attr("title");
 			var href = $(this).attr("href");
 
 			// 菜单栏点击Active效果处理

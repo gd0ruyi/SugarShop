@@ -76,7 +76,7 @@
   </div>
 </div>
 <script language="javascript" type="text/javascript">
-  // 创建下拉
+  // 创建下拉，使用标签属性为<element sugar-selector="true" ></element>
   SugarCommons.selectInputCreate();
 
   // 执行创建表格
