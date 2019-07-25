@@ -1,339 +1,402 @@
 /* 后台样式 */
 /* 通用样式 */
-.hidden,.html-tpl {
-	display:none;
+.hidden,
+.html-tpl {
+    display: none;
 }
+
 .text-center {
-	text-align:center;
+    text-align: center;
 }
+
 .text-left {
-	text-align:left;
+    text-align: left;
 }
+
 .text-right {
-	text-align:right;
+    text-align: right;
 }
+
 /* body样式 */
 body {
-	position:relative;
-	background-color:#9C6;
+    position: relative;
+    background-color: #9C6;
 }
+
 .main-body {
-	background-color:#9C6;
+    background-color: #9C6;
 }
+
 .main-body .max-box {
-	width:98%;
-	padding:0px;
+    width: 98%;
+    padding: 0px;
 }
+
 /* 头部样式 */
 .main-header {
-	padding:15px;
-	border:1px solid #999;
-	border-bottom:none;
-	border-radius:6px 6px 0 0;
-	margin-bottom:0;
+    padding: 15px;
+    border: 1px solid #999;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 0;
 }
+
 .main-header .logo {
-	font-size:26px;
-	height:60px;
-	line-height:60px;
+    font-size: 26px;
+    height: 60px;
+    line-height: 60px;
 }
+
 /* 缩小按钮 */
 .main-header .navbar-header button.navbar-toggle {
-	padding:10px;
-	background-color:#360;
+    padding: 10px;
+    background-color: #360;
 }
+
 .main-header .navbar-header button.collapsed {
-	background-color:#9C6;
+    background-color: #9C6;
 }
+
 .main-header .navbar-header button.navbar-toggle span {
-	color:#FFF;
+    color: #FFF;
 }
+
 /* 功能菜单 */
 .main-header .top-manu-bar {
-	padding:5px;
-	background-color:inherit;
-	border:0;
-	border-radius:6px;
-	overflow:inherit;
+    padding: 5px;
+    background-color: inherit;
+    border: 0;
+    border-radius: 6px;
+    overflow: inherit;
 }
+
 .main-header .top-manu-bar .nav li {
-	margin-top:5px;
-	margin-bottom:5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
+
 .main-header .top-manu-bar .nav li a {
-	color:#337ab7;
-	background-color:#E1E1E1;
+    color: #337ab7;
+    background-color: #E1E1E1;
 }
+
 .main-header .top-manu-bar .nav li a:hover {
-	color:#FFF;
-	background-color:#09F;
+    color: #FFF;
+    background-color: #09F;
 }
+
 .main-header .top-manu-bar .nav li.active a {
-	color:#FFF;
-	background-color:#337ab7;
+    color: #FFF;
+    background-color: #337ab7;
 }
+
 /* 功能子菜单 */
 .main-header .top-manu-bar .nav li .dropdown-menu li a {
-	color:#000;
-	background-color:#FFF;
+    color: #000;
+    background-color: #FFF;
 }
+
 .main-header .top-manu-bar .nav li .dropdown-menu li a:hover {
-	color:#C00;
-	border:solid 1px #999;
-	border-radius:6px;
-	background:#E1E1E1;
+    color: #C00;
+    border: solid 1px #999;
+    border-radius: 6px;
+    background: #E1E1E1;
 }
+
 .main-header .top-manu-bar .nav li .dropdown-menu li.active a {
-	color:#C00;
-	border:solid 1px #999;
-	border-radius:6px;
-	background:#E1E1E1;
+    color: #C00;
+    border: solid 1px #999;
+    border-radius: 6px;
+    background: #E1E1E1;
 }
+
 /* 选项卡 */
 .main-header .top-tabs-bar {
-	margin-top:0px;
-	padding:0 5px;
-	background-color:#CCC;
-	border:1px solid #999;
-	border-radius:6px;
-	box-shadow:2px 2px 2px #666666;
+    margin-top: 0px;
+    padding: 0 5px;
+    background-color: #CCC;
+    border: 1px solid #999;
+    border-radius: 6px;
+    box-shadow: 2px 2px 2px #666666;
 }
+
 .main-header .top-tabs-bar .nav li {
-	margin-top:5px;
-	margin-bottom:5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
+
 .main-header .top-tabs-bar .nav li a {
-	background-color:#999;
-	font-size:10px;
-	height:16px;
-	padding:6px;
-	color:#FFF;
+    background-color: #999;
+    font-size: 10px;
+    height: 16px;
+    padding: 6px;
+    color: #FFF;
 }
+
 .main-header .top-tabs-bar .nav li a:hover {
-	background-color:#0080FF;
+    background-color: #0080FF;
 }
+
 .main-header .top-tabs-bar .nav li.active a {
-	background-color:#00A9FB;
-	color:#FFF;
+    background-color: #00A9FB;
+    color: #FFF;
 }
+
 .main-header .top-tabs-bar .nav li a .glyphicon {
-	margin-left:6px;
+    margin-left: 6px;
 }
+
 .main-header .top-tabs-bar .nav li a .glyphicon:hover {
-	color:#F00;
+    color: #F00;
 }
+
 /* 选项卡下拉样式 */
 .main-header .top-tabs-bar .nav li .dropdown-menu li a {
-	background-color:#FFF;
-	color:#000;
+    background-color: #FFF;
+    color: #000;
 }
+
 .main-header .top-tabs-bar .nav li .dropdown-menu li a:hover {
-	color:#C00;
+    color: #C00;
 }
+
 /* 选项卡固定顶部样式 */
 .navbar-fixed-top {
-	left:50px;
-	right:50px;
+    left: 50px;
+    right: 50px;
 }
-/**************** * 内容样式 *****************/
+
+/***************** 内容样式 *****************/
 .main-content {
-	background-color:#f8f8f8;
-	border:1px solid #999;
-	border-top:none;
-	border-radius:0 0 6px 6px;
-	margin-top:-1px;
-	padding-top:10px;
-	padding-bottom:10px;
+    background-color: #f8f8f8;
+    border: 1px solid #999;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    margin-top: -1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
+
 /* 选项卡内容 */
 .main-content .tab-content {
-	padding:10px;
-	background-color:#FFF;
-	border:none;
-	border-radius:6px;
+    padding: 10px;
+    background-color: #FFF;
+    border: none;
+    border-radius: 6px;
 }
-/**************** * 底部样式 *****************/
+
+/***************** 底部样式 *****************/
 .main-footer {
-	display:inline-block;
-	width:100%;
-	margin-top:10px;
-	margin-bottom:5px;
-	padding-top:5px;
-	padding-bottom:5px;
-	text-align:center;
-	color:#CCC;
-	background-color:#111;
-	border:1px solid #111;
-	border-radius:4px;
+    display: inline-block;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    color: #CCC;
+    background-color: #111;
+    border: 1px solid #111;
+    border-radius: 4px;
 }
+
 /* 加载等待样式 */
 .loading-waiting {
-	/* color:#6C0;
+    /* color:#6C0;
 	background-color:#eee;
 	padding:2px;
 	*/
 }
+
 .loading-waiting .animation {
-	/* 动画效果*/
-	animation:loading-rotation 1s infinite;
-	animation-timing-function:linear;
+    /* 动画效果*/
+    animation: loading-rotation 1s infinite;
+    animation-timing-function: linear;
 }
+
 @keyframes loading-rotation {
-	from {
-	transform:rotate(0deg);
-	}
-	to {
-		transform:rotate(360deg);
-	}
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* 消息弹出对话框样式 */
-.modal-dialog .modal-title span{
-	display: block;
-	float: left;
+.modal-dialog .modal-title span {
+    display: block;
+    float: left;
 }
-.modal-dialog .modal-title .glyphicon{
-	color: #9C6;
-	padding-right: 12px;
-	font-size: 25px;
+
+.modal-dialog .modal-title .glyphicon {
+    color: #9C6;
+    padding-right: 12px;
+    font-size: 25px;
 }
 
 /* 置顶按钮 */
 #target-top {
-	margin-right:26px;
-	width:30px;
+    margin-right: 26px;
+    width: 30px;
 }
+
 #target-top a {
-	color:#360;
+    color: #360;
 }
+
 #target-top a:hover {
-	color:#390;
+    color: #390;
 }
+
 /**************** * 表单功能菜单样式 *****************/
 .sgtable-toolbar {
-	padding:6px;
-	background-color:#f8f8f8;
+    padding: 6px;
+    background-color: #f8f8f8;
 }
+
 .form-inline .form-group {
-	padding-right: 24px;
+    padding-right: 24px;
 }
 
 .form-inline .form-control {
-	font-size:14px;
-	height:22px;
-	line-height:18px;
+    font-size: 14px;
+    height: 22px;
+    line-height: 18px;
 }
 
 .form-group .input-group input {
-	height: 28px;
-	padding: 2px;
-	padding-left: 12px;
+    height: 28px;
+    padding: 2px;
+    padding-left: 12px;
 }
 
 .form-group .btn-group .btn-default {
-	background-image: none;
+    background-image: none;
 }
 
 /*** 表格样式 ***/
 .table-responsive {
-	margin-top:10px;
+    margin-top: 10px;
 }
+
 /* 表格头部工具 */
-.table-toolbar {
-}
+.table-toolbar {}
+
 .ajax-tables .sort-icon {
-	position:relative;
-	margin-left:16px;
+    position: relative;
+    margin-left: 6px;
+    padding-left: 6px;
 }
+
 .ajax-tables .sort-icon .glyphicon {
-	position:absolute;
-	font-size:1px;
-	color:#CCC;
-	cursor:pointer;
+    position: absolute;
+    font-size: 1px;
+    color: #CCC;
+    cursor: pointer;
 }
+
 .ajax-tables .sort-icon .glyphicon-triangle-top {
-	top:-2px;
+    top: -2px;
 }
+
 .ajax-tables .sort-icon .glyphicon-triangle-bottom {
-	top:6px;
+    top: 6px;
 }
+
 .ajax-tables .sort-icon .on {
-	color:#00A9FB;
-	display:inline-block;
+    color: #00A9FB;
+    display: inline-block;
 }
+
 /* 排序按钮禁用样式 */
 .ajax-tables .sort-icon.disabled .glyphicon {
-	cursor:not-allowed;
+    cursor: not-allowed;
 }
+
 .ajax-tables .disabled .on {
-	color:#C00;
-	display:inline-block;
-	cursor:not-allowed;
+    color: #C00;
+    display: inline-block;
+    cursor: not-allowed;
 }
+
 /*** 分页样式 ***/
 .pager {
-	text-align:left;
-	margin-left:20%;
-	margin-top:-10px;
+    text-align: left;
+    margin-left: 20%;
+    margin-top: -10px;
 }
+
 .pager li {
-	display:inline-block;
-	margin-top:10px;
-	display:inline-block;
+    display: inline-block;
+    margin-top: 10px;
+    display: inline-block;
 }
+
 .pager li.space {
-	width:36px;
+    width: 36px;
 }
+
 .pager .small {
-	font-size:12px !important;
-	height:14px !important;
+    font-size: 12px !important;
+    height: 14px !important;
 }
+
 .pager .color-white {
-	background:#FFF;
+    background: #FFF;
 }
-.pager .input-group > .form-control {
-	font-size:14px;
-	height:18px;
-	width:36px;
-	line-height:18px;
-	text-align:center;
+
+.pager .input-group>.form-control {
+    font-size: 14px;
+    height: 18px;
+    width: 36px;
+    line-height: 18px;
+    text-align: center;
 }
+
 .pager .input-group .input-group-btn {
-	float:left;
+    float: left;
 }
+
 .pager .input-group .input-group-btn button {
-	border-radius:0 16px 16px 0;
-	font-size:14px;
-	height:18px;
-	line-height:18px;
-	/*background:#FFF;
+    border-radius: 0 16px 16px 0;
+    font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    /*background:#FFF;
 	*/
 }
+
 .pager .input-group .border-radius-none {
-	border-radius:0 !important;
+    border-radius: 0 !important;
 }
+
 .pager .input-group .input-group-addon {
-	border-radius:16px 0 0 16px;
+    border-radius: 16px 0 0 16px;
 }
+
 .pager ul.dropdown-menu {
-	left:-61px;
-	margin-top:0px;
-	top:27px;
-	border:none;
-	background:none;
-	box-shadow:none;
+    left: -61px;
+    margin-top: 0px;
+    top: 27px;
+    border: none;
+    background: none;
+    box-shadow: none;
 }
+
 .pager ul.dropdown-menu li a {
-	display:inline-block;
-	float:left;
-	width:50px;
-	border-radius:0;
+    display: inline-block;
+    float: left;
+    width: 50px;
+    border-radius: 0;
 }
-.pager .input-group > select.form-control {
-	font-size:14px;
-	height:18px;
-	line-height:18px;
-	border-left:none;
-	width:42px;
-	border-radius:0 16px 16px 0;
+
+.pager .input-group>select.form-control {
+    font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    border-left: none;
+    width: 42px;
+    border-radius: 0 16px 16px 0;
 }
