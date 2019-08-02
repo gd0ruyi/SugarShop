@@ -25,6 +25,7 @@ class ManagerModel extends BaseModel
 		'upd_time',
 		'las_time',
 		'status',
+		'use_type',
 		'_type' => array(
 			'manager_id' => 'int',
 			'username' => 'string',
@@ -35,7 +36,8 @@ class ManagerModel extends BaseModel
 			'add_time' => 'int',
 			'upd_time' => 'int',
 			'las_time' => 'int',
-			'status' => 'int'
+			'status' => 'int',
+			'use_type' => 'int'
 		)
 	);
 	protected $_validate = array(

@@ -17,4 +17,10 @@
             测试弹出消息框
         </button>
     </p>
+
+    <p>
+        <button type="button" id="test-modal" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#edit-dialog-tpl">
+            测试编辑消息框
+        </button>
+    </p>
 </div>

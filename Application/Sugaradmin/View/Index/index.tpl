@@ -58,7 +58,7 @@
                 </a>
               </li>
               <li role="presentation">
-                <a href="/Sugaradmin/Manager/index" sgtab-target="#manager-list" title="管理员管理">管理员管理</a>
+                <a href="/Sugaradmin/Manager/index" sgtab-target="#manager-list" title="用户管理">用户管理</a>
               </li>
               <li class="dropdown" role="presentation">
                 <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="示例">
@@ -225,7 +225,7 @@
   <!-- 弹窗模版或容器开始 -->
   <div class="out-window">
 
-    <!-- 任务历史加载条容器 -->
+    <!-- Modal任务历史加载条容器 -->
     <div class="modal" id="task-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Tasks dialog tpl">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -246,8 +246,7 @@
     </div>
 
     <!-- Modal消息提示弹窗 -->
-    <div class="modal fade bs-example-modal-sm" id="msg-dialog-tpl" tabindex="-1" role="dialog"
-      aria-labelledby="Messages dialog tpl">
+    <div class="modal fade bs-example-modal-sm" id="msg-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Messages dialog tpl" data-backdrop="static">
       <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -260,6 +259,27 @@
           <div class="modal-body" id="msg-content"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">确 定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal用于编辑容器 -->
+    <div class="modal fade bs-example-modal-lg" id="edit-dialog-tpl" tabindex="-1" role="dialog" aria-labelledby="Edit dialog tpl" data-backdrop="static">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">
+              <span class="glyphicon glyphicon-edit"></span>
+              <span class="edit-title">Edit Title</span>
+            </h4>
+          </div>
+          <div class="modal-body" id=""></div>
+          <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
           </div>
         </div>

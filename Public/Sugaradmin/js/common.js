@@ -6,6 +6,8 @@ var SugarCommons = {
 	commons_name: 'SugarCommons',
 	// 消息对话框ID
 	msg_dialog_tpl_id: '#msg-dialog-tpl',
+	// 编辑对话框ID:
+	edit_dialog_tpl_id: '#edit-dialog-tpl',
 
 	/**
 	 * 公用函数库名称设置
@@ -93,10 +95,46 @@ var SugarCommons = {
 	},
 
 	/**
+	 * 自定义错误提示
+	 * @param {string} error 错误信息
+	 * @param {boolean} is_throw 是否进行throw退出
+	 * @param
+	 */
+	errorMsg: function (error, is_throw, currentAjax) {
+		error = 'Error info >> ' + error;
+		console.log(error);
+
+		// 如果存在ajax句柄，则先暂停处理
+		if (currentAjax !== undefined) {
+			currentAjax.abort();
+		}
+
+		if (is_throw) {
+			alert(error);
+			return error;
+		}
+		throw alert(error);
+	},
+
+	/**
+	 * 常用自定义截取开始结束字符间的值
+	 * @param {any} str 
+	 * @param {string} start_str 
+	 * @param {string} end_str 
+	 * @returns string
+	 */
+	substringBetween: function (str, start_str, end_str) {
+		var str = str.toString();
+		var start_index = str.indexOf(start_str) + start_str.length;
+		var end_index = str.indexOf(end_str);
+		return str.substring(start_index, end_index);
+	},
+
+	/**
 	 * 创建select下拉，用于表单提交。
 	 * @param {string} target_id Bootstrap下拉元素ID
 	 */
-	selectInputCreate: function () {
+	createSelectInput: function () {
 		var target_selector = '[sugar-selector="true"]';
 
 		$(target_selector).each(function (index) {
@@ -131,29 +169,6 @@ var SugarCommons = {
 	},
 
 	/**
-	 * 自定义错误提示
-	 * @param {string} error 错误信息
-	 * @param {boolean} is_throw 是否进行throw退出
-	 * @param
-	 */
-	errorMsg: function (error, is_throw, currentAjax) {
-		error = 'Error info >> ' + error;
-		console.log(error);
-
-		// 如果存在ajax句柄，则先暂停处理
-		if (currentAjax !== undefined) {
-			currentAjax.abort();
-		}
-
-		if (is_throw) {
-			alert(error);
-			return error;
-		}
-		throw alert(error);
-	},
-
-
-	/**
 	 * 确定对话框弹窗处理
 	 * @param {string} title 对话框标题
 	 * @param {string} content 对话框内容
@@ -169,18 +184,81 @@ var SugarCommons = {
 	},
 
 	/**
-	 * 常用自定义截取开始结束字符间的值
-	 * @param {any} str 
-	 * @param {string} start_str 
-	 * @param {string} end_str 
-	 * @returns string
+	 * 创建弹窗编辑对话框
 	 */
-	substringBetween: function (str, start_str, end_str) {
-		var str = str.toString();
-		var start_index = str.indexOf(start_str) + start_str.length;
-		var end_index = str.indexOf(end_str);
-		return str.substring(start_index, end_index);
+	createEditDialogByAjax: function () {
+		var target_selector = '[sugar-dialog]';
+		// 需要保留历史记录，因此sugar-dialog需要加入ID标识
+
+		// 遍历自定义属性处理
+		$(target_selector).each(function (index) {
+			var that = this;
+			$(that).click(function (event) {
+				event.preventDefault();
+				var title = $(that).attr('title');
+				var url = $(that).attr('sugar-url');
+				var data = $(that).attr('sugar-data');
+				var target_id = $(that).attr('sugar-target-id');
+				SugarCommons.runEditDialogByAjax(target_id, title, url, data);
+			});
+		});
 	},
+
+	/**
+	 * 执行弹出对话框
+	 * @param {string} target_id 动态的targetID
+	 * @param {string} title 弹窗标题
+	 * @param {string} url 弹窗加载地址
+	 * @param {string} data 字符串的对象"{}"
+	 */
+	runEditDialogByAjax: function (target_id, title, url, sugar_data) {
+		// 动态的targetID
+		var target = "#" + target_id;
+		// 弹出对话框的默认模版ID
+		var modal_target_id = SugarCommons.edit_dialog_tpl_id;
+		$(modal_target_id).modal('show');
+		$(modal_target_id + ' .modal-body').attr('id', target_id);
+
+		// loading的选择器名称
+		var loading_target_title = modal_target_id + ' .edit-title';
+		$(loading_target_title).html(title);
+
+		// 判断地址是否为空
+		if (url == "") {
+			SugarCommons.errorMsg("SugarCommons plus is error:: ajax error in function runEditDialogByAjax(), sugar-url is empty !");
+		}
+
+		// 显示加载对应的信息(加载ID有问题，需要修正)
+		var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
+		$(loading_waiting_id).find('.loading-title').html(title);
+
+		// ajax请求处理
+		$.ajax({
+			url: url,
+			type: "GET",
+			dataType: 'html',
+			data: sugar_data,
+			cache: false,
+			success: function (res, status, xhr) {
+				// 内容
+				$(target).html(res);
+				// 关闭加载
+				TimeKeeper.loadingWaitingEnd(target);
+			},
+			error: function (xhr, status, error) {
+				// 关闭加载
+				TimeKeeper.loadingWaitingEnd(target);
+				// 关闭加载状态
+				SugarCommons.errorMsg("SugarCommons plus is error: ajax error in function runEditDialogByAjax(), info(" + status + ":" + error + ")");
+			}
+		});
+	},
+
+	createPlugin: function () {
+		SugarCommons.createSelectInput();
+		SugarCommons.createEditDialogByAjax();
+	}
+
 }
 
 // jquery通用扩展

@@ -47,6 +47,7 @@ class IndexController extends Controller
 		$data['email'] = "gd0ruyi@163.com";
 		$data['mobile'] = "+86013661123476";
 		$data['status'] = 0;
+		$data['use_type'] = 0;
 		$time = time();
 		$data['add_time'] = $time;
 		$data['upd_time'] = $time;

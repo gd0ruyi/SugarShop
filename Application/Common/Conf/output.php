@@ -25,6 +25,14 @@ return array(
                 1 => '禁用'
             ),
             'output_key_suff' => '_name'
+        ),
+        'use_type' => array(
+            'output_type' => 'MAP',
+            'output_value' => array(
+                0 => '管理员',
+                1 => '普通用户'
+            ),
+            'output_key_suff' => '_name'
         )
     ),
 

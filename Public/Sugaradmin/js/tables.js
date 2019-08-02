@@ -405,7 +405,7 @@ var SugarTables = {
 		// 表提交数据
 		var form_data = $(form_id).serialize();
 		form_data += '&sort=' + JSON.stringify(SugarTables.sts[form_id].table.sort);
-		console.log(form_data);
+		// console.log(form_data);
 
 		// ajax请求处理
 		$.ajax({
