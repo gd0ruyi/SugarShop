@@ -144,7 +144,7 @@ var SugarCommons = {
 			var that = this;
 
 			// 下拉点击事件
-			$(that).find('ul.dropdown-menu li a').click(function (event) {
+			$(that).find('ul.dropdown-menu li a').on('click', function (event) {
 				var sval = $(this).attr('value');
 				var stitle = $(this).html();
 
@@ -192,11 +192,10 @@ var SugarCommons = {
 	createEditDialogByAjax: function () {
 		var target_selector = '[sugar-dialog]';
 		// 需要保留历史记录，因此sugar-dialog需要加入ID标识
-
 		// 遍历自定义属性处理
 		$(target_selector).each(function (index) {
 			var that = this;
-			$(that).click(function (event) {
+			$(that).on('click', function (event) {
 				event.preventDefault();
 				var title = $(that).attr('title');
 				var url = $(that).attr('sugar-url');
