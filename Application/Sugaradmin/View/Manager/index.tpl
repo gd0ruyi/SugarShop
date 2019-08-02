@@ -12,7 +12,7 @@
     <!-- 工具组 -->
     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group" role="group" aria-label="Setting groups">
-        <button type="button" class="btn btn-primary" sugar-dialog="true" sugar-target-id="manager-edit" sugar-url="/Sugaradmin/Manager/edit" sugar-data="{}" title="创建用户">
+        <button type="button" class="btn btn-primary" sugar-dialog="true" sugar-target-id="manager-edit" sugar-url="/Sugaradmin/Manager/edit" sugar-data="" title="创建用户">
           <span class="glyphicon glyphicon-plus"></span>
         </button>
       </div>

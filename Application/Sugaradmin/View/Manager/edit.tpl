@@ -64,6 +64,6 @@
   </div>
 </div>
 <script language="javascript" type="text/javascript">
-  // 加载自定义插件
-  SugarCommons.createPlugin();
+  // 加载下拉
+  SugarCommons.createSelectInput();
 </script>

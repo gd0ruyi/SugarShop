@@ -9,6 +9,9 @@ var SugarCommons = {
 	// 编辑对话框ID:
 	edit_dialog_tpl_id: '#edit-dialog-tpl',
 
+	// 全局ajax是否使用缓存（暂时无用，后续需加入到方法）
+	ajaxCache: false,
+
 	/**
 	 * 公用函数库名称设置
 	 * @param {string} commons_name 
@@ -228,9 +231,9 @@ var SugarCommons = {
 			SugarCommons.errorMsg("SugarCommons plus is error:: ajax error in function runEditDialogByAjax(), sugar-url is empty !");
 		}
 
-		// 显示加载对应的信息(加载ID有问题，需要修正)
+		// 显示加载对应的信息
 		var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
-		$(loading_waiting_id).find('.loading-title').html(title);
+		$(target).find('.loading-title').html(title);
 
 		// ajax请求处理
 		$.ajax({
