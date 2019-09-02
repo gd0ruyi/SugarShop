@@ -259,7 +259,7 @@
           <div class="modal-body" id="msg-content"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">确 定</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关 闭</button>
           </div>
         </div>
       </div>
@@ -280,7 +280,7 @@
           </div>
           <div class="modal-body" id=""></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关 闭</button>
           </div>
         </div>
       </div>

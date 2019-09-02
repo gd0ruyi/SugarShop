@@ -34,9 +34,6 @@ var TimeKeeper = {
     // 等待进度条默认最小值，用于初始化（只有使用dialog时有效）
     loading_waiting_dialog_percent_min_value: 0,
 
-    // 是否保持历史显示,注：只有dialog时可使用
-    loading_keep_history_show: true,
-
 
     /**
      * 计时器执行开始
@@ -166,8 +163,7 @@ var TimeKeeper = {
         switch (style) {
             // 处理inner效果
             case 'inner':
-                // 目标容器植入内容并显示加载
-                // $(target).prepend(loading_waiting_tpl);
+                // 目标容器植入内容并显示加载，为保证loading唯一性，因此为inner处理时，将在end后放入历史记录中。
                 $(target).html(loading_waiting_tpl);
 
                 // 初始化隐藏progress和进度
@@ -180,7 +176,7 @@ var TimeKeeper = {
                 // dialog弹窗任务数显示
                 $(TimeKeeper.dialog_tpl_id).find('.loading-tasks-count').html(TimeKeeper.lws_count);
 
-                // 如果存在历史的显示则移除
+                // 如果存在重复的历史的显示则移除
                 if ($(TimeKeeper.dialog_tpl_id).find(loading_waiting_id).index() > -1) {
                     // 移除加载内容
                     $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
@@ -192,13 +188,18 @@ var TimeKeeper = {
                 $(TimeKeeper.dialog_tpl_id).find('.loading-loaded-span').hide();
                 $(TimeKeeper.dialog_tpl_id).find('.progress').hide();
 
-                // 显示弹窗
-                $(TimeKeeper.dialog_tpl_id).modal('show');
-
                 // 弹窗隐藏设置（当关闭时停止计时）
                 $(TimeKeeper.dialog_tpl_id).on('hidden.bs.modal', function (e) {
                     TimeKeeper.end(target);
                 });
+
+                // 单项历史点击关闭删除时进行重新计数
+                $(loading_waiting_id + ' .close').on('click', function (event) {
+                    delete TimeKeeper.lws[target];
+                    TimeKeeper._resetDialogCount();
+                });
+                // 显示弹窗
+                $(TimeKeeper.dialog_tpl_id).modal('show');
                 break;
 
             // 默认报错，并清理赋值
@@ -210,7 +211,6 @@ var TimeKeeper = {
         }
 
         // TimeKeeper.tps[target].times = 0;
-
         // TimeKeeper.destructor(target);
 
         // 定时执行效果
@@ -316,41 +316,36 @@ var TimeKeeper = {
             switch (TimeKeeper.lws[target].style) {
                 // 嵌入型处理
                 case "inner":
-                    // 保持显示历史
-                    if (TimeKeeper.loading_keep_history_show == true) {
-                        // 如果存在历史的显示则移除
-                        if ($(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).index() > -1) {
-                            // 移除加载内容
-                            $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
-                        }
-                        // 将其放置dialog中，作为历史记录处理
-                        $(TimeKeeper.dialog_tpl_id).find('.modal-body').prepend(TimeKeeper.lws[target].loading_waiting_tpl);
-                        // 移除loading的旋转动画效果
-                        $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
-                    } else {
-                        // 移除嵌入的内容
-                        $(target).find(TimeKeeper.lws[target].loading_waiting_id).remove();
-                        // 清除loading waiting对象
-                        delete TimeKeeper.lws[target];
+                    // 移除嵌入的内容
+                    $(target).find(TimeKeeper.lws[target].loading_waiting_id).remove();
+
+                    // 如果存在历史的显示则移除
+                    if ($(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).index() > -1) {
+                        // 移除加载内容
+                        $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
                     }
+
+                    // 将其放置dialog中，作为历史记录处理
+                    $(TimeKeeper.dialog_tpl_id).find('.modal-body').prepend(TimeKeeper.lws[target].loading_waiting_tpl);
+
+                    // 移除loading的旋转动画效果
+                    $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
+
                     // 重新计数
                     TimeKeeper._resetDialogCount();
+
+                    // 单项历史点击关闭删除时进行重新计数
+                    $(TimeKeeper.lws[target].loading_waiting_id + ' .close').on('click', function (event) {
+                        delete TimeKeeper.lws[target];
+                        TimeKeeper._resetDialogCount();
+                    });
+
                     break;
 
                 // 处理dialog效果
                 case 'dialog':
-                    // 保持显示历史
-                    if (TimeKeeper.loading_keep_history_show == true) {
-                        // 移除loading的旋转动画效果
-                        $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
-                    } else {
-                        // 移除加载内容
-                        $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
-                        // 清除loading waiting对象
-                        delete TimeKeeper.lws[target];
-                        // 重新计数
-                        TimeKeeper._resetDialogCount();
-                    }
+                    // 移除loading的旋转动画效果
+                    $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
 
                     // 关闭任务显示dialog
                     $(TimeKeeper.dialog_tpl_id).modal('hide');

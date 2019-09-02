@@ -415,14 +415,15 @@ var SugarTables = {
 			cache: false,
 			success: function (res, status, xhr) {
 				if (res.status == 0) {
+					// 关闭加载
+					TimeKeeper.loadingWaitingEnd(td_loading_id);
+					
 					// 产生动态表格
 					SugarTables.makeTbody(form_id, table_id, res.data, columns);
 					// 分页信息处理
 					if (SugarTables.pager_auto_create == true) {
 						SugarTables.makePager(form_id, res.pager);
 					}
-					// 关闭加载
-					TimeKeeper.loadingWaitingEnd(td_loading_id);
 				} else {
 					// 关闭加载
 					TimeKeeper.loadingWaitingEnd(td_loading_id);
@@ -484,7 +485,7 @@ var SugarTables = {
 			table_tr = $(table_tr).append(table_td);
 			// tbody添加tr
 			table_tbody = $(table_tbody).append(table_tr);
-			
+
 			// 移除原有tbody
 			$(table_id).find('tbody').remove();
 			// 表格添加tbody
