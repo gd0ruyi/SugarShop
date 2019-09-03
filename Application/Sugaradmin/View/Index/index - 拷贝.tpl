@@ -63,8 +63,8 @@
 <aside class="main-sidebar navbar-fixed-top">
   <section class="sidebar">
     <ul class="sidebar-menu nav nav-pills nav-stacked">
-      <li role="presentation"> <a href="/Sugaradmin/Manager/Index" link-target=".main-right .content" >管理员管理</a> </li>
-      <li role="presentation"> <a href="/Sugaradmin/Manager/Index" link-target=".main-right .content" >管理员管理|管理员管理管理员管理管理员管理</a> </li>
+      <li role="presentation"> <a href="/Sugaradmin/User/Index" link-target=".main-right .content" >管理员管理</a> </li>
+      <li role="presentation"> <a href="/Sugaradmin/User/Index" link-target=".main-right .content" >管理员管理|管理员管理管理员管理管理员管理</a> </li>
       <li class="dropdown" role="presentation"> <a role="button" href="#"> 下拉菜单一 <span class="glyphicon glyphicon-plus"></span> </a>
         <ul class="dropdown-menu">
           <li><a href="#">Action</a></li>

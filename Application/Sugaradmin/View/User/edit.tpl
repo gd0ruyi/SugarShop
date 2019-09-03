@@ -8,7 +8,7 @@
 <div class="panel panel-primary">
   <div class="panel-body">
     <!-- 表单 -->
-    <form class="form-horizontal" id="manager-form">
+    <form class="form-horizontal" id="user-form">
 
       <div class="form-group">
         <label for="username" class="col-sm-2 control-label">用户名称：</label>

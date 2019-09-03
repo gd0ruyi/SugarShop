@@ -12,7 +12,7 @@
     <!-- 工具组 -->
     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group" role="group" aria-label="Setting groups">
-        <button type="button" class="btn btn-primary" sugar-dialog="true" sugar-target-id="manager-edit" sugar-url="/Sugaradmin/Manager/edit" sugar-data="" title="创建用户">
+        <button type="button" class="btn btn-primary" sugar-dialog="true" sugar-target-id="user-edit" sugar-url="/Sugaradmin/User/edit" sugar-data="" title="创建用户">
           <span class="glyphicon glyphicon-plus"></span>
         </button>
       </div>
@@ -28,7 +28,7 @@
   </div>
   <div class="panel-body">
     <!-- 表单 -->
-    <form class="form-inline" id="manager-form">
+    <form class="form-inline" id="user-form">
 
       <div class="form-group form-group-sm">
         <div class="input-group">
@@ -45,7 +45,7 @@
             </ul>
             <input type="hidden" name="keyword_type" value="">
           </div><!-- /btn-group -->
-          <input type="text" class="form-control" id="manager_keyword" name="manager_keyword" placeholder="请输入关键字">
+          <input type="text" class="form-control" id="user_keyword" name="user_keyword" placeholder="请输入关键字">
         </div>
       </div>
 
@@ -84,7 +84,7 @@
       </div>
 
       <div class="table-responsive">
-        <table id="manager-table" title="管理员列表-表格内容" class="table table-striped table-bordered table-hover ajax-tables">
+        <table id="user-table" title="管理员列表-表格内容" class="table table-striped table-bordered table-hover ajax-tables">
         </table>
       </div>
     </form>
@@ -99,7 +99,7 @@
 
   // 执行创建表格
   var columns = {
-    'manager_id': {
+    'user_id': {
       th: { title: 'ID', sort_icon: true, sort_default: 'asc', class: 'text-center' },
       td: { style: "color:red; text-align:center" }
     },
@@ -144,5 +144,5 @@
       td: { class: 'text-center' }
     },
   };
-  SugarTables.create('#manager-form', '#manager-table', '/Sugaradmin/Manager/loadAjax', columns);  
+  SugarTables.create('#user-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);  
 </script>

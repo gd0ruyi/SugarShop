@@ -58,7 +58,7 @@
                 </a>
               </li>
               <li role="presentation">
-                <a href="/Sugaradmin/Manager/index" sgtab-target="#manager-list" title="用户管理">用户管理</a>
+                <a href="/Sugaradmin/User/index" sgtab-target="#user-list" title="用户管理">用户管理</a>
               </li>
               <li class="dropdown" role="presentation">
                 <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="示例">

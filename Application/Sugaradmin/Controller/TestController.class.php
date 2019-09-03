@@ -25,10 +25,10 @@ class TestController extends BaseController
 	 */
 	public function index()
 	{
-		$manager_model = D("Sugaradmin/Manager");
-		$manager_model = new ManagerModel();
-		$manager_list = $manager_model->getList(array(), '', 1, 10);
-		$this->assign('manager_list', $manager_list);
+		$user_model = D("Sugaradmin/User");
+		$user_model = new UserModel();
+		$user_list = $user_model->getList(array(), '', 1, 10);
+		$this->assign('user_list', $user_list);
 		$this->display();
 	}
 

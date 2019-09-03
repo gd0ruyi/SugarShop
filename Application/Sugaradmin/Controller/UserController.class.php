@@ -3,7 +3,7 @@
 namespace Sugaradmin\Controller;
 
 use Sugaradmin\Controller\BaseController;
-use Sugaradmin\Model\ManagerModel;
+use Sugaradmin\Model\UserModel;
 
 /**
  * 管理员管理
@@ -11,7 +11,7 @@ use Sugaradmin\Model\ManagerModel;
  * @author gd0ruyi@163.com
  *        
  */
-class ManagerController extends BaseController
+class UserController extends BaseController
 {
 	/**
 	 * 通用初始化方法
@@ -24,10 +24,10 @@ class ManagerController extends BaseController
 	 */
 	public function index()
 	{
-		$manager_model = D("Sugaradmin/Manager");
-		// $manager_model = new ManagerModel();
-		$manager_list = $manager_model->getList(array(), '', 1, 10);
-		$this->assign('manager_list', $manager_list);
+		$user_model = D("Sugaradmin/User");
+		// $user_model = new UserModel();
+		$user_list = $user_model->getList(array(), '', 1, 10);
+		$this->assign('user_list', $user_list);
 		// $this->display ();
 		// $this->displayAutoAjax();
 		$this->display();

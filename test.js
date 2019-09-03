@@ -158,7 +158,7 @@ var test = {
 		"debug_data_dump" : [],
 		"get" : {
 			"debug" : "1",
-			"\/Sugaradmin\/Manager\/testSugarTables\/debug\/1\/" : "",
+			"\/Sugaradmin\/User\/testSugarTables\/debug\/1\/" : "",
 			"name" : "",
 			"email" : ""
 		},
@@ -168,7 +168,7 @@ var test = {
 		},
 		"session" : {
 			"las_time" : 0,
-			"manager_id" : 1,
+			"user_id" : 1,
 			"_id" : "57370b56f8bf0e2c34000029",
 			"add_time" : 1463225174,
 			"upd_time" : 1463225174,

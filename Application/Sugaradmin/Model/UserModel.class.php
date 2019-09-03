@@ -8,14 +8,14 @@ namespace Sugaradmin\Model;
  * @author gd0ruyi@163.com 2015-11-12
  *        
  */
-class ManagerModel extends BaseModel
+class UserModel extends BaseModel
 {
-	protected $pk = 'manager_id';
+	protected $pk = 'user_id';
 	protected $_idType = self::TYPE_INT;
 	protected $_autoinc = true;
 	protected $fields = array(
 		'_id',
-		'manager_id',
+		'user_id',
 		'username',
 		'password',
 		'truename',
@@ -27,7 +27,7 @@ class ManagerModel extends BaseModel
 		'status',
 		'use_type',
 		'_type' => array(
-			'manager_id' => 'int',
+			'user_id' => 'int',
 			'username' => 'string',
 			'password' => 'string',
 			'truename' => 'string',

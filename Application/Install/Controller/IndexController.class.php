@@ -36,10 +36,10 @@ class IndexController extends Controller
 		// // $rs = $system_model->add ( $data, $options, true );
 		// printR ( $mongo );
 		// return false;
-		$manager_model = D("Sugaradmin/Manager");
+		$user_model = D("Sugaradmin/User");
 
 		$data = array();
-		// $data ['manager_id'] = 1;
+		// $data ['user_id'] = 1;
 		$data['username'] = 'admin';
 		$data['password'] = 'admin';
 		$data['password'] = md5($data['usename'] . $data['password']);
@@ -60,11 +60,11 @@ class IndexController extends Controller
 			'safe' => true
 		);
 
-		if (!$lastInfo = $manager_model->add($data, $options, true)) {
+		if (!$lastInfo = $user_model->add($data, $options, true)) {
 			E('初始化创建管理员账户失败！');
 		}
 		$lastInfo = json_encode($lastInfo);
-		// printR($manager_model->getLastInsID());
+		// printR($user_model->getLastInsID());
 		echo "创建账户成功,last info ({$lastInfo}, )！";
 	}
 }

@@ -21,7 +21,7 @@ class BaseController extends Controller
 	// 真实的get传入
 	protected $_isset_get_map = array();
 	// 管理员ID
-	public $manager_id = 0;
+	public $user_id = 0;
 
 	// 返回json的格式
 	private $_res = array(
@@ -100,8 +100,8 @@ class BaseController extends Controller
 	 */
 	public function checkLogin()
 	{
-		$this->manager_id = intval($_SESSION['manager_id']);
-		if (!$this->manager_id) {
+		$this->user_id = intval($_SESSION['user_id']);
+		if (!$this->user_id) {
 			$this->error('您尚未登录或登录超时，请重新登录！', __MODULE__ . '/Login/index');
 			// 默认访问跳转到登录页
 			// $this->redirect ( __MODULE__ . '/Login/index' );

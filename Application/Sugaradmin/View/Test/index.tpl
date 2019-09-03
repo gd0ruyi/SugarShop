@@ -33,9 +33,9 @@
             </tr>
           </thead>
           <tbody>
-          <{foreach from=$manager_list item=list}>
+          <{foreach from=$user_list item=list}>
           <tr>
-            <td><{$list.manager_id}></td>
+            <td><{$list.user_id}></td>
             <td><{$list.username}></td>
             <td><{$list.add_time}></td>
             <td><{$list.upd_time}></td>
@@ -67,5 +67,5 @@ SugarTables.columns = {
 		td : {}
 	}
 };
-SugarTables.createTable('#admin-form', '#admin-table', '/Sugaradmin/Manager/testSugarTables/');
+SugarTables.createTable('#admin-form', '#admin-table', '/Sugaradmin/User/testSugarTables/');
 </script>

@@ -3,7 +3,7 @@
 namespace Sugaradmin\Controller;
 
 use Sugaradmin\Controller\BaseController;
-use Sugaradmin\Model\ManagerModel;
+use Sugaradmin\Model\UserModel;
 
 class LoginController extends BaseController {
 	/**
@@ -25,8 +25,8 @@ class LoginController extends BaseController {
 		if (! check_verify ( $_POST ['verification'] )) {
 			$this->error ( "验证码不正确！请重新尝试！" );
 		}
-		$manager_model = D ( "Manager" );
-		$manager_model = new ManagerModel ();
+		$user_model = D ( "User" );
+		$user_model = new UserModel ();
 		$pwd = md5 ( $_POST ['username'] . $_POST ['password'] );
 		$query = array ();
 		$query ['username'] = $_POST ['username'];
@@ -38,7 +38,7 @@ class LoginController extends BaseController {
 		
 		$sort = array ();
 		$sort ['username'] = 1;
-		$rs = $manager_model->where ( $query )->order ( $sort )->find ( $options );
+		$rs = $user_model->where ( $query )->order ( $sort )->find ( $options );
 		
 		if ($rs ['username']) {
 			$sess_data = $rs;
@@ -48,7 +48,7 @@ class LoginController extends BaseController {
 			// 保存登录更新时间
 			$data = array ();
 			$data ['las_time'] = time ();
-			$rs = $manager_model->where ( $query )->save ( $data );
+			$rs = $user_model->where ( $query )->save ( $data );
 			
 			$this->success ( '登录成功！', '../Index/index' );
 		}
