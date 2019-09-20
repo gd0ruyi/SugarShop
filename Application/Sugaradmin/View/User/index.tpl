@@ -97,6 +97,10 @@
   // 加载自定义插件
   SugarCommons.createPlugin();
 
+  // 开启debug
+  SugarCommons.debug = true;
+  SugarCommons.printDebug = true;
+
   // 执行创建表格
   var columns = {
     'user_id': {

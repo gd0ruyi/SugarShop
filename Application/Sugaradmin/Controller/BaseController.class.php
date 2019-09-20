@@ -1,4 +1,5 @@
 <?php
+
 namespace Sugaradmin\Controller;
 
 use Think\Controller;
@@ -155,6 +156,8 @@ class BaseController extends Controller
 	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '')
 	{
 		$this->displayAutoByIsAjax($templateFile, $charset, $contentType, $content, $prefix);
+		// debug输出
+		$this->resDebug();
 	}
 
 	/**
@@ -206,9 +209,9 @@ class BaseController extends Controller
 	{
 		$this->setRes($res);
 		header('Content-Type:application/json; charset=utf-8');
+		echo json_encode($this->_res, $json_options);
 		// debug输出
 		$this->resDebug();
-		echo json_encode($this->_res, $json_options);
 		exit();
 	}
 
@@ -295,7 +298,7 @@ class BaseController extends Controller
 					'NOW_TIME' => date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")",
 					'REQUEST_METHOD' => REQUEST_METHOD,
 					'IS_AJAX' => IS_AJAX,
-					'res' => $this->_res,
+					// 'res' => $this->_res,
 					'res_dump' => json_dump($this->_res),
 					'debug_data' => $this->_debug,
 					'debug_data_dump' => json_dump($this->_debug),
@@ -305,59 +308,113 @@ class BaseController extends Controller
 					'cookie' => $_COOKIE
 				);
 				$this->_res['debug'] = $debug;
+				// 当为ajax时，判断是否需要强制输出打印
+				if (boolval($_GET['printDebug'])) {
+					$this->_printDebug();
+				}
 			} else {
-				header('Content-Type:text/html; charset=utf-8');
-
-				echo "<pre><h1>" . MODULE_PATH . " debug by result</h1>\n";
-				echo "NOW_TIME : " . date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")\n";
-				echo "<hr />\n";
-				echo "<h2>result print</h2>\n";
-				echo "<hr />\n";
-				print_r($this->_res);
-				echo "<h2>result dump</h2>\n";
-				echo "<hr />\n";
-				dump($this->_res);
-				echo "</pre>\n";
-
-				echo "<pre><h1>debug date print</h1>\n";
-				echo "<hr />\n";
-				print_r($this->_debug);
-				echo "</pre>\n";
-
-				echo "<pre><h1>debug date dump</h1>\n";
-				echo "<hr />\n";
-				dump($this->_debug);
-				echo "</pre>\n";
-
-				echo "<pre><h1>request</h1>\n";
-				echo "<hr />\n";
-				print_r($_REQUEST);
-				echo "</pre>\n";
-
-				echo "<pre><h1>get</h1>\n";
-				echo "<hr />\n";
-				print_r($_GET);
-				echo "</pre>\n";
-
-				echo "<pre><h1>post</h1>\n";
-				echo "<hr />\n";
-				print_r($_POST);
-				echo "</pre>\n";
-
-				echo "<pre><h1>session</h1>\n";
-				echo "<hr />\n";
-				print_r($_SESSION);
-				echo "</pre>\n";
-
-				echo "<hr/>";
-				// 此处为了加载页面Tace
-				// $this->display ( 'Public/index' );
-				$spt = new ShowPageTraceBehavior();
-				$spt->run();
+				$this->_printDebug();
 			}
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * 打印debug信息
+	 *
+	 * @return void
+	 */
+	public function _printDebug()
+	{
+		header('Content-Type:text/html; charset=utf-8');
+
+		echo "<!--Source Code End-->\n";
+
+		echo "<hr /><pre><h1>Debug Start</h1></pre>\n";
+		echo "<hr />\n";
+
+		echo "<pre>Tip: If you use ajax to request, you can use the browser to open and get the Trace information of the page. </pre>\n";
+		echo "<hr />\n";
+
+		echo "<pre><h1>URL: " . getLocalUrl() . "</h1>\n";
+		echo "<pre><h1>ACTION: " . __ACTION__ . "</h1>\n";
+		// echo "<pre><h1>MODULE_PATH:" . MODULE_PATH . "</h1>\n";
+		echo "NOW_TIME : " . date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")\n";
+		echo "<hr />\n";
+		echo "</pre>\n";
+
+		echo "<pre><h2>result print</h2>\n";
+		echo "<hr />\n";
+		print_r($this->_res);
+		echo "</pre>\n";
+
+		echo "<pre><h2>result dump</h2>\n";
+		echo "<hr />\n";
+		dump($this->_res);
+		echo "</pre>\n";
+
+		echo "<pre><h1>debug date print</h1>\n";
+		echo "<hr />\n";
+		print_r($this->_debug);
+		echo "</pre>\n";
+
+		echo "<pre><h1>debug date dump</h1>\n";
+		echo "<hr />\n";
+		dump($this->_debug);
+		echo "</pre>\n";
+
+		echo "<pre><h1>request</h1>\n";
+		echo "<hr />\n";
+		print_r($_REQUEST);
+		echo "</pre>\n";
+
+		echo "<pre><h1>get</h1>\n";
+		echo "<hr />\n";
+		print_r($_GET);
+		echo "</pre>\n";
+
+		echo "<pre><h1>post</h1>\n";
+		echo "<hr />\n";
+		print_r($_POST);
+		echo "</pre>\n";
+
+		echo "<pre><h1>session</h1>\n";
+		echo "<hr />\n";
+		print_r($_SESSION);
+		echo "</pre>\n";
+
+		echo "<pre><h1>cookie</h1>\n";
+		echo "<hr />\n";
+		print_r($_COOKIE);
+		echo "</pre>\n";
+
+		// 输出常量
+		if (DEBUG_PRINT_CONSTANTS) {
+			echo "<pre><h1>constants</h1>\n";
+			echo "<hr />\n";
+			print_r(get_defined_constants(true));
+			echo "</pre>\n";
+		}
+
+		// 输出服务器信息
+		if (DEBUG_PRINT_SERVER) {
+			echo "<pre><h1>server</h1>\n";
+			echo "<hr />\n";
+			print_r($_SERVER);
+			echo "</pre>\n";
+		}
+
+		echo "<hr />\n";
+		echo "<pre><h1>Debug End</h1></pre>";
+
+
+		// 此处为了加载页面Tace
+		// $this->display ( 'Public/index' );
+		$spt = new ShowPageTraceBehavior();
+		$param = array();
+
+		$spt->run($param);
 	}
 
 	/**
@@ -515,18 +572,43 @@ class BaseController extends Controller
 
 		// 判断是否使用默认的page_size分页
 		if ($listRows == 'pager_size') {
-			if(isset($_REQUEST['pager_size']) && strtolower($_REQUEST['pager_size'])== 'all'){
-				$listRows= 0;
-			}else{
+			if (isset($_REQUEST['pager_size']) && strtolower($_REQUEST['pager_size']) == 'all') {
+				$listRows = 0;
+			} else {
 				$listRows = isset($_REQUEST['pager_size']) ? intval($_REQUEST['pager_size']) : 0;
 				$listRows = $listRows <= 0 ? 10 : $listRows;
-			}			
+			}
 		} else {
 			$listRows = intval($listRows);
 			$listRows = $listRows < 0 ? 10 : $listRows;
 		}
 
 		$rs = $m->getList($options, $listRows, $nowPage);
+		$this->setRes($rs);
+		return $rs;
+	}
+
+	/**
+	 * 获取单条信息
+	 * @param array $options 查询条件参数
+	 *
+	 * @return array() $rs 单条信息结果集
+	 */
+	public function getOne($options)
+	{
+		// 自动化构建Model处理
+		$model_name = CONTROLLER_NAME;
+		$model_name = MODULE_NAME . '\\Model\\' . ucfirst($model_name) . 'Model';
+		$m = new $model_name;
+
+		// 排序默认参数处理
+		if (!isset($options['order']) || empty($options['order'])) {
+			$_REQUEST['sort'] = json_decode($_REQUEST['sort'], true);
+			$options['order'] = $_REQUEST['sort'];
+		}
+
+		$rs = $m->getOne($options);
+		$this->setRes($rs);
 		return $rs;
 	}
 }

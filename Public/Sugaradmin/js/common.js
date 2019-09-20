@@ -12,9 +12,15 @@ var SugarCommons = {
 	// 全局ajax是否使用缓存（暂时无用，后续需加入到方法）
 	ajaxCache: false,
 
+	// 是否开启debug信息
+	debug: false,
+
+	// 是否开启debug后的信息强制输出
+	printDebug: false,
+
 	/**
 	 * 公用函数库名称设置
-	 * @param {string} commons_name 
+	 * @param {string} commons_namess
 	 */
 	setCommonsName: function (commons_name) {
 		// 初始化验证
@@ -230,6 +236,13 @@ var SugarCommons = {
 			SugarCommons.errorMsg("SugarCommons plus is error:: ajax error in function runEditDialogByAjax(), sugar-url is empty !");
 		}
 
+		sugar_data = sugar_data ? sugar_data : {};
+		// 判断debug是否开启
+		if (SugarCommons.debug == true) {
+			sugar_data.debug = true;
+			sugar_data.printDebug = SugarCommons.printDebug;
+		}
+
 		// 显示加载对应的信息
 		var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
 		$(target).find('.loading-title').html(title);
@@ -238,9 +251,9 @@ var SugarCommons = {
 		$.ajax({
 			url: url,
 			type: "GET",
-			dataType: 'html',
+			dataType: "html",
 			data: sugar_data,
-			cache: false,
+			cache: SugarCommons.ajaxCache,
 			success: function (res, status, xhr) {
 				// 内容
 				$(target).html(res);

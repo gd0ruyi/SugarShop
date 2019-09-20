@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 自定义数组打印输出
  *
@@ -6,13 +7,14 @@
  * @param expression $value 输出值
  * @param string $is_exit 是否退出，默认为不退出
  */
-function printR($value, $is_exit = false) {
+function printR($value, $is_exit = false)
+{
 	echo "<pre>\n";
 	echo "<hr />\n";
-	print_r ( $value );
+	print_r($value);
 	echo "<hr />\n";
 	echo "</pre>\n";
-	$is_exit ? exit () : "";
+	$is_exit ? exit() : "";
 }
 
 /**
@@ -28,11 +30,12 @@ function printR($value, $is_exit = false) {
  * @param string $is_exit
  *        	是否退出
  */
-function printRT($title, $content, $value, $is_exit = false) {
+function printRT($title, $content, $value, $is_exit = false)
+{
 	echo "<pre>";
 	echo "<h1>{$title}</h1>\n";
 	echo "<h2>{$content}</h2>\n";
-	printR ( $value, $is_exit );
+	printR($value, $is_exit);
 	echo "</pre>\n";
 }
 
@@ -43,19 +46,20 @@ function printRT($title, $content, $value, $is_exit = false) {
  * @param array $param        	
  * @return array
  */
-function json_dump($param) {
-	if (is_array ( $param )) {
-		$_temp = array ();
-		foreach ( $param as $key => $value ) {
-			if (is_array ( $value )) {
-				$_temp [$key] [_json_dump_gettype ( $value )] = json_dump ( $value );
+function json_dump($param)
+{
+	if (is_array($param)) {
+		$_temp = array();
+		foreach ($param as $key => $value) {
+			if (is_array($value)) {
+				$_temp[$key][_json_dump_gettype($value)] = json_dump($value);
 			} else {
-				$_temp [$key] = _json_dump_gettype ( $value );
+				$_temp[$key] = _json_dump_gettype($value);
 			}
 		}
 	} else {
-		
-		$_temp = _json_dump_gettype ( $param );
+
+		$_temp = _json_dump_gettype($param);
 	}
 	return $_temp;
 }
@@ -67,30 +71,31 @@ function json_dump($param) {
  * @param unknown $value        	
  * @return string
  */
-function _json_dump_gettype($value) {
+function _json_dump_gettype($value)
+{
 	$type = "unknown type";
-	if (is_array ( $value ))
-		$type = "array(" . count ( $value ) . ")";
-	if (is_bool ( $value ))
+	if (is_array($value))
+		$type = "array(" . count($value) . ")";
+	if (is_bool($value))
 		$type = "boolean(" . ($value ? 'true' : 'false') . ")";
-	if (is_float ( $value ))
+	if (is_float($value))
 		$type = "float(" . $value . ")";
-	if (is_int ( $value ))
+	if (is_int($value))
 		$type = "integer(" . $value . ")";
-	if (is_string ( $value ))
-		$type = "string(" . strlen ( $value ) . ") {$value}";
-	if (is_null ( $value ))
+	if (is_string($value))
+		$type = "string(" . strlen($value) . ") {$value}";
+	if (is_null($value))
 		$type = "NULL";
-	if (is_numeric ( $value )) {
-		if (gettype ( $value ) == 'double') {
+	if (is_numeric($value)) {
+		if (gettype($value) == 'double') {
 			$type = "float(" . $value . ")";
 		} else {
-			$type = gettype ( $value ) . "(" . $value . ")";
+			$type = gettype($value) . "(" . $value . ")";
 		}
 	}
-	if (is_object ( $value ))
+	if (is_object($value))
 		$type = "object(" . $value . ")";
-	if (is_resource ( $value ))
+	if (is_resource($value))
 		$type = "resource(" . $value . ")";
 	return $type;
 }
@@ -102,21 +107,30 @@ function _json_dump_gettype($value) {
  * @param string $id        	
  * @return boolean
  */
-function check_verify($code, $id = '') {
-	if (C ( 'VERIFY_CONFIG.IS_OPEN' )) {
-		$verify = new \Think\Verify ();
-		return $verify->check ( $code, $id );
+function check_verify($code, $id = '')
+{
+	if (C('VERIFY_CONFIG.IS_OPEN')) {
+		$verify = new \Think\Verify();
+		return $verify->check($code, $id);
 	}
 	return true;
 }
 
 /**
-* 多个连续空格只保留一个
-*
-* @param string $string 待转换的字符串
-* @return string $string 转换后的字符串
-*/
-function merge_spaces($string){
-    return preg_replace("/\s(?=\s)/","\\1",$string);
+ * 多个连续空格只保留一个
+ *
+ * @param string $string 待转换的字符串
+ * @return string $string 转换后的字符串
+ */
+function merge_spaces($string)
+{
+	return preg_replace("/\s(?=\s)/", "\\1", $string);
 }
-?>
+
+function getLocalUrl()
+{
+	$url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+	$url .= ($_SERVER['SERVER_PORT'] != '80' ? $_SERVER['SERVER_PORT'] : '') . '/';
+	$url .= $_SERVER['PATH_INFO'];
+	return $url;
+}

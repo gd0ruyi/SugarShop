@@ -40,6 +40,22 @@ class BaseModel extends MongoModel
     }
 
     /**
+     * 获取单条信息
+     *
+     * @param array $options 查询条件参数
+     * @return void
+     */
+    public function getOne($options)
+    {
+        // 使用getList处理
+        $this->bsm_rs = $this->getList($options, 0, 0);
+        // 取出单条赋值
+        $this->bsm_rs['data'] = array_shift($this->bsm_rs['data']);
+
+        return $this->bsm_rs;
+    }
+
+    /**
      * 通用获取分页列表信息
      *
      * @param array $options 查询条件参数

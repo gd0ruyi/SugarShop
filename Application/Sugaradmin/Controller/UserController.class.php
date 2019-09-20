@@ -40,14 +40,58 @@ class UserController extends BaseController
 	 */
 	public function loadAjax()
 	{
-		$data = array();
-		$rs = $this->getList(array());
-		$this->setRes($rs);
-		$this->suc($data, true);
+		// $data = array();
+		// $rs = $this->getList(array());
+		// $this->setRes($rs);
+		// $this->suc($data, true);
+		$this->getList(array());
+		$this->suc();
 	}
 
+	/**
+	 * 编辑页面处理
+	 *
+	 * @return void
+	 */
 	public function edit()
 	{
+		$options = array();
+		$options['user_id'] = 1;
+		$rs = $this->getOne($options);
+		$this->assign('user', $rs['data']);
 		$this->display();
+	}
+
+	public function save()
+	{
+		$user_model = D("Sugaradmin/User");
+		$data = array();
+
+		if ($data['_id']) {
+			$data['_id'] = $_REQUEST['_id'];
+		}
+		$data['user_id'] = intval($_GET['user_id']);
+		$data['username'] = trim($_GET['username']);
+		$data['password'] = $_GET['password'];
+		$data['password'] = md5($data['usename'] . $data['password']);
+		$data['truename'] = trim($_GET['truename']);
+		$data['email'] = trim($_GET['email']);
+		$data['mobile'] = trim($_GET['mobile']);
+		$data['status'] = intval($_GET['status']);
+		$data['use_type'] = 0;
+		$time = time();
+		$data['add_time'] = $time;
+		$data['upd_time'] = $time;
+		$data['las_time'] = 0;
+
+		$options = array();
+		// $options ['id'] = 1;
+		$options['_options'] = array(
+			'fsync' => true,
+			'safe' => true
+		);
+
+		$user_model->save($data,$options);
+		
 	}
 }
