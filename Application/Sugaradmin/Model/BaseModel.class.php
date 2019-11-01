@@ -20,7 +20,7 @@ class BaseModel extends MongoModel
      */
     public $bsm_rs = array(
         'pk' => '',
-        'options' => array(),
+        'query' => array(),
         'data' => array(),
         'count' => 0,
         'pager' => array()
@@ -42,13 +42,13 @@ class BaseModel extends MongoModel
     /**
      * 获取单条信息
      *
-     * @param array $options 查询条件参数
+     * @param array $query 查询条件参数
      * @return void
      */
-    public function getOne($options)
+    public function getOne($query)
     {
         // 使用getList处理
-        $this->bsm_rs = $this->getList($options, 0, 0);
+        $this->bsm_rs = $this->getList($query, 0, 0);
         // 取出单条赋值
         $this->bsm_rs['data'] = array_shift($this->bsm_rs['data']);
 
@@ -58,23 +58,23 @@ class BaseModel extends MongoModel
     /**
      * 通用获取分页列表信息
      *
-     * @param array $options 查询条件参数
+     * @param array $query 查询条件参数
      * @param integer $listRows 每页条数,默认为0，当为0时表示不分页
      * @param integer $nowPage 当前页,默认使用ThinkPHP的P
      * 
      * @return array() $pager 分页信息结果集
      */
-    public function getList($options, $listRows = 0, $nowPage = 0)
+    public function getList($query, $listRows = 0, $nowPage = 0)
     {
         // 初始化
-        if (empty($options)) {
-            $options = array();
-            $options['where'] = array();
-            $options['order'] = array();
+        if (empty($query)) {
+            $query = array();
+            $query['where'] = array();
+            $query['order'] = array();
         }
         $this->bsm_rs = array();
         $this->bsm_rs['pk'] = $this->getPk();
-        $this->bsm_rs['options'] = $options;
+        $this->bsm_rs['options'] = $query;
         $this->bsm_rs['data'] = array();
         $this->bsm_rs['count'] = 0;
         $this->bsm_rs['pager'] = array();
@@ -83,17 +83,17 @@ class BaseModel extends MongoModel
 
         //校验
         //默认为使用主键倒序排序
-        $options['order'] = empty($options['order']) ? array($this->bsm_rs['pk'] => 'desc') : $options['order'];
+        $query['order'] = empty($query['order']) ? array($this->bsm_rs['pk'] => 'desc') : $query['order'];
         // 强制格式化排序，将会过滤处理
-        $options['order'] = $this->_formatOptionsSort($options['order']);
+        $query['order'] = $this->_formatOptionsSort($query['order']);
         $nowPage = intval($nowPage);
         $listRows = intval($listRows);
 
         // 求条件后的条数
-        $this->bsm_rs['count'] = $this->where($options['where'])->order($options['order'])->count();
+        $this->bsm_rs['count'] = $this->where($query['where'])->order($query['order'])->count();
 
         // 处理后的重新赋值
-        $this->bsm_rs['options'] = $options;
+        $this->bsm_rs['query'] = $query;
 
         // 判断是否进行分页处理
         if ($listRows) {
@@ -101,15 +101,15 @@ class BaseModel extends MongoModel
             $this->bsm_rs['pager'] = $pager->getInfo($nowPage);
             $nowPage = $this->bsm_rs['pager']['nowPage'];
             // 查询结果集
-            $this->bsm_rs['data'] = $this->page($nowPage, $listRows)->select($options);
+            $this->bsm_rs['data'] = $this->page($nowPage, $listRows)->select($query);
         } else {
-            $this->bsm_rs['data'] =  $this->select($options);
+            $this->bsm_rs['data'] =  $this->select($query);
         }
 
         // 自定义结果集格式化
         $this->bsm_rs['data'] = $this->_parseResValue($this->bsm_rs['data']);
         return $this->bsm_rs;
-    }
+    }  
 
     /**
      * 排序字段处理

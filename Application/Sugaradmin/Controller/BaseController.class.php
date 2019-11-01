@@ -31,17 +31,11 @@ class BaseController extends Controller
 		'msg' => 'success',
 		'jump' => '',
 		'data' => null,
-		'pager' => array()
+		'pager' => array(),
+		'valid' => false
 	);
 
 	public $pager_size = 10;
-
-	/**
-	 * 自定义调试数组
-	 *
-	 * @var array
-	 */
-	private $_debug = array();
 
 	/**
 	 * 初始化方法
@@ -156,8 +150,8 @@ class BaseController extends Controller
 	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '')
 	{
 		$this->displayAutoByIsAjax($templateFile, $charset, $contentType, $content, $prefix);
-		// debug输出
-		$this->resDebug();
+		// 输出模版前用于输入debug
+		isDebug() ? $this->_printDebug() : '';
 	}
 
 	/**
@@ -210,8 +204,8 @@ class BaseController extends Controller
 		$this->setRes($res);
 		header('Content-Type:application/json; charset=utf-8');
 		echo json_encode($this->_res, $json_options);
-		// debug输出
-		$this->resDebug();
+		//  是否输出debu打印
+		isDebug() ? $this->_printDebug() : '';
 		exit();
 	}
 
@@ -228,6 +222,7 @@ class BaseController extends Controller
 		$this->_res['title'] = $title;
 		$this->_res['msg'] = $msg;
 		$this->_res['data'] = empty($data) ? $this->_res['data'] : $data;
+		$this->_res['valid'] = true;
 		$this->resReturn($this->_res);
 	}
 
@@ -250,6 +245,7 @@ class BaseController extends Controller
 		$this->_res['title'] = $title;
 		$this->_res['msg'] = $msg;
 		$this->_res['data'] = $data;
+		$this->_res['valid'] = false;
 		$this->resReturn($this->_res);
 	}
 
@@ -277,10 +273,31 @@ class BaseController extends Controller
 	 *        	debug的键值
 	 * @return unknown
 	 */
-	public function setDebug($key, $value)
+	/* public function setResDebug($key = '', $value = '')
 	{
-		return $this->_debug[$key] = $value;
-	}
+		if (isDebug() && IS_AJAX) {
+			// 返回结果集赋值
+			$this->_res['debug'] = array(
+				'MODULE_PATH' => MODULE_PATH,
+				'NOW_TIME' => date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")",
+				'REQUEST_METHOD' => REQUEST_METHOD,
+				'IS_AJAX' => IS_AJAX,
+				// 'res' => $this->_res,
+				'res_dump' => json_dump($this->_res),
+				'debug_data' => $this->_debug,
+				'debug_data_dump' => json_dump($this->_debug),
+				'get' => $_GET,
+				'post' => $_POST,
+				'session' => $_SESSION,
+				'cookie' => $_COOKIE
+			);
+		}
+		if ($key) {
+			$this->_res['debug'][$key] = $value;
+		}
+
+		return $this->_res['debug'];
+	} */
 
 	/**
 	 * 自定义debug输出，用于查看php打印返回结果集
@@ -289,36 +306,7 @@ class BaseController extends Controller
 	 * @return boolean
 	 */
 	public function resDebug()
-	{
-		if (boolval($_GET['debug']) && APP_DEBUG == true) {
-			if (IS_AJAX) {
-				// 返回结果集赋值
-				$debug = array(
-					'MODULE_PATH' => MODULE_PATH,
-					'NOW_TIME' => date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")",
-					'REQUEST_METHOD' => REQUEST_METHOD,
-					'IS_AJAX' => IS_AJAX,
-					// 'res' => $this->_res,
-					'res_dump' => json_dump($this->_res),
-					'debug_data' => $this->_debug,
-					'debug_data_dump' => json_dump($this->_debug),
-					'get' => $_GET,
-					'post' => $_POST,
-					'session' => $_SESSION,
-					'cookie' => $_COOKIE
-				);
-				$this->_res['debug'] = $debug;
-				// 当为ajax时，判断是否需要强制输出打印
-				if (boolval($_GET['printDebug'])) {
-					$this->_printDebug();
-				}
-			} else {
-				$this->_printDebug();
-			}
-			return true;
-		}
-		return false;
-	}
+	{ }
 
 	/**
 	 * 打印debug信息
@@ -337,7 +325,7 @@ class BaseController extends Controller
 		echo "<pre>Tip: If you use ajax to request, you can use the browser to open and get the Trace information of the page. </pre>\n";
 		echo "<hr />\n";
 
-		echo "<pre><h1>URL: " . getLocalUrl() . "</h1>\n";
+		echo "<pre><h1>URL: " . getLocalUrl() . "</h1></pre>\n";
 		echo "<pre><h1>ACTION: " . __ACTION__ . "</h1>\n";
 		// echo "<pre><h1>MODULE_PATH:" . MODULE_PATH . "</h1>\n";
 		echo "NOW_TIME : " . date('Y-m-d H:i:s', NOW_TIME) . '(' . NOW_TIME . ")\n";
@@ -405,16 +393,13 @@ class BaseController extends Controller
 			echo "</pre>\n";
 		}
 
-		echo "<hr />\n";
-		echo "<pre><h1>Debug End</h1></pre>";
-
-
 		// 此处为了加载页面Tace
 		// $this->display ( 'Public/index' );
 		$spt = new ShowPageTraceBehavior();
 		$param = array();
-
 		$spt->run($param);
+		echo "<hr />\n";
+		echo "<pre><h1>Debug End</h1></pre>";
 	}
 
 	/**
@@ -551,13 +536,13 @@ class BaseController extends Controller
 	/**
 	 * 通用获取分页列表信息，注意使用前务必导入对应的Model（use YournameModel）
 	 *
-	 * @param array $options 查询条件参数
+	 * @param array $query 查询条件参数
 	 * @param integer $listRows 每页条数,默认为pager_size，使用传参分页（传入为all时表示全部）;当为0时表示不分页（避免页面传参直接获取全部数据）
 	 * @param integer $nowPage 当前页,默认使用ThinkPHP的P
 	 * 
 	 * @return array() $pager 分页信息结果集
 	 */
-	public function getList($options, $listRows = 'pager_size', $nowPage = 0)
+	public function getList($query, $listRows = 'pager_size', $nowPage = 0)
 	{
 		// 自动化构建Model处理
 		$model_name = CONTROLLER_NAME;
@@ -565,9 +550,9 @@ class BaseController extends Controller
 		$m = new $model_name;
 
 		// 排序默认参数处理
-		if (!isset($options['order']) || empty($options['order'])) {
+		if (!isset($query['order']) || empty($query['order'])) {
 			$_REQUEST['sort'] = json_decode($_REQUEST['sort'], true);
-			$options['order'] = $_REQUEST['sort'];
+			$query['order'] = $_REQUEST['sort'];
 		}
 
 		// 判断是否使用默认的page_size分页
@@ -583,18 +568,18 @@ class BaseController extends Controller
 			$listRows = $listRows < 0 ? 10 : $listRows;
 		}
 
-		$rs = $m->getList($options, $listRows, $nowPage);
+		$rs = $m->getList($query, $listRows, $nowPage);
 		$this->setRes($rs);
 		return $rs;
 	}
 
 	/**
 	 * 获取单条信息
-	 * @param array $options 查询条件参数
+	 * @param array $query 查询条件参数
 	 *
 	 * @return array() $rs 单条信息结果集
 	 */
-	public function getOne($options)
+	public function getOne($query)
 	{
 		// 自动化构建Model处理
 		$model_name = CONTROLLER_NAME;
@@ -602,13 +587,13 @@ class BaseController extends Controller
 		$m = new $model_name;
 
 		// 排序默认参数处理
-		if (!isset($options['order']) || empty($options['order'])) {
+		if (!isset($query['order']) || empty($query['order'])) {
 			$_REQUEST['sort'] = json_decode($_REQUEST['sort'], true);
-			$options['order'] = $_REQUEST['sort'];
+			$query['order'] = $_REQUEST['sort'];
 		}
 
-		$rs = $m->getOne($options);
-		$this->setRes($rs);
+		$rs = $m->getOne($query);
+		// $this->setRes($rs);
 		return $rs;
 	}
 }

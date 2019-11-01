@@ -32,13 +32,13 @@ class LoginController extends BaseController {
 		$query ['username'] = $_POST ['username'];
 		$query ['password'] = md5 ( $_POST ['usename'] . $_POST ['password'] );
 		
-		$options = array ();
+		$query = array ();
 		// 查询时自动创建索引（示例）
-		$options ['_auto_create_index'] = true;
+		$query ['_auto_create_index'] = true;
 		
 		$sort = array ();
 		$sort ['username'] = 1;
-		$rs = $user_model->where ( $query )->order ( $sort )->find ( $options );
+		$rs = $user_model->where ( $query )->order ( $sort )->find ( $query );
 		
 		if ($rs ['username']) {
 			$sess_data = $rs;

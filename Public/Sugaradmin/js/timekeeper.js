@@ -222,7 +222,12 @@ var TimeKeeper = {
             var second = TimeKeeper.tps[target].times * speed / 1000;
             second = second.toFixed(1);
             // 秒显示处理
-            $(loading_waiting_id).find(".loading-second").html(second);
+            // 判断因历史任务记录出现多个相同的loading_waiting_id导致秒不显示的情况
+            if ($(target).find(loading_waiting_id).length > 0) {
+                $(target).find(loading_waiting_id).find(".loading-second").html(second);
+            } else {
+                $(loading_waiting_id).find(".loading-second").html(second);
+            }
         }, speed);
         return loading_waiting_id;
     },

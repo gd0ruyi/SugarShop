@@ -225,7 +225,11 @@ var SugarCommons = {
 		// 弹出对话框的默认模版ID
 		var modal_target_id = SugarCommons.edit_dialog_tpl_id;
 		$(modal_target_id).modal('show');
-		$(modal_target_id + ' .modal-body').attr('id', target_id);
+
+		// 判断原有模版是否存在，不存在重新绑定ID
+		if ($(target).length <= 0) {
+			$(modal_target_id + ' .modal-body').attr('id', target_id);
+		}
 
 		// loading的选择器名称
 		var loading_target_title = modal_target_id + ' .edit-title';
@@ -240,11 +244,11 @@ var SugarCommons = {
 		// 判断debug是否开启
 		if (SugarCommons.debug == true) {
 			sugar_data.debug = true;
-			sugar_data.printDebug = SugarCommons.printDebug;
 		}
 
 		// 显示加载对应的信息
-		var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
+		// var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
+		TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
 		$(target).find('.loading-title').html(title);
 
 		// ajax请求处理
@@ -269,15 +273,39 @@ var SugarCommons = {
 		});
 	},
 
+	// 通用插件加载创建
 	createPlugin: function () {
 		SugarCommons.createSelectInput();
 		SugarCommons.createEditDialogByAjax();
-	}
+	},
 
+	// 设置inptu框loading加载样式，用于表单input异步验证使用。
+	makeInputLoadingCss: function (target, show) {
+		if (show) {
+			$(target).show();
+			$(target).addClass("glyphicon-refresh");
+			$(target).addClass("animation");
+		} else {
+			$(target).removeClass("glyphicon-refresh");
+			$(target).removeClass("animation");
+		}
+	},
+
+	// 自动强制校正数字输入,使用自定义样式进行处理
+	forceToNumber: function () {
+		$(".forceToNumber").keyup(function () {
+			$(this).val($(this).val().replace(/[^\d]/g, ''));
+			//CTR+V事件处理
+		}).bind("paste", function () {
+			$(this).val($(this).val().replace(/[^\d]/g, ''));
+			//CSS设置输入法不可用
+		}).css("ime-mode", "disabled");
+	}
 }
 
 // jquery通用扩展
 $.extend({
+	// 用于计数
 	"count": function (obj) {
 		var count = 0;
 		if (typeof (obj) != "object" && typeof (obj) != "function") {
@@ -289,3 +317,25 @@ $.extend({
 		return count;
 	}
 });
+
+// 自定义表单序列化对象提交方法
+$.fn.serializeJson = function () {
+	var sObj = {};
+	var sArry = this.serializeArray();
+	$(sArry).each(function () {
+		//如果属性已经存在
+		if (sObj[this.name]) {
+			if ($.isArray(sObj[this.name])) {
+				//已经有此数组，添加数据即可
+				sObj[this.name].push(this.value);
+			} else {
+				//变成数组，并添加当前遍历的value
+				sObj[this.name] = [sObj[this.name], this.value];
+			}
+		} else {
+			//普通赋值。
+			sObj[this.name] = this.value;
+		}
+	});
+	return sObj;
+};

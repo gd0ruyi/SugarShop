@@ -60,7 +60,7 @@
             <li role="separator" class="divider"></li>
             <li><a href="#" value="all">全部类型</a></li>
           </ul>
-          <input type="hidden" name="user_type" value="">
+          <input type="hidden" name="use_type" value="">
         </div>
       </div>
 
@@ -99,7 +99,8 @@
 
   // 开启debug
   SugarCommons.debug = true;
-  SugarCommons.printDebug = true;
+  
+  // alert(SugarCommons.debug);
 
   // 执行创建表格
   var columns = {

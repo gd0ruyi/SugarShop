@@ -24,10 +24,10 @@ class UserController extends BaseController
 	 */
 	public function index()
 	{
-		$user_model = D("Sugaradmin/User");
+		// $user_model = D("Sugaradmin/User");
 		// $user_model = new UserModel();
-		$user_list = $user_model->getList(array(), '', 1, 10);
-		$this->assign('user_list', $user_list);
+		// $user_list = $user_model->getList(array(), '', 1, 10);
+		// $this->assign('user_list', $user_list);
 		// $this->display ();
 		// $this->displayAutoAjax();
 		$this->display();
@@ -44,7 +44,25 @@ class UserController extends BaseController
 		// $rs = $this->getList(array());
 		// $this->setRes($rs);
 		// $this->suc($data, true);
-		$this->getList(array());
+
+		$query = array();
+		$query['where'] = array();
+
+		// 关键字处理
+		if (isset($_GET['user_keyword']) && trim($_GET['user_keyword']) != '') {
+			$query['where']['username'] = array('like', '^' . trim($_GET['use_type']));
+		}
+
+		// 用户类型条件处理
+		if (isset($_GET['use_type']) && $_GET['use_type'] != 'all') {
+			$query['where']['use_type'] = intval($_GET['use_type']);
+		}
+
+		// 用户状态条件处理
+		if (isset($_GET['status']) && $_GET['status'] != 'all') {
+			$query['where']['status'] = intval($_GET['status']);
+		}
+		$this->getList($query);
 		$this->suc();
 	}
 
@@ -55,13 +73,30 @@ class UserController extends BaseController
 	 */
 	public function edit()
 	{
-		$options = array();
-		$options['user_id'] = 1;
-		$rs = $this->getOne($options);
+		/**
+		 * 1、需要页面加入js验证
+		 * 2、需要判断传入参数的合法性校验，并处理json返回
+		 * 3、需要逻辑处理若传入参数则编辑，若无id参数为空。
+		 * 4、使用ThinkPHP的model、create方法进行自动校验
+		 */
+		$query = array();
+		$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : false;
+		$rs = array();
+		$rs['data'] = array();
+		if ($user_id) {
+			$query['where'] = array();
+			$query['where']['user_id'] = $user_id;
+			$rs = $this->getOne($query);
+		}
 		$this->assign('user', $rs['data']);
 		$this->display();
 	}
 
+	/**
+	 * 保存用户信息
+	 *
+	 * @return void
+	 */
 	public function save()
 	{
 		$user_model = D("Sugaradmin/User");
@@ -70,10 +105,12 @@ class UserController extends BaseController
 		if ($data['_id']) {
 			$data['_id'] = $_REQUEST['_id'];
 		}
+
 		$data['user_id'] = intval($_GET['user_id']);
 		$data['username'] = trim($_GET['username']);
 		$data['password'] = $_GET['password'];
-		$data['password'] = md5($data['usename'] . $data['password']);
+		// 密码加密规则
+		$data['password'] = makePassword($data['usename'], $data['password']);
 		$data['truename'] = trim($_GET['truename']);
 		$data['email'] = trim($_GET['email']);
 		$data['mobile'] = trim($_GET['mobile']);
@@ -91,7 +128,27 @@ class UserController extends BaseController
 			'safe' => true
 		);
 
-		$user_model->save($data,$options);
-		
+		if ($user_model->create($data))
+
+			$user_model->save($data, $options);
+	}
+
+	/**
+	 * 校验用户名称唯一
+	 *
+	 * @return void
+	 */
+	public function checkUserUnique()
+	{
+		$query = array();
+		$query['where'] = array();
+		$query['where']['username'] = trim($_GET['username']);
+		$data = $this->getOne($query);
+		$data = $data['data'];
+		if (!isset($data['username'])) {
+			$this->suc($data);
+		} else {
+			$this->err('用户已存在！');
+		}
 	}
 }

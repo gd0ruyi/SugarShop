@@ -331,7 +331,9 @@ class Think {
             $info   =   ($label?$label.':':'').print_r($value,true);
             $level  =   strtoupper($level);
             
-            if((defined('IS_AJAX') && IS_AJAX) || !C('SHOW_PAGE_TRACE')  || $record) {
+            // 已自定义AJAX调试输入，因此取消对ajax的判断
+            // if((defined('IS_AJAX') && IS_AJAX) || !C('SHOW_PAGE_TRACE')  || $record) {
+            if(!C('SHOW_PAGE_TRACE')  || $record) {
                 Log::record($info,$level,$record);
             }else{
                 if(!isset($_trace[$level]) || count($_trace[$level])>C('TRACE_MAX_RECORD')) {

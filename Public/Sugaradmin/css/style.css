@@ -214,6 +214,13 @@ body {
     animation-timing-function: linear;
 }
 
+/* 用于表单内输入框图标显示动画 */
+.form-control-feedback.glyphicon.glyphicon-refresh{
+    /* 动画效果*/
+    animation: loading-rotation 1s infinite;
+    animation-timing-function: linear;
+}
+
 @keyframes loading-rotation {
     from {
         transform: rotate(0deg);
@@ -274,6 +281,19 @@ body {
 
 .form-group .btn-group .btn-default {
     background-image: none;
+}
+
+/* 自动验证表单样式修正 */
+.has-feedback .form-control{
+    padding-right: 0px;
+}
+
+.bv-form .form-control{
+    padding: 0px 12px;
+}
+
+.form-horizontal .has-feedback .form-control-feedback{
+    right: 0;
 }
 
 /*** 表格样式 ***/

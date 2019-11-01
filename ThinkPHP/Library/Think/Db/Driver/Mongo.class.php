@@ -602,6 +602,18 @@ class Mongo extends Driver {
 			E ( $e->getMessage () );
 		}
 	}
+
+	/**
+	 * 分组
+	 * @author ruyi <gd0ruyi@163.com> 2019年10月29日
+	 * @see 加入注释，后续用到需要进行调整，部份代码尚未确认用处
+	 *
+	 * @param [type] $keys
+	 * @param [type] $initial
+	 * @param [type] $reduce
+	 * @param array $options
+	 * @return void
+	 */
 	public function group($keys, $initial, $reduce, $options = array()) {
 		if (isset ( $options ['table'] ) && $this->_collectionName != $options ['table']) {
 			$this->switchCollection ( $options ['table'], '', false );
@@ -626,6 +638,7 @@ class Mongo extends Driver {
 		}
 		try {
 			$this->debug ( true );
+			// 这里没有用到option
 			$option = array (
 					'condition' => $options ['condition'],
 					'finalize' => $options ['finalize'],

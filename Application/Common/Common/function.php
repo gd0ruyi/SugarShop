@@ -127,10 +127,37 @@ function merge_spaces($string)
 	return preg_replace("/\s(?=\s)/", "\\1", $string);
 }
 
+/**
+ * 获取当前页面url
+ *
+ * @return string
+ */
 function getLocalUrl()
 {
 	$url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 	$url .= ($_SERVER['SERVER_PORT'] != '80' ? $_SERVER['SERVER_PORT'] : '') . '/';
 	$url .= $_SERVER['PATH_INFO'];
 	return $url;
+}
+
+
+/**
+ * 用于密码加密处理
+ *
+ * @return string password
+ */
+function makePassword($username, $password)
+{
+	return md5($username . $password);
+}
+
+/**
+ * 获取页面的debug状态
+ *
+ * @return void
+ */
+function isDebug()
+{
+	$param_allow = array('true', '1');
+	return isset($_GET['debug']) && in_array($_GET['debug'], $param_allow) && APP_DEBUG == true;
 }

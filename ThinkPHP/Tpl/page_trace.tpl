@@ -42,7 +42,7 @@ open.onclick = function(){
 }
 close.onclick = function(){
 	trace.style.display = 'none';
-this.parentNode.style.display = 'none';
+	this.parentNode.style.display = 'none';
 	open.style.display = 'block';
 	history[0] = 0;
 	document.cookie = 'thinkphp_show_page_trace='+history.join('|')

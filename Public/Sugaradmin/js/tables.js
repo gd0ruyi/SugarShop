@@ -403,17 +403,17 @@ var SugarTables = {
 		// console.log($(form_id).serialize());
 
 		// 表提交数据
-		var form_data = $(form_id).serialize();
-		form_data += '&sort=' + JSON.stringify(SugarTables.sts[form_id].table.sort);
+		var form_data = $(form_id).serializeJson();
+		form_data.sort = JSON.stringify(SugarTables.sts[form_id].table.sort);
 
 		// 定义传输类型
 		var data_type = 'json';
 
 		// 判断debug是否开启
 		if (SugarCommons.debug == true) {
-			form_data += '&debug=true';
-			form_data += '&printDebug=' + SugarCommons.printDebug;
+			form_data.debug = true;
 			data_type = 'html';
+			// console.log('debug is open!');
 		}
 		// console.log(form_data);
 
@@ -427,15 +427,17 @@ var SugarTables = {
 			success: function (res, status, xhr) {
 				
 				// 当为debug模式时
-				if (SugarCommons.debug && SugarCommons.printDebug) {
+				if (SugarCommons.debug) {
 					var debugHtml = (res + '').split('<!--Source Code End-->');
-					res = $.parseJSON(debugHtml[0]);					
+					res = $.parseJSON(debugHtml[0]);
 					// console.log(debugHtml);
+					// 输出printDbueg信息
+					$(form_id).after(debugHtml[1]);
 				}
 
 				if (res.status == 0) {
 					// 关闭加载
-					TimeKeeper.loadingWaitingEnd(td_loading_id);				
+					TimeKeeper.loadingWaitingEnd(td_loading_id);
 
 					// 产生动态表格
 					SugarTables.makeTbody(form_id, table_id, res.data, columns);
@@ -443,10 +445,7 @@ var SugarTables = {
 					// 分页信息处理
 					if (SugarTables.pager_auto_create == true) {
 						SugarTables.makePager(form_id, res.pager);
-					}
-
-					// 输出printDbueg信息
-					$(form_id).after(debugHtml[1]);
+					}			
 
 				} else {
 					// 关闭加载

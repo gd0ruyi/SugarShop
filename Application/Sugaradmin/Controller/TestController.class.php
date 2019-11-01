@@ -117,7 +117,7 @@ class TestController extends BaseController
 		}
 		// printR($data);
 
-		$options = array();
+		// $options = array();
 		// $options['_options'] = array(
 		// 	'fsync' => true,
 		// 	'safe' => true
@@ -131,16 +131,16 @@ class TestController extends BaseController
 		// 需要补充mongod获取自增最后的ID，在db驱动类内
 		printR($test->getLastInsID());
 
-		$options = array();
-		$options['_auto_create_index'] = true;
+		$query = array();
+		$query['_auto_create_index'] = true;
 		// 配置返回数组的每行键的名称为test_id
-		$options['index'] = 'test_id';
-		$res = $test->order('test_id desc')->select($options);
+		$query['index'] = 'test_id';
+		$res = $test->order('test_id desc')->select($query);
 		// printR ( $test->getLastInsID () );
 		// printR ( $res );
 
 		// ThinkPhP 的find是返回一条数据，如同mongdb的findOne
-		// $res = $test->order ( 'test_id desc' )->find ( $options );
+		// $res = $test->order ( 'test_id desc' )->find ( $query );
 		printR($res);
 	}
 

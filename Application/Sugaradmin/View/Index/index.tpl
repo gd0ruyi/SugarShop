@@ -296,8 +296,16 @@
   <script src="/Public/Sugaradmin/js/tabs.js" language="javascript"></script>
   <script language="javascript" type="text/javascript" src="/Public/Sugaradmin/js/tables.js"></script>
   <script language"javascript" type="text/javascript">
+    // 是否使用debug输出
+    var isDebug = '<{$IS_DEBUG}>' ? true : false;
+    SugarCommons.debug = isDebug;
+
     // 加载完成后执行
     $(document).ready(function () {
+
+      // 是否开启debug
+      // SugarCommons.debug = true;
+
       // 使用dialog方式加载loading
       SugarTabs.loading_waiting_style = 'dialog';
       // 运行自定义Tabs控件
