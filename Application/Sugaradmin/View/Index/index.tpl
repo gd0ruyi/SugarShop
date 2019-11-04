@@ -9,6 +9,8 @@
   <title>SugarAdmin-平台管理</title>
   <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
   <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+  <!-- <link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet"> -->
+  <link href="/Public/bootstrapvalidator-0.5.2/dist/css/bootstrapValidator.min.css" rel="stylesheet">
   <link href="/Public/Sugaradmin/css/style.css" rel="stylesheet">
 </head>
 
@@ -291,6 +293,9 @@
 
   <script src="/Public/jquery/jquery-1.11.3.min.js"></script>
   <script src="/Public/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+  <!-- Bootstrap验证加载 -->
+  <!-- <script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script> -->
+  <script src="/Public/bootstrapvalidator-0.5.2/dist/js/bootstrapValidator.min.js"></script>
   <script language="javascript" type="text/javascript" src="/Public/Sugaradmin/js/common.js"></script>
   <script language="javascript" type="text/javascript" src="/Public/Sugaradmin/js/timekeeper.js"></script>
   <script src="/Public/Sugaradmin/js/tabs.js" language="javascript"></script>

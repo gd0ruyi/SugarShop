@@ -21,8 +21,8 @@ class BaseController extends Controller
 	);
 	// 真实的get传入
 	protected $_isset_get_map = array();
-	// 管理员ID
-	public $user_id = 0;
+	// 当期用户id
+	public $self_user_id = 0;
 
 	// 返回json的格式
 	private $_res = array(
@@ -35,7 +35,11 @@ class BaseController extends Controller
 		'valid' => false
 	);
 
+	// 默认分页数
 	public $pager_size = 10;
+
+	// 动态的mode
+	public $auto_model = array();
 
 	/**
 	 * 初始化方法
@@ -95,12 +99,25 @@ class BaseController extends Controller
 	 */
 	public function checkLogin()
 	{
-		$this->user_id = intval($_SESSION['user_id']);
-		if (!$this->user_id) {
+		$this->self_user_id = intval($_SESSION['user_id']);
+		if (!$this->self_user_id) {
 			$this->error('您尚未登录或登录超时，请重新登录！', __MODULE__ . '/Login/index');
 			// 默认访问跳转到登录页
 			// $this->redirect ( __MODULE__ . '/Login/index' );
 		}
+	}
+
+	/**
+	 * 自动化构建对应的model
+	 *
+	 * @return void
+	 */
+	public function makeAutoModel()
+	{
+		// 自动化构建Model处理
+		$model_name = CONTROLLER_NAME;
+		$model_name = MODULE_NAME . '\\Model\\' . ucfirst($model_name) . 'Model';
+		return $this->auto_model = new $model_name;
 	}
 
 	/**
@@ -315,7 +332,9 @@ class BaseController extends Controller
 	 */
 	public function _printDebug()
 	{
-		header('Content-Type:text/html; charset=utf-8');
+		if (!IS_AJAX) {
+			header('Content-Type:text/html; charset=utf-8');
+		}
 
 		echo "<!--Source Code End-->\n";
 
@@ -342,15 +361,15 @@ class BaseController extends Controller
 		dump($this->_res);
 		echo "</pre>\n";
 
-		echo "<pre><h1>debug date print</h1>\n";
-		echo "<hr />\n";
-		print_r($this->_debug);
-		echo "</pre>\n";
+		// echo "<pre><h1>debug date print</h1>\n";
+		// echo "<hr />\n";
+		// print_r($this->_debug);
+		// echo "</pre>\n";
 
-		echo "<pre><h1>debug date dump</h1>\n";
-		echo "<hr />\n";
-		dump($this->_debug);
-		echo "</pre>\n";
+		// echo "<pre><h1>debug date dump</h1>\n";
+		// echo "<hr />\n";
+		// dump($this->_debug);
+		// echo "</pre>\n";
 
 		echo "<pre><h1>request</h1>\n";
 		echo "<hr />\n";
@@ -544,23 +563,17 @@ class BaseController extends Controller
 	 */
 	public function getList($query, $listRows = 'pager_size', $nowPage = 0)
 	{
-		// 自动化构建Model处理
-		$model_name = CONTROLLER_NAME;
-		$model_name = MODULE_NAME . '\\Model\\' . ucfirst($model_name) . 'Model';
-		$m = new $model_name;
-
 		// 排序默认参数处理
 		if (!isset($query['order']) || empty($query['order'])) {
-			$_REQUEST['sort'] = json_decode($_REQUEST['sort'], true);
-			$query['order'] = $_REQUEST['sort'];
+			$query['order'] = isset($_GET['sort']) ? json_decode($_GET['sort'], true) : array();
 		}
 
 		// 判断是否使用默认的page_size分页
 		if ($listRows == 'pager_size') {
-			if (isset($_REQUEST['pager_size']) && strtolower($_REQUEST['pager_size']) == 'all') {
+			if (isset($_GET['pager_size']) && strtolower($_GET['pager_size']) == 'all') {
 				$listRows = 0;
 			} else {
-				$listRows = isset($_REQUEST['pager_size']) ? intval($_REQUEST['pager_size']) : 0;
+				$listRows = isset($_GET['pager_size']) ? intval($_GET['pager_size']) : 0;
 				$listRows = $listRows <= 0 ? 10 : $listRows;
 			}
 		} else {
@@ -568,7 +581,8 @@ class BaseController extends Controller
 			$listRows = $listRows < 0 ? 10 : $listRows;
 		}
 
-		$rs = $m->getList($query, $listRows, $nowPage);
+		// 自动化构建model
+		$rs = $this->makeAutoModel()->getList($query, $listRows, $nowPage);
 		$this->setRes($rs);
 		return $rs;
 	}
@@ -581,18 +595,12 @@ class BaseController extends Controller
 	 */
 	public function getOne($query)
 	{
-		// 自动化构建Model处理
-		$model_name = CONTROLLER_NAME;
-		$model_name = MODULE_NAME . '\\Model\\' . ucfirst($model_name) . 'Model';
-		$m = new $model_name;
-
 		// 排序默认参数处理
 		if (!isset($query['order']) || empty($query['order'])) {
-			$_REQUEST['sort'] = json_decode($_REQUEST['sort'], true);
-			$query['order'] = $_REQUEST['sort'];
+			$query['order'] = isset($_GET['sort']) ? json_decode($_GET['sort'], true) : array();
 		}
-
-		$rs = $m->getOne($query);
+		// 自动化构建model
+		$rs = $this->makeAutoModel()->getOne($query);
 		// $this->setRes($rs);
 		return $rs;
 	}

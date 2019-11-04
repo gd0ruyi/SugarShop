@@ -50,7 +50,7 @@ class UserController extends BaseController
 
 		// 关键字处理
 		if (isset($_GET['user_keyword']) && trim($_GET['user_keyword']) != '') {
-			$query['where']['username'] = array('like', '^' . trim($_GET['use_type']));
+			$query['where']['username'] = array('like', '^' . trim($_GET['user_keyword']));
 		}
 
 		// 用户类型条件处理
@@ -82,7 +82,8 @@ class UserController extends BaseController
 		$query = array();
 		$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : false;
 		$rs = array();
-		$rs['data'] = array();
+		// 用于传入字段，主要用于页面的userinfo错误解除抛出
+		$rs['data'] = $this->makeAutoModel()->fields;
 		if ($user_id) {
 			$query['where'] = array();
 			$query['where']['user_id'] = $user_id;
@@ -128,9 +129,12 @@ class UserController extends BaseController
 			'safe' => true
 		);
 
-		if ($user_model->create($data))
-
+		// 判断是否符合规则
+		if ($user_model->create($data)){
 			$user_model->save($data, $options);
+		}else{
+
+		}
 	}
 
 	/**
@@ -150,5 +154,9 @@ class UserController extends BaseController
 		} else {
 			$this->err('用户已存在！');
 		}
+	}
+
+	public function test(){
+		$this->display();
 	}
 }

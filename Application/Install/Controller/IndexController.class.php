@@ -45,7 +45,7 @@ class IndexController extends Controller
 		$data['password'] = md5($data['usename'] . $data['password']);
 		$data['truename'] = "超级管理员";
 		$data['email'] = "gd0ruyi@163.com";
-		$data['mobile'] = "+86013661123476";
+		$data['mobile'] = "13661123476";
 		$data['status'] = 0;
 		$data['use_type'] = 0;
 		$time = time();

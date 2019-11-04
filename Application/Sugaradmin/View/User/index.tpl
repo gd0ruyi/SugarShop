@@ -96,10 +96,8 @@
 
   // 加载自定义插件
   SugarCommons.createPlugin();
-
   // 开启debug
-  SugarCommons.debug = true;
-  
+  // SugarCommons.debug = true  
   // alert(SugarCommons.debug);
 
   // 执行创建表格

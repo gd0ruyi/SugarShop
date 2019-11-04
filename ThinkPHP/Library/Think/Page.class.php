@@ -63,7 +63,7 @@ class Page{
     public function setNowPage($page = 0) {
         $page = intval($page);
         /* 基础设置 */
-        $this->nowPage = empty($page) || $page <= 0 ? intval($_REQUEST[$this->p]) : intval($page);
+        $this->nowPage = empty($page) || $page <= 0 ? (isset($_REQUEST[$this->p])?intval($_REQUEST[$this->p]):0) : intval($page);
         $this->nowPage = $this->nowPage > 0 ? $this->nowPage : 1;
         $this->firstRow = $this->listRows * ($this->nowPage - 1);
 

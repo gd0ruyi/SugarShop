@@ -8,6 +8,7 @@
 <div class="panel panel-primary">
   <div class="panel-body">
     <!-- 表单 -->
+    <!-- <form class="form-horizontal" id="user-edit-form" action="/Sugaradmin/User/save"> -->
     <form class="form-horizontal" id="user-edit-form">
 
       <div class="form-group">
@@ -52,7 +53,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="use_type"" class="col-sm-2 control-label">类型：</label>
         <div class="col-sm-6">
           <div class="btn-group">
@@ -62,7 +63,7 @@
               <option value="1">普通用户</option>
             </select>
           </div>
-          <!-- <div class="btn-group" sugar-selector="true">
+          <div class="btn-group" sugar-selector="true">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <font>请选择类型</font> <span class="caret"></span>
             </button>
@@ -73,18 +74,18 @@
               <li><a href="#" value="all">请选择类型</a></li>
             </ul>
             <input type="hidden" class="form-control" id="use_type" name="use_type" value="">
-          </div> -->
+          </div> 
         </div>
-      </div>
+      </div>-->
 
       <div class="form-group ">
-        <label for="status" class="col-sm-2 control-label">状态：</label>
+        <label for="status" class="col-sm-2 control-label">使用状态：</label>
         <div class="col-sm-6 radio">
           <label>
-            <input name="status" type="radio" checked> 启用
+            <input name="status" type="radio" value="0" checked> 启用
           </label>
           <label>
-            <input name="status" type="radio"> 禁用
+            <input name="status" type="radio" value="1"> 禁用
           </label>
         </div>
       </div>
@@ -98,9 +99,6 @@
     </form>
   </div>
 </div>
-<!-- Bootstrap验证加载 -->
-<link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet">
-<script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script>
 <script language="javascript" type="text/javascript">
   // 表单验证
   $(document).ready(function () {
@@ -252,7 +250,7 @@
         },
 
         // 用户类型验证
-        use_type: {
+        /* use_type: {
           // 变更时触发
           // trigger:"click",
           validators: {
@@ -269,11 +267,61 @@
               }
             }
           }
-        }
+        } */
 
       },
 
+    }).on('success.form.bv', function (e) {
+      // Prevent form submission
+      e.preventDefault();
+      alert("OK");
+
+      // Get the form instance
+      var $form = $(e.target);
+
+      // Get the BootstrapValidator instance
+      var bv = $form.data('bootstrapValidator');
+      return false;
+
+      // Use Ajax to submit form data
+      // $.post($form.attr('action'), $form.serialize(), function (result) {
+      //     console.log(result);
+      // }, 'json');
     });
+
+
+    /* $("#user-edit-form").bootstrapValidator({}).on('success.form.bv', function (e) {
+      e.preventDefault();
+      alert("OK");
+      console.log(e);
+      return false;
+    }); */
+
+    // $("#user-edit-form").submit(function (e) {
+    //   e.preventDefault();
+    //   alert("submit is ok");
+    //   return false;
+    // });
+
+    /* $("#user-edit-form").submit(function (e) {
+      // Prevent form submission
+      e.preventDefault();
+      alert("is ok");
+
+      // Get the form instance
+      var $form = $(e.target);
+
+      // Get the BootstrapValidator instance
+      // var bv = $form.data('bootstrapValidator');
+      console.log($form);
+      // console.log(bv);
+
+      // Use Ajax to submit form data
+      $.post($form.attr('action'), $form.serialize(), function (result) {
+        // ... Process the result ...
+      }, 'json');
+
+    }); */
 
   });
 </script>
