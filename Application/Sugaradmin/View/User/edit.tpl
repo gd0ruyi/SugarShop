@@ -8,9 +8,7 @@
 <div class="panel panel-primary">
   <div class="panel-body">
     <!-- 表单 -->
-    <!-- <form class="form-horizontal" id="user-edit-form" action="/Sugaradmin/User/save"> -->
-    <form class="form-horizontal" id="user-edit-form">
-
+    <form class="form-horizontal" id="user-edit-form" action="/Sugaradmin/User/save">
       <div class="form-group">
         <label for="username" class="col-sm-2 control-label">用户名称：</label>
         <div class="col-sm-6">
@@ -93,6 +91,7 @@
       <div class="form-group ">
         <div class="col-sm-offset-4 col-sm-6">
           <button id="user-edit-submit" name="user-edit-submit" type="submit" class="col-sm-offset-2 col-sm-3 btn btn-primary">保 存</button>
+          <button type="reset" class="col-sm-offset-2 col-sm-3 btn btn-default" data-toggle="modal">重 置</button>
         </div>
       </div>
 
@@ -105,8 +104,11 @@
     // 加载下拉
     // SugarCommons.createSelectInput();
 
-    // 自动强制校正数字输入,使用自定义样式进行处理
-    SugarCommons.forceToNumber();
+    // 创建数字输入框，自动强制校正数字输入,使用自定义样式进行处理
+    SugarCommons.createInputForceToNumber();
+
+    // 创建重置按钮
+    SugarCommons.createRestFormButton('#user-edit-form');
 
     // 清除自动填充
     if ($("#username").val() == "") {
@@ -114,8 +116,8 @@
       $("#password").val("");
     }
 
-    // bootstrap自动验证插件验证处理
-    $("#user-edit-form").bootstrapValidator({
+    // 自动验证参数配置
+    var $bvOptions = {
       // excluded: [':disabled', ':hidden', ':not(:visible)'],
       excluded: [":disabled"],
 
@@ -154,7 +156,7 @@
               url: "/Sugaradmin/User/checkUserUnique",
               message: '用户名已存在,请重新输入',
               //ajax刷新的时间是1秒一次
-              delay: 1000,
+              delay: 3000,
               type: 'POST',
               //自定义提交数据，默认值提交当前input value
               data: function (validator) {
@@ -271,57 +273,13 @@
 
       },
 
-    }).on('success.form.bv', function (e) {
-      // Prevent form submission
-      e.preventDefault();
-      alert("OK");
+    };
 
-      // Get the form instance
-      var $form = $(e.target);
-
-      // Get the BootstrapValidator instance
-      var bv = $form.data('bootstrapValidator');
-      return false;
-
-      // Use Ajax to submit form data
-      // $.post($form.attr('action'), $form.serialize(), function (result) {
-      //     console.log(result);
-      // }, 'json');
+    // bootstrap自动验证插件验证处理
+    $('#user-edit-form').bootstrapValidator($bvOptions).on('success.form.bv', function (e) {
+      // 调取通用的bootstrapValidator表单验证提交方式
+      SugarCommons.bvAjaxSubmit(e);
     });
-
-
-    /* $("#user-edit-form").bootstrapValidator({}).on('success.form.bv', function (e) {
-      e.preventDefault();
-      alert("OK");
-      console.log(e);
-      return false;
-    }); */
-
-    // $("#user-edit-form").submit(function (e) {
-    //   e.preventDefault();
-    //   alert("submit is ok");
-    //   return false;
-    // });
-
-    /* $("#user-edit-form").submit(function (e) {
-      // Prevent form submission
-      e.preventDefault();
-      alert("is ok");
-
-      // Get the form instance
-      var $form = $(e.target);
-
-      // Get the BootstrapValidator instance
-      // var bv = $form.data('bootstrapValidator');
-      console.log($form);
-      // console.log(bv);
-
-      // Use Ajax to submit form data
-      $.post($form.attr('action'), $form.serialize(), function (result) {
-        // ... Process the result ...
-      }, 'json');
-
-    }); */
-
+    
   });
 </script>

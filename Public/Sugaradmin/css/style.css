@@ -215,7 +215,7 @@ body {
 }
 
 /* 用于表单内输入框图标显示动画 */
-.form-control-feedback.glyphicon.glyphicon-refresh{
+.form-control-feedback.glyphicon.glyphicon-refresh {
     /* 动画效果*/
     animation: loading-rotation 1s infinite;
     animation-timing-function: linear;
@@ -241,6 +241,14 @@ body {
     color: #9C6;
     padding-right: 12px;
     font-size: 25px;
+}
+
+#msg-dialog-tpl .modal-body {
+    text-align: center;
+}
+
+#msg-dialog-tpl .modal-footer {
+    text-align: center;
 }
 
 /* 置顶按钮 */
@@ -284,15 +292,15 @@ body {
 }
 
 /* 自动验证表单样式修正 */
-.has-feedback .form-control{
+.has-feedback .form-control {
     padding-right: 0px;
 }
 
-.bv-form .form-control{
+.bv-form .form-control {
     padding: 0px 12px;
 }
 
-.form-horizontal .has-feedback .form-control-feedback{
+.form-horizontal .has-feedback .form-control-feedback {
     right: 0;
 }
 
@@ -303,9 +311,11 @@ body {
 
 /* 表格头部工具 */
 .table-toolbar {}
-.ajax-tables th{
-	border-bottom: none !important;
+
+.ajax-tables th {
+    border-bottom: none !important;
 }
+
 .ajax-tables .sort-icon {
     position: relative;
     margin-left: 6px;

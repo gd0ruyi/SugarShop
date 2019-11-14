@@ -222,15 +222,12 @@ class Mongo extends Driver {
 	 * 插入记录
 	 *
 	 * @access public
-	 * @param mixed $data
-	 *        	数据
-	 * @param array $options
-	 *        	参数表达式
-	 * @param boolean $replace
-	 *        	是否replace
+	 * @param mixed $data 数据
+	 * @param array $options 参数表达式
+	 * @param boolean $replace 是否replace
 	 * @return false | integer
 	 */
-	public function insert($data, $options = array(), $replace = false) {
+	public function insert($data, $options = array(), $replace = false) {		
 		if (isset ( $options ['table'] )) {
 			$this->switchCollection ( $options ['table'] );
 		}
@@ -266,12 +263,9 @@ class Mongo extends Driver {
 	 * 插入多条记录（不支持自增ID）
 	 *
 	 * @access public
-	 * @param array $dataList
-	 *        	数据
-	 * @param array $options
-	 *        	参数表达式
-	 * @param boolean $replace
-	 *        	是否replace
+	 * @param array $dataList 数据
+	 * @param array $options 参数表达式
+	 * @param boolean $replace 是否replace
 	 * @return bool
 	 */
 	public function insertAll($dataList, $options = array(), $replace = false) {

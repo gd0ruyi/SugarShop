@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <div class="form-group form-group-sm">
+      <!-- <div class="form-group form-group-sm">
         <div class="btn-group" sugar-selector="true">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <font>全部类型</font> <span class="caret"></span>
@@ -62,7 +62,7 @@
           </ul>
           <input type="hidden" name="use_type" value="">
         </div>
-      </div>
+      </div> -->
 
       <div class="form-group form-group-sm">
         <div class="btn-group" sugar-selector="true">
@@ -75,12 +75,12 @@
             <li role="separator" class="divider"></li>
             <li><a href="#" value="all">全部状态</a></li>
           </ul>
-          <input type="hidden" name="status" value="">
+          <input type="hidden" name="status" value="all">
         </div>
       </div>
 
       <div class="form-group form-group-sm">
-        <button type="submit" class="btn btn-primary">搜 索</button>
+        <button name="search" type="submit" class="btn btn-primary">搜 索</button>
       </div>
 
       <div class="table-responsive">
@@ -103,16 +103,16 @@
   // 执行创建表格
   var columns = {
     'user_id': {
-      th: { title: 'ID', sort_icon: true, sort_default: 'asc', class: 'text-center' },
+      th: { title: 'ID', sort_icon: true, sort_default: 'desc', class: 'text-center' },
       td: { style: "color:red; text-align:center" }
     },
     'username': {
       th: { title: '帐号', sort_icon: true, class: 'text-center' },
     },
-    'use_type': {
-      th: { title: '帐号类型', sort_icon: true, class: 'text-center' },
-      td: { template: "{use_type_name}", class: 'text-center' }
-    },
+    // 'use_type': {
+    //   th: { title: '帐号类型', sort_icon: true, class: 'text-center' },
+    //   td: { template: "{use_type_name}", class: 'text-center' }
+    // },
     'status': {
       th: { title: '状态', sort_icon: true, class: 'text-center' },
       td: { template: "{status_name}", class: 'text-center' }
@@ -147,5 +147,10 @@
       td: { class: 'text-center' }
     },
   };
-  SugarTables.create('#user-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);  
+  SugarTables.create('#user-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
+
+  // 当编辑等模拟框关闭时触发重新刷新列表
+  $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal',function(e){
+    $('#user-form [name="search"]').click();
+  });
 </script>

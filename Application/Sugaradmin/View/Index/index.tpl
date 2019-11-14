@@ -219,6 +219,13 @@
       </div>
     </div>
 
+    <!-- 用于弹窗的警告 -->
+    <div id="alert-tmp">
+      <div class="alert alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" alert-id="close"><span aria-hidden="true">&times;</span></button>
+        <strong alert-id="title">Title</strong> <font alert-id="msg">Message</font>
+      </div>
+    </div>
   </div>
   <!-- ****************************** -->
   <!-- ***自定义控件js的模版html内容end*** -->
@@ -255,13 +262,14 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">
               <span class="glyphicon glyphicon-info-sign"></span>
-              <span id="msg-title">消息提示</span>
+              <span id="msg-title">消息提示标题</span>
             </h4>
           </div>
-          <div class="modal-body" id="msg-content"></div>
+          <div class="modal-body" id="msg-content">消息提示内容</div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">确 定</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">关 闭</button>
+            <button id="msg-btn-sure" type="button" class="btn btn-primary">确 定</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="msg-btn-cancel" type="button" class="btn btn-danger">关 闭</button>
           </div>
         </div>
       </div>
@@ -286,7 +294,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>    
 
   </div>
   <!-- 弹窗模版或容器结束 -->

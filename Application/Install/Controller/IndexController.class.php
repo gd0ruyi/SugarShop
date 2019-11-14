@@ -2,6 +2,7 @@
 
 namespace Install\Controller;
 
+use Sugaradmin\Model\UserModel;
 use Think\Controller;
 
 /**
@@ -14,7 +15,37 @@ class IndexController extends Controller
 {
 	public function index()
 	{
-		$this->install();
+
+		// 以下用于保存验证
+		// $user_model = D("Sugaradmin/User");
+		$user_model = new UserModel();
+
+		$data = array();
+		// $data['username'] = 'admin';
+		$data['password'] = 'admin';
+		$data['password'] = md5($data['usename'] . $data['password']);
+		$data['truename'] = "超级管理员";
+		$data['email'] = "gd0ruyi@163.com";
+		$data['mobile'] = "13661123476";
+		$data['status'] = 0;
+		$data['use_type'] = 0;
+		$time = time();
+		$data['add_time'] = $time;
+		$data['upd_time'] = $time;
+		$data['las_time'] = 0;
+
+		$options = array();
+		// $options ['id'] = 1;
+		$options['_options'] = array(
+			'fsync' => true,
+			'safe' => true
+		);
+
+		$flag = $user_model->create($data);
+		var_dump($flag);
+		exit($user_model->getError());
+		echo "this is index";
+		// $this->install();
 	}
 
 	/**

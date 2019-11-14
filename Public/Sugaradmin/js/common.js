@@ -9,14 +9,17 @@ var SugarCommons = {
 	// 编辑对话框ID:
 	edit_dialog_tpl_id: '#edit-dialog-tpl',
 
+	// alert提示框模版ID（用于内嵌的alert消息提示）
+	alert_tpl_id: '#alert-tmp',
+
+	// confirm提示框模版ID（用于弹出的消息提示）
+	msg_dialog_tpl: '#msg-dialog-tpl',
+
 	// 全局ajax是否使用缓存（暂时无用，后续需加入到方法）
 	ajaxCache: false,
 
 	// 是否开启debug信息
 	debug: false,
-
-	// 是否开启debug后的信息强制输出
-	printDebug: false,
 
 	/**
 	 * 公用函数库名称设置
@@ -107,6 +110,7 @@ var SugarCommons = {
 	 * 自定义错误提示
 	 * @param {string} error 错误信息
 	 * @param {boolean} is_throw 是否进行throw退出
+	 * @param {boolean} currentAjax 是否进行ajax暂停处理
 	 * @param
 	 */
 	errorMsg: function (error, is_throw, currentAjax) {
@@ -273,13 +277,19 @@ var SugarCommons = {
 		});
 	},
 
-	// 通用插件加载创建
+	/**
+	 * 通用插件加载创建
+	 */
 	createPlugin: function () {
 		SugarCommons.createSelectInput();
 		SugarCommons.createEditDialogByAjax();
 	},
 
-	// 设置inptu框loading加载样式，用于表单input异步验证使用。
+	/**
+	 * 设置inptu框loading加载样式，用于表单input异步验证使用。
+	 * @param {sting} target input的目标标识
+	 * @param {boolean} show 是否显示读取动画
+	 */
 	makeInputLoadingCss: function (target, show) {
 		if (show) {
 			$(target).show();
@@ -291,8 +301,10 @@ var SugarCommons = {
 		}
 	},
 
-	// 自动强制校正数字输入,使用自定义样式进行处理
-	forceToNumber: function () {
+	/**
+	 * 自动强制校正数字输入,使用自定义样式进行处理
+	 */
+	createInputForceToNumber: function () {
 		$(".forceToNumber").keyup(function () {
 			$(this).val($(this).val().replace(/[^\d]/g, ''));
 			//CTR+V事件处理
@@ -300,6 +312,195 @@ var SugarCommons = {
 			$(this).val($(this).val().replace(/[^\d]/g, ''));
 			//CSS设置输入法不可用
 		}).css("ime-mode", "disabled");
+	},
+
+	/**
+	 * 获取ajax的处理数据类型
+	 */
+	getAjaxDataType: function () {
+		// 定义传输类型
+		var data_type = 'json';
+
+		// 判断debug是否开启
+		if (SugarCommons.debug == true) {
+			data_type = 'html';
+		}
+		return data_type;
+	},
+
+	/**
+	 * bootstrapValidator表单验证提交方式
+	 * @param {bvObject} e bootstrapValidator的bv方式使用的e对象
+	 */
+	bvAjaxSubmit: function (e) {
+		// 取消提交
+		e.preventDefault();
+
+		// 获取表单元素
+		var $form = $(e.target);
+
+		//表单数据
+		var $data = $form.serializeJson();
+
+		// 获取BootstrapValidator对象
+		// var bv = $form.data('bootstrapValidator');
+
+		// 禁用提交按钮
+		// $(e.target).bootstrapValidator('disableSubmitButtons', true);
+		// 开启禁用
+		SugarCommons.setFromDisabled(e.target, true);
+
+		// ajax提交处理
+		$.ajax({
+			url: $form.attr('action'),
+			type: 'POST',
+			dataType: SugarCommons.getAjaxDataType(),
+			data: $data,
+			cache: SugarCommons.ajaxCache,
+			success: function (res, status, xhr) {
+				// 解除禁用
+				SugarCommons.setFromDisabled(e.target, false);
+				// 重新启用提交按钮
+				// $($form).bootstrapValidator('disableSubmitButtons', false);
+
+				// 当为debug时处理
+				if (SugarCommons.debug == true) {
+					SugarCommons.makeInnerAlert(e.target, 'alert-info', 'Debug Info:', res);
+					return true;
+				}
+				// 返回成功时处理
+				if (res.status == 0) {
+					SugarCommons.makeInnerAlert(e.target, 'alert-success', res.title, res.msg);
+					// 重置表单内容
+					$form[0].reset();
+					// 表单验证重置
+					$form.data('bootstrapValidator').resetForm();
+				}
+				// 业务逻辑处理错误抛出
+				else {
+					SugarCommons.makeInnerAlert(e.target, 'alert-danger', res.title, res.msg);
+				}
+			},
+			error: function (xhr, status, error) {
+				// 关闭加载状态
+				SugarCommons.errorMsg("SugarCommons plus is error: ajax error in function bvAjaxSubmit(), info(" + status + ":" + error + ")");
+			}
+		});
+	},
+
+	/**
+	 * 创建alert提示框，为植入式提示
+	 * @param {string} target 目标容器
+	 * @param {sting} alertClass Bootstrap的aler样式
+	 * @param {sting} title 提示框的标题
+	 * @param {sting} msg 提示框的内容
+	 * @param {int||string} closeTime 自动关闭时间，若为keep则不进行关闭
+	 */
+	makeInnerAlert: function (target, alertClass, title, msg, closeTime) {
+		// 模版内容赋值
+		var tpl = $(SugarCommons.alert_tpl_id).html();
+
+		// 默认关闭窗口时间
+		closeTime = parseInt(closeTime);
+		closeTime = closeTime ? closeTime : 6000;
+
+		// 添加入目标容器
+		$(target).prepend(tpl);
+
+		// 添加样式
+		$(target).find('[role="alert"]').addClass(alertClass);
+		// 赋值标题和消息内容
+		$(target).find('[alert-id="title"]').html(title);
+		$(target).find('[alert-id="msg"]').html(msg);
+
+		// 自动关闭
+		if (closeTime != 'keep') {
+			setTimeout(function () {
+				$('[alert-id="close"]').click();
+			}, closeTime);
+		}
+	},
+
+	/**
+	 * 弹窗确认提示对话框
+	 * @param {Object} options 构造参数{title:string, msg:sting, sureClick:callback function(), cancelClick:callback function()}
+	 */
+	makeConfirm: function (options) {
+		var target = SugarCommons.msg_dialog_tpl;
+		options.title = options.title ? options.title : 'confirm title';
+		options.msg = options.msg ? options.msg : 'confirm content';
+		// 赋值标题和消息内容
+		$(target).find('#msg-title').html(options.title);
+		$(target).find('#msg-content').html(options.msg);
+		// 显示弹窗
+		$(target).modal('show');
+
+		// 执行调用
+		// 覆盖原有点击确定时的调用
+		$(target).find('#msg-btn-sure').unbind('click');
+		$(target).find('#msg-btn-sure').click(function (e) {
+			if (typeof (options.sureClick) == 'function') {
+				options.sureClick();
+				// alert('sureClick is ok');
+				$(target).modal('hide');
+			}
+		});
+
+		// 覆盖原有点击取消时的调用
+		$(target).find('#msg-btn-cancel').unbind('click');
+		$(target).find('#msg-btn-cancel').click(function (e) {
+			if (typeof (options.cancelClick) == 'function') {
+				options.cancelClick();
+				// alert('cancelClick is ok');
+				$(target).modal('hide');
+			}
+		});
+	},
+
+	/**
+	 * 创建表单重置按钮
+	 * @param {string} target 表单的标识
+	 */
+	createRestFormButton: function (target) {
+		// 取消重复绑定
+		$(target).unbind('click');
+
+		// 重置按钮处理
+		$(target).find('[type="reset"]').click(function (e) {
+			// 取消重置事件
+			e.preventDefault();
+			// 弹出对话框处理
+			SugarCommons.makeConfirm({
+				title: '提示',
+				msg: '请确认是否重置？',
+				sureClick: function () {
+					// 表单内容重置
+					$(target)[0].reset();
+					// 表单验证重置
+					$(target).data('bootstrapValidator').resetForm();
+				},
+				cancelClick: function () {
+					// alert('cancle is ok');
+				}
+			});
+		});
+	},
+
+	/**
+	 * 对表单元素内的填写项进行禁用
+	 * @param {string} target 表单标识
+	 * @param {boolean} disabled 是否进行禁用
+	 */
+	setFromDisabled: function (target, disabled) {
+		if (disabled) {
+			$(target).find('input').attr('disabled', true);
+			$(target).find('select').attr('disabled', true);
+			$(target).find('button').attr('disabled', true);
+		} else {
+			$(target).find('input').removeAttr('disabled');
+			$(target).find('select').removeAttr('disabled');
+			$(target).find('button').removeAttr('disabled');
+		}
 	}
 }
 

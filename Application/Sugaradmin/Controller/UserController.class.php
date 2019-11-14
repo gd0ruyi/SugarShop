@@ -62,6 +62,10 @@ class UserController extends BaseController
 		if (isset($_GET['status']) && $_GET['status'] != 'all') {
 			$query['where']['status'] = intval($_GET['status']);
 		}
+
+		// $rs = $this->getList($query);
+		// $this->suc($rs['data']);
+
 		$this->getList($query);
 		$this->suc();
 	}
@@ -100,14 +104,14 @@ class UserController extends BaseController
 	 */
 	public function save()
 	{
-		$user_model = D("Sugaradmin/User");
+		// $user_model = D("Sugaradmin/User");
+		$user_model = new UserModel();
 		$data = array();
 
-		if ($data['_id']) {
-			$data['_id'] = $_REQUEST['_id'];
+		if (isset($_GET['user_id'])) {
+			$data['user_id'] = intval($_GET['user_id']);
 		}
-
-		$data['user_id'] = intval($_GET['user_id']);
+		// $data['user_id'] = 2;
 		$data['username'] = trim($_GET['username']);
 		$data['password'] = $_GET['password'];
 		// 密码加密规则
@@ -130,10 +134,12 @@ class UserController extends BaseController
 		);
 
 		// 判断是否符合规则
-		if ($user_model->create($data)){
-			$user_model->save($data, $options);
-		}else{
-
+		if ($data = $user_model->create($data)) {
+			$last_info = $user_model->save($data, $options);
+			$this->setRes('last_info', $last_info);
+			$this->suc($data, '保存用户成功', '提示');
+		} else {
+			$this->err($user_model->getError());
 		}
 	}
 
@@ -156,7 +162,9 @@ class UserController extends BaseController
 		}
 	}
 
-	public function test(){
+	// 用于BootstrapValidator测试问题
+	public function test()
+	{
 		$this->display();
 	}
 }

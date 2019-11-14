@@ -23,7 +23,10 @@ class BaseModel extends MongoModel
         'query' => array(),
         'data' => array(),
         'count' => 0,
-        'pager' => array()
+        'pager' => array(),
+        // 用于判断处理错误
+        'status' => 0,
+        'msg' => 'success'
     );
 
 
@@ -49,6 +52,12 @@ class BaseModel extends MongoModel
     {
         // 使用getList处理
         $this->bsm_rs = $this->getList($query, 0, 0);
+        // 判断数据是否存在多条的情况，存在则表示查询异常
+        $count = count($this->bsm_rs['data']);
+        if ($count > 1) {
+            $this->bsm_rs['status'] = 1;
+            $this->bsm_rs['msg'] = "warring: getOne (res count={$count}) > 1";
+        }
         // 取出单条赋值
         $this->bsm_rs['data'] = array_shift($this->bsm_rs['data']);
 
@@ -109,7 +118,7 @@ class BaseModel extends MongoModel
         // 自定义结果集格式化
         $this->bsm_rs['data'] = $this->_parseResValue($this->bsm_rs['data']);
         return $this->bsm_rs;
-    }  
+    }
 
     /**
      * 排序字段处理

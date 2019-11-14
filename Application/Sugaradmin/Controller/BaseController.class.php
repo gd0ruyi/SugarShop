@@ -30,7 +30,7 @@ class BaseController extends Controller
 		'title' => 'info',
 		'msg' => 'success',
 		'jump' => '',
-		'data' => null,
+		'data' => array(),
 		'pager' => array(),
 		'valid' => false
 	);
@@ -173,15 +173,21 @@ class BaseController extends Controller
 
 	/**
 	 * 设置返回结果集，批量，存在同样的键名将覆盖
+	 * 注：新修改，复用setResKeyValue方法，当res为字符串时，可以设置key和value
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
-	 * @param array $res 传入的结果集
+	 * @param array||string $res 传入的结果集或key
+	 * @param array $value 值
 	 * @return array 返回结果集
 	 */
-	public function setRes($res)
+	public function setRes($res, $value = null)
 	{
-		foreach ($res as $k => $v) {
-			$this->_res[$k] = $v;
+		if (is_string($res)) {
+			$this->setResKeyValue($res, $value);
+		} else {
+			foreach ($res as $k => $v) {
+				$this->_res[$k] = $v;
+			}
 		}
 		return $this->_res;
 	}
@@ -227,7 +233,7 @@ class BaseController extends Controller
 	}
 
 	/**
-	 *
+	 * 自定义返回结果集success方法，用于Ajaxs,使用getList时，suc则无需赋值data
 	 * @author gd0ruyi@163.com 2016-6-9
 	 * @param array $data 返回数据
 	 * @param string $msg 提示信息
@@ -238,6 +244,7 @@ class BaseController extends Controller
 		$this->_res['status'] = 0;
 		$this->_res['title'] = $title;
 		$this->_res['msg'] = $msg;
+		// 用于自动处理，默认
 		$this->_res['data'] = empty($data) ? $this->_res['data'] : $data;
 		$this->_res['valid'] = true;
 		$this->resReturn($this->_res);
@@ -247,16 +254,12 @@ class BaseController extends Controller
 	 * 自定义返回结果集error方法，用于Ajaxs
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
-	 * @param string $msg
-	 *        	提示信息
-	 * @param string $title
-	 *        	标题
-	 * @param string $data
-	 *        	返回数据
-	 * @param number $status
-	 *        	错误状态，默认为1
+	 * @param string $msg 提示信息
+	 * @param string $title 标题
+	 * @param string $data 返回数据
+	 * @param number $status 错误状态，默认为1
 	 */
-	public function err($msg, $title = 'error', $data = null, $status = 1)
+	public function err($msg, $title = 'error', $data = array(), $status = 1)
 	{
 		$this->_res['status'] = $status;
 		$this->_res['title'] = $title;
@@ -581,10 +584,8 @@ class BaseController extends Controller
 			$listRows = $listRows < 0 ? 10 : $listRows;
 		}
 
-		// 自动化构建model
-		$rs = $this->makeAutoModel()->getList($query, $listRows, $nowPage);
-		$this->setRes($rs);
-		return $rs;
+		// 自动化构建model重新赋值到统一输入的rs上
+		return $this->setRes($this->makeAutoModel()->getList($query, $listRows, $nowPage));
 	}
 
 	/**
@@ -601,7 +602,11 @@ class BaseController extends Controller
 		}
 		// 自动化构建model
 		$rs = $this->makeAutoModel()->getOne($query);
-		// $this->setRes($rs);
-		return $rs;
+		// 用于判断查询出现多条值的情况处理
+		if (intval($rs['status'])) {
+			$this->err($rs['msg']);
+		}
+		// 重新赋值到统一输入的rs上
+		return $this->setRes($rs);
 	}
 }
