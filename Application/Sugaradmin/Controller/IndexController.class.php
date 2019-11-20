@@ -13,6 +13,7 @@ class IndexController extends BaseController
 {
 	public function index()
 	{
+		// 用于js的debug赋值
 		$this->assign('IS_DEBUG', isDebug());
 		$this->display();
 	}

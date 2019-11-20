@@ -124,11 +124,11 @@ class BaseController extends Controller
 	 * 自定义display输出处理
 	 *
 	 * @author gd0ruyi@163.com 2016-6-1
-	 * @param string $templateFile        	
-	 * @param string $charset        	
-	 * @param string $contentType        	
-	 * @param string $content        	
-	 * @param string $prefix        	
+	 * @param string $templateFile
+	 * @param string $charset
+	 * @param string $contentType
+	 * @param string $content
+	 * @param string $prefix
 	 */
 	public function displayAutoByIsAjax($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '')
 	{
@@ -167,8 +167,10 @@ class BaseController extends Controller
 	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '')
 	{
 		$this->displayAutoByIsAjax($templateFile, $charset, $contentType, $content, $prefix);
-		// 输出模版前用于输入debug
-		isDebug() ? $this->_printDebug() : '';
+		// 注：此处无需调用ShowPageTraceBehavior进行显示，ThinkPHP默认会加载Behavior时，会调用ShowPageTraceBehavior
+		if(isDebug()){
+			$this->_printDebug(false);
+		}
 	}
 
 	/**
@@ -196,8 +198,8 @@ class BaseController extends Controller
 	 * 按键值设置返回结果集
 	 *
 	 * @author gd0ruyi@163.com 2016-6-11
-	 * @param srting $key        	
-	 * @param array $value        	
+	 * @param srting $key
+	 * @param array $value
 	 * @return array
 	 */
 	public function setResKeyValue($key, $value)
@@ -220,15 +222,17 @@ class BaseController extends Controller
 	 * 自定义返回结果集方法，用于Ajaxs
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
-	 * @param array $res        	
+	 * @param array $res
 	 */
 	public function resReturn($res = array(), $json_options = JSON_UNESCAPED_UNICODE)
 	{
 		$this->setRes($res);
 		header('Content-Type:application/json; charset=utf-8');
 		echo json_encode($this->_res, $json_options);
-		//  是否输出debu打印
-		isDebug() ? $this->_printDebug() : '';
+		//  是否输出debu打印（注：因没有使用display，所以需要加入自定义的debug输出）
+		if(isDebug()){
+			$this->_printDebug(true);
+		}
 		exit();
 	}
 
@@ -273,8 +277,7 @@ class BaseController extends Controller
 	 * 设置结果集jump的跳转路径
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
-	 * @param string $url
-	 *        	跳转路径
+	 * @param string $url 跳转路径
 	 * @return string
 	 */
 	public function setResJump($url)
@@ -287,10 +290,8 @@ class BaseController extends Controller
 	 * 设置调试结果集
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
-	 * @param string $key
-	 *        	debug的键名
-	 * @param unknown $value
-	 *        	debug的键值
+	 * @param string $key debug的键名
+	 * @param unknown $value debug的键值
 	 * @return unknown
 	 */
 	/* public function setResDebug($key = '', $value = '')
@@ -330,10 +331,12 @@ class BaseController extends Controller
 
 	/**
 	 * 打印debug信息
-	 *
+	 * 
+	 * @author ruyi <gd0ruyi@163.com>
+	 * @param boolean $is_show_trace 是否强制输出ThinkPHP内置修改过的trace（注：用于解决ThinkPHP自动加载ShowPageTraceBehavior后会重复输出trace信息）
 	 * @return void
 	 */
-	public function _printDebug()
+	public function _printDebug($is_show_trace = false)
 	{
 		if (!IS_AJAX) {
 			header('Content-Type:text/html; charset=utf-8');
@@ -417,9 +420,11 @@ class BaseController extends Controller
 
 		// 此处为了加载页面Tace
 		// $this->display ( 'Public/index' );
-		$spt = new ShowPageTraceBehavior();
-		$param = array();
-		$spt->run($param);
+		if ($is_show_trace) {
+			$spt = new ShowPageTraceBehavior();
+			$param = array();
+			$spt->run($param);
+		}
 		echo "<hr />\n";
 		echo "<pre><h1>Debug End</h1></pre>";
 	}
@@ -481,12 +486,9 @@ class BaseController extends Controller
 	 * 操作错误跳转的快捷方法
 	 *
 	 * @access protected
-	 * @param string $message
-	 *        	错误信息
-	 * @param string $jumpUrl
-	 *        	页面跳转地址
-	 * @param mixed $ajax
-	 *        	是否为Ajax方式 当数字时指定跳转时间
+	 * @param string $message 错误信息
+	 * @param string $jumpUrl 页面跳转地址
+	 * @param mixed $ajax 是否为Ajax方式 当数字时指定跳转时间
 	 * @return void
 	 */
 	protected function error($message = '', $jumpUrl = '', $ajax = false)
