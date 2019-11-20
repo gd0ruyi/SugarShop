@@ -77,12 +77,6 @@ class UserController extends BaseController
 	 */
 	public function edit()
 	{
-		/**
-		 * 1、需要页面加入js验证
-		 * 2、需要判断传入参数的合法性校验，并处理json返回
-		 * 3、需要逻辑处理若传入参数则编辑，若无id参数为空。
-		 * 4、使用ThinkPHP的model、create方法进行自动校验
-		 */
 		$query = array();
 		$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : false;
 		$rs = array();
@@ -108,9 +102,7 @@ class UserController extends BaseController
 		$user_model = new UserModel();
 		$data = array();
 
-		if (isset($_GET['user_id'])) {
-			$data['user_id'] = intval($_GET['user_id']);
-		}
+		$data['user_id'] = intval($_GET['user_id']);
 		// $data['user_id'] = 2;
 		$data['username'] = trim($_GET['username']);
 		$data['password'] = $_GET['password'];
@@ -139,7 +131,7 @@ class UserController extends BaseController
 			$this->setRes('last_info', $last_info);
 			$this->suc($data, '保存用户成功', '提示');
 		} else {
-			$this->err($user_model->getError());
+			$this->err($user_model->getError(), '警告');
 		}
 	}
 
@@ -158,7 +150,7 @@ class UserController extends BaseController
 		if (!isset($data['username'])) {
 			$this->suc($data);
 		} else {
-			$this->err('用户已存在！');
+			$this->err('用户名重复，用户已存在！');
 		}
 	}
 

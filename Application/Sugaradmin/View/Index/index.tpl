@@ -223,7 +223,8 @@
     <div id="alert-tmp">
       <div class="alert alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" alert-id="close"><span aria-hidden="true">&times;</span></button>
-        <strong alert-id="title">Title</strong> <font alert-id="msg">Message</font>
+        <strong alert-id="title">Title</strong>
+        <font alert-id="msg">Message</font>
       </div>
     </div>
   </div>
@@ -294,7 +295,7 @@
           </div>
         </div>
       </div>
-    </div>    
+    </div>
 
   </div>
   <!-- 弹窗模版或容器结束 -->
@@ -340,8 +341,15 @@
       $("#sys-logout").click(function (event) {
         var url = $(this).attr("href");
         event.preventDefault();
-        SugarCommons.createConfirmDialog("登录退出提示", "请您确认是否退出系统？", function () {
-          location = url;
+        SugarCommons.makeConfirm({
+          title: "登录退出提示",
+          msg: "请您确认是否退出系统？",
+          sureClick: function (e) {
+            location = url;
+          },
+          cancelClick: function (e) {
+            // alert('cancle is ok');
+          }
         });
       });
 

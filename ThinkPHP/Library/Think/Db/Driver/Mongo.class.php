@@ -224,10 +224,10 @@ class Mongo extends Driver {
 	 * @access public
 	 * @param mixed $data 数据
 	 * @param array $options 参数表达式
-	 * @param boolean $replace 是否replace
+	 * @param boolean $replace 是否replace，用于区分使用mongdb的原生save还是Insert
 	 * @return false | integer
 	 */
-	public function insert($data, $options = array(), $replace = false) {		
+	public function insert($data, $options = array(), $replace = false) {
 		if (isset ( $options ['table'] )) {
 			$this->switchCollection ( $options ['table'] );
 		}
@@ -258,14 +258,27 @@ class Mongo extends Driver {
 			E ( $e->getMessage () );
 		}
 	}
-	
+
+	/**
+	 * 保存记录
+	 * 注：用于覆盖原生的save方法，使用为自定义的insert方法，主要用于错误记录和抛出。
+	 * @author ruyi <gd0ruyi@163.com> 2019年11月19日
+	 * @access public
+	 * @param mixed $data 数据
+	 * @param array $options 参数表达式
+	 * @return false | integer
+	 */
+	public function save($data, $options = array()) {
+		return $this->insert($data, $options, true);
+	}
+
 	/**
 	 * 插入多条记录（不支持自增ID）
 	 *
 	 * @access public
 	 * @param array $dataList 数据
 	 * @param array $options 参数表达式
-	 * @param boolean $replace 是否replace
+	 * @param boolean $replace 是否replace（无效参数，用于db的drive时避免抛出错误）
 	 * @return bool
 	 */
 	public function insertAll($dataList, $options = array(), $replace = false) {
@@ -379,10 +392,8 @@ class Mongo extends Driver {
 	 * 更新记录
 	 *
 	 * @access public
-	 * @param mixed $data
-	 *        	数据
-	 * @param array $options
-	 *        	表达式
+	 * @param mixed $data 数据
+	 * @param array $options 表达式
 	 * @return bool
 	 */
 	public function update($data, $options) {

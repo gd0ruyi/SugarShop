@@ -358,12 +358,9 @@ class Model {
 	 * 新增数据
 	 * 
 	 * @access public
-	 * @param mixed $data
-	 *        	数据
-	 * @param array $options
-	 *        	表达式
-	 * @param boolean $replace
-	 *        	是否replace
+	 * @param mixed $data 数据
+	 * @param array $options 表达式
+	 * @param boolean $replace 是否replace
 	 * @return mixed
 	 */
 	public function add($data = '', $options = array(), $replace = false) {
@@ -439,10 +436,8 @@ class Model {
 	 * 保存数据
 	 * 
 	 * @access public
-	 * @param mixed $data
-	 *        	数据
-	 * @param array $options
-	 *        	表达式
+	 * @param mixed $data 保存的数据
+	 * @param array $options 配置参数或表达式
 	 * @return boolean
 	 */
 	public function save($data = '', $options = array()) {

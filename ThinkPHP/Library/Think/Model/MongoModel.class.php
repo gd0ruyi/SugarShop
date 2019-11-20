@@ -219,7 +219,8 @@ class MongoModel extends Model
 	}
 
 	/**
-	 * 获取最后一个ID，用于自动增长值
+	 * 获取插入数据最后ID，用于自动增长值
+	 * 注：每次调取该方法时，将会进行自动增长
 	 *
 	 * @author gd0ruyi@163.com 2019-01-17
 	 * @see \Think\Model::getLastInsID()
@@ -238,15 +239,18 @@ class MongoModel extends Model
 
 	/**
 	 * 新增数据
-	 *
+	 * 注：关于replac使用的说明，replace为mongo数据库驱动类inser方法的透传。
+	 * 
+	 * @author ruyi <gd0ruyi@163.com>
 	 * @access public
 	 * @param mixed $data 数据
 	 * @param array $options 表达式
-	 * @param boolean $replace 是否replace
-	 * @return boolean|array('_id'=>string,'last_id'=>int)
+	 * @param boolean $replace 是否使用mongdb的原生方法save还是insert。
+	 * @return boolean|array('_id'=>string,'last_id'=>int,data=>array())
 	 */
 	public function add($data = '', $options = array(), $replace = false)
 	{
+
 		if (empty($data)) {
 			// 没有传递数据，获取当前数据对象的值
 			if (!empty($this->data)) {
@@ -258,54 +262,50 @@ class MongoModel extends Model
 				return false;
 			}
 		}
+		// 数据处理
+		$data = $this->_facade($data);
 		// 分析表达式
 		$options = $this->_parseOptions($options);
 
-		// 写入数据到数据库(gdruyi@163.com:修正，加入pk名称，因mongoDB在save时无法得知自定义的PK名称)
-		if ($replace && isset($data[$this->getPk()])) {
-			$query = array();
-			$query[$this->getPk()] = $data[$this->getPk()];
-			$result = $this->field('_id')->where($query)->find();
-			$_id = $result['_id'];
-			if ($_id) {
-				$data['_id'] = $_id;
-			}
+		// 插入前处理，此处data引用已赋值
+		if (false === $this->_before_insert($data, $options)) {
+			$this->error = "MongoModel类add方法错误，创建时无法获取自增主键";
+			return false;
 		}
-
-		// 数据处理
-		$data = $this->_facade($data);
-
-		// 如果为新增的情况，又或者（替换保存）无自定义主键的情况，则进行插入前的处理（自增）
-		if ($replace == false || !isset($data[$this->getPk()])) {
-			if (false === $this->_before_insert($data, $options)) {
-				return false;
-			}
-		}
-
-		$result = $this->db->insert($data, $options, $replace);
 
 		// 构造自定义返回结果集
-		$lastInfo = array();
-		$lastInfo['_id'] = '';
-		$lastInfo['last_id'] = 0;
-		$lastInfo['result'] = $result;
+		$result = array();
+		// 写入数据到数据库
+		$result['rs'] = $this->db->insert($data, $options, $replace);
+		$result['_id'] = md5(0);
+		$result['last_id'] = 0;
+		$result['data'] = $data;
 
-		if (false !== $result && $result['ok'] == 1) {
-			$lastInfo['_id'] = $this->getLastInsID();
-			$lastInfo['last_id'] = $this->getLastAutoIncId();
-			if ($lastInfo['_id']) {
-				// 自增主键返回插入ID
-				$data[$this->getPk()] = $lastInfo['_id'];
-				if (false === $this->_after_insert($data, $options)) {
-					return false;
-				}
-				return $lastInfo;
-			}
-			if (false === $this->_after_insert($data, $options)) {
-				return false;
+		// 判断结果是否正常
+		if (false !== $result['rs'] && $result['rs']['ok'] == 1) {
+			$pk = $this->getPk();
+			$result['last_id'] = $this->getLastAutoIncId();
+			$where = array($pk => $result['last_id']);
+			$result['_id'] = $this->where($where)->getField('_id');
+
+			// 增加复合主键支持(原ThinkPHP写法，作用未知)
+			if (is_array($pk)) {
+				return $result;
 			}
 		}
-		return $lastInfo;
+		// 插入出现错误
+		else {
+			$this->error = 'MongoModel类insert出现错误 >> ';
+			$this->error .= print_r($result, true);
+			return false;
+		}
+
+		// 插入后回调处理
+		if (false === $this->_after_insert($data, $options)) {
+			return false;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -335,39 +335,121 @@ class MongoModel extends Model
 			$dataList[$key] = $data;
 		}
 		// 开始批量插入
-		return $result = $this->db->insertAll($dataList, $options, $replace);
+		return $this->db->insertAll($dataList, $options, $replace);
 	}
 
 	/**
-	 * 保存数据，区分于mongodb的save方法，mongodb默认save使用的为_id区分。
-	 *
+	 * 保存数据
+	 * 
+	 * @author ruyi <gd0ruyi@163.com>
 	 * @access public
 	 * @param mixed $data 数据
 	 * @param array $options 表达式
 	 * @return mixed|array('_id'=>string,'last_id'=>int)
 	 */
-	public function save($data = '', $options = array()){
-		return $this->add($data, $options, true);
+	public function save($data = '', $options = array())
+	{
+		if (empty($data)) {
+			// 没有传递数据，获取当前数据对象的值
+			if (!empty($this->data)) {
+				$data = $this->data;
+				// 重置数据
+				$this->data = array();
+			} else {
+				$this->error = L('_DATA_TYPE_INVALID_');
+				return false;
+			}
+		}
+		// 数据处理
+		$data = $this->_facade($data);
+		if (empty($data)) {
+			// 没有数据则不执行
+			$this->error = L('_DATA_TYPE_INVALID_');
+			return false;
+		}
+
+		// 分析表达式
+		$options = $this->_parseOptions($options);
+
+		// 获取主键名称
+		$pk = $this->getPk();
+
+		// 判断查询条件内是否存在主键
+		if (!isset($options['where'])) {
+			// 如果存在主键数据，并且不为0时，则自动作为更新条件
+			if (is_string($pk) && isset($data[$pk]) && $data[$pk] != 0) {
+				$where[$pk] = $data[$pk];
+				unset($data[$pk]);
+			} elseif (is_array($pk)) {
+				// 增加复合主键支持
+				foreach ($pk as $field) {
+					if (isset($data[$field])) {
+						$where[$field] = $data[$field];
+					} else {
+						// 如果缺少复合主键数据则不执行
+						$this->error = L('_OPERATION_WRONG_');
+						return false;
+					}
+					unset($data[$field]);
+				}
+			}
+
+			// 如果没有任何条件则表示创建
+			if (!isset($where)) {
+				return $this->add($data, $options);
+			} else {
+				$options['where'] = $where;
+			}
+		}
+
+		// 更新前回调处理(注：考虑是否加入_id的处理;暂无需考虑)
+		if (false === $this->_before_update($data, $options)) {
+			return false;
+		}
+
+		// 构造自定义返回结果集
+		$result = array();
+		// 更新数据到数据库
+		// (考虑是否需要加入findAndModify处理，findAndModify为原子级-事物处理会用到，可以返回修改之前的值，但是响应比较慢，并且findAndModify可以进行删除操作)
+		$result['rs'] = $this->db->update($data, $options);
+		$result['data'] = $data;
+
+		// 判断结果是否正常
+		if (false === $result['rs'] || $result['rs']['ok'] != 1) {
+			$this->error = 'MongoModel类save出现错误 >> ';
+			$this->error .= print_r($result, true);
+			return false;
+		}
+
+		// 更新后调用处理
+		if (false === $this->_after_update($data, $options)) {
+			return false;
+		}
+		return $result;
 	}
 
 	/**
-	 * 插入数据前的回调方法
+	 * 插入数据前的回调方法，用于自增处理
 	 *
 	 * @see \Think\Model::_before_insert()
 	 */
 	protected function _before_insert(&$data, $options)
 	{
-		// 写入数据到数据库
+		// 判断是否为整型并使用为自增
 		if ($this->_autoinc && $this->_idType == self::TYPE_INT) {
-			// 是否使用并获取自增ID，主键自动增长
-			if (!isset($data[$this->getPk()])) {
-				$data[$this->getPk()] = $this->lastAutoIncId = $this->db->getMongoNextId($this->getPk());
+			// 获取主键名称
+			$pk = $this->getPk();
+			// 判断主键是否存在，又或者为0时
+			if (!isset($data[$pk]) || $data[$pk] == 0) {
+				// 获取自增ID，会更新主键表的ID
+				$data[$pk] = $this->lastAutoIncId = $this->db->getMongoNextId($pk);
 			}
 		}
+		// 其他类型自增待补充，暂时无用
 	}
 
 	/**
-	 * 或者最终插入的主键自增ID
+	 * 获取最终插入的主键自增ID
 	 *
 	 * @author gd0ruyi@163.com 2016-01-08
 	 * @return number

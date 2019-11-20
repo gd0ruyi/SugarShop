@@ -131,11 +131,11 @@ class TestController extends BaseController
 		// 需要补充mongod获取自增最后的ID，在db驱动类内
 		printR($test->getLastInsID());
 
-		$query = array();
-		$query['_auto_create_index'] = true;
+		$options = array();
+		// $query['_auto_create_index'] = true;
 		// 配置返回数组的每行键的名称为test_id
-		$query['index'] = 'test_id';
-		$res = $test->order('test_id desc')->select($query);
+		$options['index'] = 'test_id';
+		$res = $test->order('test_id desc')->select($options);
 		// printR ( $test->getLastInsID () );
 		// printR ( $res );
 

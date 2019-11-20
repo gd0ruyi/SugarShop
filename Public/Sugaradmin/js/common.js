@@ -183,18 +183,19 @@ var SugarCommons = {
 
 	/**
 	 * 确定对话框弹窗处理
+	 * 注：取消该方法，使用为makeConfirm
 	 * @param {string} title 对话框标题
 	 * @param {string} content 对话框内容
 	 * @param {function} callback 对话框确定回调方法
 	 */
-	createConfirmDialog: function (title, content, callback) {
+	/* createConfirmDialog: function (title, content, callback) {
 		var target_id = SugarCommons.msg_dialog_tpl_id;
 		$(target_id + ' #msg-title').html(title);
 		$(target_id + ' #msg-content').html(content);
 		$(target_id).modal('show');
 
 		$(target_id + ' .modal-footer .btn-primary').click(callback);
-	},
+	}, */
 
 	/**
 	 * 创建弹窗编辑对话框
@@ -368,17 +369,21 @@ var SugarCommons = {
 					SugarCommons.makeInnerAlert(e.target, 'alert-info', 'Debug Info:', res);
 					return true;
 				}
+				
 				// 返回成功时处理
 				if (res.status == 0) {
+					res.title = res.title ? res.title : 'success';
+					res.msg = res.msg ? res.msg : 'is ok';
 					SugarCommons.makeInnerAlert(e.target, 'alert-success', res.title, res.msg);
 					// 重置表单内容
 					$form[0].reset();
 					// 表单验证重置
 					$form.data('bootstrapValidator').resetForm();
-				}
-				// 业务逻辑处理错误抛出
-				else {
-					SugarCommons.makeInnerAlert(e.target, 'alert-danger', res.title, res.msg);
+				} else {
+					// 业务逻辑处理错误抛出
+					res.title = res.title ? res.title : 'danger';
+					res.msg = res.msg ? res.msg : 'is error';
+					SugarCommons.makeInnerAlert(e.target, 'alert-danger', res.title, res.msg, 'keep');
 				}
 			},
 			error: function (xhr, status, error) {
@@ -400,10 +405,6 @@ var SugarCommons = {
 		// 模版内容赋值
 		var tpl = $(SugarCommons.alert_tpl_id).html();
 
-		// 默认关闭窗口时间
-		closeTime = parseInt(closeTime);
-		closeTime = closeTime ? closeTime : 6000;
-
 		// 添加入目标容器
 		$(target).prepend(tpl);
 
@@ -413,8 +414,11 @@ var SugarCommons = {
 		$(target).find('[alert-id="title"]').html(title);
 		$(target).find('[alert-id="msg"]').html(msg);
 
-		// 自动关闭
+		// 判断是否自动关闭
 		if (closeTime != 'keep') {
+			// 默认关闭窗口时间
+			closeTime = parseInt(closeTime) ? parseInt(closeTime) : 6000;
+			// 定时自动关闭
 			setTimeout(function () {
 				$('[alert-id="close"]').click();
 			}, closeTime);
@@ -440,7 +444,7 @@ var SugarCommons = {
 		$(target).find('#msg-btn-sure').unbind('click');
 		$(target).find('#msg-btn-sure').click(function (e) {
 			if (typeof (options.sureClick) == 'function') {
-				options.sureClick();
+				options.sureClick(e);
 				// alert('sureClick is ok');
 				$(target).modal('hide');
 			}
@@ -450,7 +454,7 @@ var SugarCommons = {
 		$(target).find('#msg-btn-cancel').unbind('click');
 		$(target).find('#msg-btn-cancel').click(function (e) {
 			if (typeof (options.cancelClick) == 'function') {
-				options.cancelClick();
+				options.cancelClick(e);
 				// alert('cancelClick is ok');
 				$(target).modal('hide');
 			}
@@ -473,13 +477,13 @@ var SugarCommons = {
 			SugarCommons.makeConfirm({
 				title: '提示',
 				msg: '请确认是否重置？',
-				sureClick: function () {
+				sureClick: function (e) {
 					// 表单内容重置
 					$(target)[0].reset();
 					// 表单验证重置
 					$(target).data('bootstrapValidator').resetForm();
 				},
-				cancelClick: function () {
+				cancelClick: function (e) {
 					// alert('cancle is ok');
 				}
 			});
