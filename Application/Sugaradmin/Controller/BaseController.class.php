@@ -560,13 +560,13 @@ class BaseController extends Controller
 	/**
 	 * 通用获取分页列表信息，注意使用前务必导入对应的Model（use YournameModel）
 	 *
-	 * @param array $query 查询条件参数
+	 * @param array $query 查询条件参数，当为空值时表示默认全部
 	 * @param integer $listRows 每页条数,默认为pager_size，使用传参分页（传入为all时表示全部）;当为0时表示不分页（避免页面传参直接获取全部数据）
 	 * @param integer $nowPage 当前页,默认使用ThinkPHP的P
 	 * 
 	 * @return array() $pager 分页信息结果集
 	 */
-	public function getList($query, $listRows = 'pager_size', $nowPage = 0)
+	public function getList($query=array(), $listRows = 'pager_size', $nowPage = 0)
 	{
 		// 排序默认参数处理
 		if (!isset($query['order']) || empty($query['order'])) {
