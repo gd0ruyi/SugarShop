@@ -1,41 +1,78 @@
 /* CSS Document */
 
 body {
-  background-color:#eee;
+    background-color: #eee;
 }
-.login-box{
-  padding-top: 120px;
-  padding-bottom: 60px;
-  max-width:500px;
+
+.login-box {
+    padding-top: 120px;
+    padding-bottom: 60px;
+    max-width: 500px;
 }
-.login-box .panel{}
-.login-box .panel-heading{
-	font-size:16px;
-	font-weight:bold;
-	text-align:center;
+
+.login-box .panel {}
+
+.login-box .panel-heading {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
 }
-.login-box .form-horizontal .form-group{
-	/*margin-bottom:36px;*/
+
+.login-box .form-horizontal .form-group {
+    /*margin-bottom:36px;*/
 }
-.login-box .input-group{
-	margin-left:10px;
+
+.login-box .input-group {
+    margin-left: 10px;
 }
-.login-box .help-block{
-	position:absolute;
-	top:10%;
-	right:15%;
-	z-index:2;
+
+.login-box .help-block {
+    position: absolute;
+    top: 23%;
+    right: 15%;
+    z-index: 2;
 }
-.login-box .verify-div .help-block{
-	position:relative;
-	top:auto;
-	right:auto;
-	margin-left:20%;
+
+.login-box .verify-div .help-block {
+    right: 42%;
+    margin-left: 20%;
 }
-.login-box .verify-box .input-group-addon{
-	padding:1px;
-	cursor:pointer;
+
+.login-box .verify-box .input-group-addon {
+    padding: 1px;
+    cursor: pointer;
 }
-.login-box .verify-box i{
-	right: 120px !important;
+
+.login-box .verify-box i {
+    right: 120px !important;
+}
+
+
+
+/* 用于按钮加载时的loading显示 */
+.login-box .refresh-animation {
+    /* 动画效果*/
+    animation: loading-rotation 1s infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes loading-rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 更换bootstrapValidator后的样式调整 */
+.has-feedback label~.form-control-feedback {
+    top: 6px;
+}
+
+/* 调整验证码框的样式 */
+.verify-div .form-control-feedback {
+    right: 138px !important;
+    top: 6px !important;
 }

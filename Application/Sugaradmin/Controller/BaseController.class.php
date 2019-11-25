@@ -168,7 +168,7 @@ class BaseController extends Controller
 	{
 		$this->displayAutoByIsAjax($templateFile, $charset, $contentType, $content, $prefix);
 		// 注：此处无需调用ShowPageTraceBehavior进行显示，ThinkPHP默认会加载Behavior时，会调用ShowPageTraceBehavior
-		if(isDebug()){
+		if (isDebug()) {
 			$this->_printDebug(false);
 		}
 	}
@@ -230,7 +230,7 @@ class BaseController extends Controller
 		header('Content-Type:application/json; charset=utf-8');
 		echo json_encode($this->_res, $json_options);
 		//  是否输出debu打印（注：因没有使用display，所以需要加入自定义的debug输出）
-		if(isDebug()){
+		if (isDebug()) {
 			$this->_printDebug(true);
 		}
 		exit();
@@ -483,78 +483,101 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * 操作错误跳转的快捷方法
+	 * 操作错误的跳转快捷方法
+	 *
+	 * @param string $message 错误信息
+	 * @param string $url 页面跳转地址
+	 * @param mixed $speed 跳转的等待时间秒，默认为3秒
+	 * @return void
+	 */
+	public function error($message = '', $url = '', $speed = 3)
+	{
+		$this->dispatchJump($message, 1, $url, $speed);
+	}
+
+	/**
+	 * 操作成功的跳转快捷方法
 	 *
 	 * @access protected
 	 * @param string $message 错误信息
-	 * @param string $jumpUrl 页面跳转地址
-	 * @param mixed $ajax 是否为Ajax方式 当数字时指定跳转时间
+	 * @param string $url 页面跳转地址
+	 * @param mixed $speed 跳转的等待时间秒，默认为3秒
 	 * @return void
 	 */
-	protected function error($message = '', $jumpUrl = '', $ajax = false)
+	public function success($message = '', $url = '', $speed = 3)
 	{
-		$this->dispatchJump($message, 1, $jumpUrl, $ajax);
+		$this->dispatchJump($message, 0, $url, $speed);
 	}
 
 	/**
 	 * 默认跳转操作 支持错误导向和正确跳转
 	 * 调用模板显示 默认为public目录下面的success页面
-	 * 提示页面为可配置 支持模板标签/*
+	 * 提示页面为可配置 支持模板标签
+	 * 注：覆盖原ThinkPHP的调用方法，原方法路径为ThinPHP/Library/Think/Controller.class.php
 	 * 
 	 * @param string $message 提示信息
 	 * @param Boolean $status 状态
-	 * @param string $jumpUrl 页面跳转地址
-	 * @param mixed $ajax 是否为Ajax方式 当数字时指定跳转时间
+	 * @param string $url 页面跳转地址
+	 * @param mixed $speed 跳转的等待时间秒，默认为3秒
 	 * @access private
 	 * @return void
 	 */
-	private function dispatchJump($message, $status = 1, $jumpUrl = '', $ajax = false)
+	private function dispatchJump($message, $status = 1, $url = '', $speed = 3)
 	{
-		if (true === $ajax || IS_AJAX) { // AJAX提交
-			$data = is_array($ajax) ? $ajax : array();
-			$data['info'] = $message;
-			$data['status'] = $status;
-			$data['url'] = $jumpUrl;
+		// 初始化
+		$status = intval($status);
+		$speed = intval($speed);
+		$data = array(
+			'status' => $status,
+			'title' => $status ? L('_OPERATION_FAIL_') : L('_OPERATION_SUCCESS_'),
+			'msg' => $message,
+			'jump' => $url,
+			'speed' => $speed,
+			'valid' => $status ? true : false,
+			// ThinkPHP默认的输出
+			'info' => $message,
+			'url' => $url
+		);
+		// 设置到自定义的结果集
+		$this->setRes($data);
+
+		// AJAX返回
+		if (IS_AJAX) {
 			$this->ajaxReturn($data);
 		}
-		if (is_int($ajax))
-			$this->assign('waitSecond', $ajax);
-		if (!empty($jumpUrl))
-			$this->assign('jumpUrl', $jumpUrl);
-		// 提示标题
-		$this->assign('msgTitle', $status ? L('_OPERATION_FAIL_') : L('_OPERATION_SUCCESS_'));
-		// 如果设置了关闭窗口，则提示完毕后自动关闭窗口
-		if ($this->get('closeWin')) {
-			$this->assign('jumpUrl', 'javascript:window.close();');
-		}
-		// 状态
-		$this->assign('status', $status);
+
+		// 开始页面赋值
+		$this->assign($data);
+
 		// 保证输出不受静态缓存影响
 		C('HTML_CACHE_ON', false);
-		// 发送成功信息
-		if ($status) {
-			// 提示信息
-			$this->assign('error', $message);
-			// 发生错误时候默认停留3秒
-			if (!isset($this->waitSecond))
-				$this->assign('waitSecond', '3');
-			// 默认发生错误的话自动返回上页
-			if (!isset($this->jumpUrl))
-				$this->assign('jumpUrl', "javascript:history.back(-1);");
-			$this->display(C('TMPL_ACTION_ERROR'));
-			// 中止执行 避免出错后继续执行
-			exit();
-		} else {
-			// 提示信息
-			$this->assign('message', $message);
-			// 成功操作后默认停留1秒
-			if (!isset($this->waitSecond))
-				$this->assign('waitSecond', '1');
-			// 默认操作成功自动返回操作前页面
-			if (!isset($this->jumpUrl))
-				$this->assign("jumpUrl", $_SERVER["HTTP_REFERER"]);
-			$this->display(C('TMPL_ACTION_SUCCESS'));
+
+		// 显示处理
+		$this->display(C('TMPL_ACTION_INFO'));
+		if (isDebug()) {
+			$this->_printDebug(true);
 		}
+		exit();
+	}
+
+	/**
+	 * 模板变量赋值
+	 * 注：自定义覆盖，用于数组方式赋值
+	 *
+	 * @access protected
+	 * @param mixed $name 要显示的模板变量，可以为数组，当为数组时直接遍历赋值
+	 * @param mixed $value 变量的值
+	 * @return BaseController
+	 */
+	public function assign($name, $value = '')
+	{
+		// 判断是否为数组
+		if (is_array($name)) {
+			foreach ($name as $k => $v) {
+				parent::assign($k, $v);
+			}
+		}
+		return parent::assign($name, $value);
 	}
 
 	/**
@@ -566,7 +589,7 @@ class BaseController extends Controller
 	 * 
 	 * @return array() $pager 分页信息结果集
 	 */
-	public function getList($query=array(), $listRows = 'pager_size', $nowPage = 0)
+	public function getList($query = array(), $listRows = 'pager_size', $nowPage = 0)
 	{
 		// 排序默认参数处理
 		if (!isset($query['order']) || empty($query['order'])) {

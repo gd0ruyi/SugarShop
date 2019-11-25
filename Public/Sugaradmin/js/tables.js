@@ -573,12 +573,22 @@ var SugarTables = {
 					td_content = td_content.substring(0, column.td.content_length) + '...';
 				}
 
+				// 操作按钮处理，未完成
+				if (column.td.btnList !== undefined && typeof (column.td.btnList) == 'object') {
+					// 置空内容
+					//td_content = '';
+					$.each(column.td.btnList, function(btnIndex, btnValue){
+					});
+				}
+
 				// td内容添加
-				table_td = $(table_td).html(td_content);
+				table_td = $(table_td).html(td_content);				
 
 				// td通用属性处理
 				$.each(column.td, function (key, value) {
-					table_td = $(table_td).attr(key, value);
+					if (key != 'btnList') {
+						table_td.attr(key, value);
+					}
 				});
 
 				// 处理后重新赋值

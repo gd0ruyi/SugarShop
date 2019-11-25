@@ -25,14 +25,15 @@ class LoginController extends BaseController
 	public function login()
 	{
 		// 校验验证码
-		if (!check_verify($_POST['verification'])) {
-			$this->error("验证码不正确！请重新尝试！");
+		if (!check_verify($_GET['verification'])) {
+			$this->error("验证码不正确！请重新尝试！", '../Login/index');
 		}
+		
 		// $user_model = D ( "User" );
 		$user_model = new UserModel();
 		$query = array();
-		$query['username'] = $_POST['username'];
-		$query['password'] = makePassword($_POST['usename'], $_POST['password']);
+		$query['username'] = $_GET['username'];
+		$query['password'] = makePassword($_GET['usename'], $_GET['password']);
 
 		// 查询时自动创建索引（示例）
 		$options = array();

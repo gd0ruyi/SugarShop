@@ -144,13 +144,30 @@
     },
     'operation': {
       th: { title: '操作', class: 'text-center' },
-      td: { class: 'text-center' }
+      td: {
+        // 单元格样式居中
+        class: 'text-center',
+
+        // 按钮配置
+        btnList: {
+          // 编辑按钮
+          'edit': {
+            title: '编辑',
+            content: '<button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-edit"></span></button>',
+            // 点击事件
+            btnClick: function (e, key, value) {
+              SugarCommons.runEditDialogByAjax(target_id, title, url, data);
+            }
+          }
+        }
+
+      }
     },
   };
   SugarTables.create('#user-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
 
   // 当编辑等模拟框关闭时触发重新刷新列表
-  $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal',function(e){
+  $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal', function (e) {
     $('#user-form [name="search"]').click();
   });
 </script>

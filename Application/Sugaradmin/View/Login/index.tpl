@@ -9,7 +9,8 @@
   <title>SugarAdmin-登录</title>
   <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
-  <link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet">
+  <!-- <link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet"> -->
+  <link href="/Public/bootstrapvalidator-0.5.2/dist/css/bootstrapValidator.min.css" rel="stylesheet">
   <link href="/Public/Sugaradmin/css/login.css" rel="stylesheet">
   <!--[if lt IE 9]>
   <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -29,7 +30,7 @@
               <span class="input-group-addon">
                 <font class="glyphicon glyphicon-user"></font>
               </span>
-              <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" />
+              <input type="text" class="form-control input-lg" id="username" name="username" placeholder="请输入用户名" />
             </div>
           </div>
           <div class="form-group col-xs-12">
@@ -38,12 +39,12 @@
               <span class="input-group-addon">
                 <font class="glyphicon glyphicon-lock"></font>
               </span>
-              <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" />
+              <input type="password" class="form-control input-lg" id="password" name="password" placeholder="请输入密码" />
             </div>
           </div>
           <div class="form-group col-xs-12 verify-div">
             <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
-            <div class="input-group verify-box">
+            <div class="col-sm-10 input-group verify-box">
               <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" autocomplete="off" />
               <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index'}>" /></span>
             </div>
@@ -57,16 +58,21 @@
   </div>
   <script src="/Public/jquery/jquery-1.11.3.min.js"></script>
   <script src="/Public/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-  <script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script>
+  <!-- <script src="/Public/bootstrapvalidator-0.4.5/dist/js/bootstrapValidator.min.js"></script> -->
+  <script src="/Public/bootstrapvalidator-0.5.2/dist/js/bootstrapValidator.min.js"></script>
   <script language="javascript" type="text/javascript">
     // 登录验证
     $(document).ready(function () {
+
+      // 验证码处理
       var $vimg_src = $('#verify-img').attr('src');
       $('#verify-img').attr('src', $vimg_src + '?' + Math.random());
       $('#verify-img').click(function () {
         $(this).attr('src', $vimg_src + '?' + Math.random());
       });
-      $("#login-form").bootstrapValidator({
+
+      // 验证插件配置
+      $bvOptions = {
         excluded: [':disabled', ':hidden', ':not(:visible)'],
         feedbackIcons: {
           valid: 'glyphicon glyphicon-ok',
@@ -112,8 +118,15 @@
           },
         },
         submitButtons: 'button[type="submit"]'
+      };
+
+      // 执行验证方法
+      $("#login-form").bootstrapValidator($bvOptions).on('success.form.bv', function (e, data) {
+        // 登录按钮加入等待图标
+        $('button[type="submit"]').append('    <span class="glyphicon glyphicon-refresh refresh-animation"></span>');
       });
-    })
+
+    });
   </script>
 </body>
 

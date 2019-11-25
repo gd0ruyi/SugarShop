@@ -115,7 +115,7 @@ return array (
 		'VERIFY_CONFIG' => array (
 				
 				// 是否开启验证码处理
-				'IS_OPEN' => false,
+				'IS_OPEN' => true,
 				
 				// 验证码图片配置
 				'IMG_CONFIG' => array (
@@ -144,10 +144,13 @@ return array (
 		),
 		
 		// 默认错误跳转对应的模板文件
-		'TMPL_ACTION_ERROR' => 'Public:notice',
+		// 'TMPL_ACTION_ERROR' => 'Public:notice',
 		
 		// 默认成功跳转对应的模板文件
-		'TMPL_ACTION_SUCCESS' => 'Public:notice',
+		// 'TMPL_ACTION_SUCCESS' => 'Public:notice',
+
+		// 默认自定义统一处理错误或成功页面(非ThinkPHP定义，起首要作用)
+		'TMPL_ACTION_INFO' => 'Public:notice',
 		
 		// 是否打开ajax加载时出现进度加载
 		'OPEN_AJAX_LOADING_PROGRESS' => false,
