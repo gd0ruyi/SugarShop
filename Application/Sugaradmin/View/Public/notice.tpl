@@ -43,7 +43,7 @@
 			var msg = '<{$msg}>';
 			var jumpUrl = '<{$jump}>';
 			jumpUrl = jumpUrl == '' && status ? 'javascript:history.go(-1);' : jumpUrl;
-			var jumpText = status ? '【跳转】' : '【返回】';
+			var jumpText = status ? '【返回】' : '【跳转】';
 			var speed = parseInt('<{$speed}>');
 
 			// 页面初始显示
