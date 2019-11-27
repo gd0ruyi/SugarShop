@@ -7,10 +7,11 @@
   <meta name="renderer" content="webkit">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SugarAdmin-登录</title>
-  <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+  <!-- 注：min.css与css样式不同，这里统一使用css -->
+  <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
+  <link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.css" rel="stylesheet">
   <!-- <link href="/Public/bootstrapvalidator-0.4.5/dist/css/bootstrapValidator.min.css" rel="stylesheet"> -->
-  <link href="/Public/bootstrapvalidator-0.5.2/dist/css/bootstrapValidator.min.css" rel="stylesheet">
+  <link href="/Public/bootstrapvalidator-0.5.2/dist/css/bootstrapValidator.css" rel="stylesheet">
   <link href="/Public/Sugaradmin/css/login.css" rel="stylesheet">
   <!--[if lt IE 9]>
   <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -19,41 +20,79 @@
 </head>
 
 <body>
-  <div class="container login-box">
-    <div class="panel panel-primary">
-      <div class="panel-heading">SugarShop管理登录</div>
-      <div class="panel-body">
-        <form class="form-horizontal row" id="login-form" method="post" action="<{U url='/Sugaradmin/Login/login'}>">
-          <div class="form-group col-xs-12">
-            <label for="usename" class="col-sm-2 control-label hidden-xs">用户名</label>
-            <div class="col-sm-10 input-group">
-              <span class="input-group-addon">
-                <font class="glyphicon glyphicon-user"></font>
-              </span>
-              <input type="text" class="form-control input-lg" id="username" name="username" placeholder="请输入用户名" />
-            </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-header"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3"><!--左空白--></div>
+
+      <div class="col-sm-5">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="text-center">SugarShop管理登录</h3>
           </div>
-          <div class="form-group col-xs-12">
-            <label for="password" class="col-sm-2 control-label hidden-xs">密码</label>
-            <div class="col-sm-10 input-group">
-              <span class="input-group-addon">
-                <font class="glyphicon glyphicon-lock"></font>
-              </span>
-              <input type="password" class="form-control input-lg" id="password" name="password" placeholder="请输入密码" />
-            </div>
+          <div class="panel-body">
+            <form class="form-horizontal" id="login-form" method="post" action="<{U url='/Sugaradmin/Login/login'}>">
+
+              <div class="row center-block">
+                <div class="form-group col-sm-12 col-xs-12">
+                  <label for="usename" class="col-sm-2 control-label hidden-xs">用户名</label>
+                  <div class="col-sm-8 col-xs-11 input-group">
+                    <span class="input-group-addon">
+                      <font class="glyphicon glyphicon-user"></font>
+                    </span>
+                    <input type="text" class="form-control input-sm" id="username" name="username" placeholder="请输入用户名" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row center-block">
+                <div class="form-group col-sm-12 col-xs-12">
+                  <label for="password" class="col-sm-2 control-label hidden-xs">密码</label>
+                  <div class="col-sm-8 col-xs-11 input-group">
+                    <span class="input-group-addon">
+                      <font class="glyphicon glyphicon-lock"></font>
+                    </span>
+                    <input type="password" class="form-control input-sm" id="password" name="password" placeholder="请输入密码" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row center-block verify-box">
+                <div class="form-group col-sm-12 col-xs-12 row">
+                  <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
+                  <div class="col-sm-8 col-xs-11 input-group">
+                    <div class="row">
+                      <div class="col-sm-4 col-xs-4">
+                        <input type="text" class="form-control input-sm" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" autocomplete="off" />
+                      </div>
+                      <div class="col-sm-5 col-sm-offset-0 col-xs-5 col-xs-offset-0">
+                        <img id="verify-img" class="img-thumbnail" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index'}>" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row center-block">
+                <div class="form-group col-xs-12">
+                  <div class="form-group row text-center">
+                    <button type="submit" class="btn btn-lg btn-primary" name="login-button">登 录</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
           </div>
-          <div class="form-group col-xs-12 verify-div">
-            <label for="verification" class="col-sm-2 control-label hidden-xs">验证码</label>
-            <div class="col-sm-10 input-group verify-box">
-              <input type="text" class="form-control input-lg" id="verification" name="verification" placeholder="请输入验证码" maxlength="4" autocomplete="off" />
-              <span class="input-group-addon"><img id="verify-img" class="img-rounded" height="40" width="120" alt="点击刷新" title="点击刷新" src="<{U url='/Home/Verify/index'}>" /></span>
-            </div>
-          </div>
-          <div class="form-group text-center">
-            <button type="submit" class="btn btn-lg btn-primary" name="login-button">登 录</button>
-          </div>
-        </form>
+        </div>
       </div>
+
+      <div class="col-sm-3"><!--右空白--></div>
+    </div>
+
+    <div class="row">
     </div>
   </div>
   <script src="/Public/jquery/jquery-1.11.3.min.js"></script>
@@ -65,9 +104,8 @@
     $(document).ready(function () {
 
       // 验证码处理
-      var $vimg_src = $('#verify-img').attr('src');
-      $('#verify-img').attr('src', $vimg_src + '?' + Math.random());
       $('#verify-img').click(function () {
+        var $vimg_src = $('#verify-img').attr('src');
         $(this).attr('src', $vimg_src + '?' + Math.random());
       });
 

@@ -8,8 +8,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>SugarAdmin-<{$msgTitle}>
 	</title>
-	<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
+	<link href="/Public/bootstrap-3.3.5-dist/css/bootstrap-theme.css" rel="stylesheet">
 	<link href="/Public/Sugaradmin/css/public.css" rel="stylesheet">
 	<!--[if lt IE 9]>
   <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
