@@ -357,8 +357,7 @@ var SugarTables = {
 		}
 		// 禁用提交处理
 		SugarTables.sts[form_id].form.ajax_is_loading = true;
-		// $(form_id).find('[type="submit"]').attr("disabled", "true");
-		SugarCommons.setFromDisabled(form_id, true);
+		// $(form_id).find('[type="submit"]').attr("disabled", "true");		
 
 		// 排序按钮禁用样式
 		$(form_id).find('[type="submit"]').addClass("disabled");
@@ -411,6 +410,9 @@ var SugarTables = {
 		// debug参数处理
 		form_data.debug = SugarCommons.debug;
 		// console.log(form_data);
+
+		// 获取值后方可禁用处理
+		SugarCommons.setFromDisabled(form_id, true);
 
 		// ajax请求处理
 		$.ajax({
@@ -537,7 +539,7 @@ var SugarTables = {
 			$.each(columns, function (index, column) {
 				//定义单元格
 				var table_td = SugarTables.table_td;
-				var td_content = row[index] == undefined ? index + '-undefined' : row[index];
+				var td_content = row[index] == undefined ? index + '-undefined' : row[index];				
 
 				// 默认初始化处理
 				// column.td = column.td == undefined ? {} : column.td;
@@ -547,7 +549,8 @@ var SugarTables = {
 					column.td = {};
 					column.td.title = table_id;
 				}
-				column.td.title = td_content;
+				// 当为特殊字符operation，表示为操作处理，因此td标题为空
+				column.td.title = index == 'operation' ? '' : td_content;
 
 				// td模版配置替换处理
 				if (column.td.template !== undefined && typeof (column.td.template) == 'string') {
@@ -573,20 +576,59 @@ var SugarTables = {
 					td_content = td_content.substring(0, column.td.content_length) + '...';
 				}
 
-				// 操作按钮处理，未完成
-				if (column.td.btnList !== undefined && typeof (column.td.btnList) == 'object') {
-					// 置空内容
-					//td_content = '';
-					$.each(column.td.btnList, function(btnIndex, btnValue){
+				// td内容添加
+				table_td = $(table_td).html(td_content);
+
+				// 操作按钮处理
+				if (column.td.btnOptions !== undefined && typeof (column.td.btnOptions) == 'object') {
+					// 单元格清空处理
+					table_td.html('');
+
+					// 遍历操作配置项并进行处理
+					$.each(column.td.btnOptions, function (optIndex, optValue) {
+						// 默认初始化处理
+						var btnTitle = optValue.title !== undefined ? optValue.title : 'undefined';
+						var btnCss = optValue.btnCss !== undefined && optValue.btnCss ? optValue.btnCss : '';
+						var btnIconCss = optValue.btnIconCss !== undefined && optValue.btnIconCss ? optValue.btnIconCss : '';
+
+						var btnHtml = '<button type="button" name="' + optIndex + '" title="' + btnTitle + '" class="' + btnCss + '" ></button>';
+						var btnIconHtml = btnIconCss ? '<span class="' + btnIconCss + '"></span>' : btnTitle;
+
+						// 处理操作按钮所需的数据
+						var optData = optValue.data !== undefined ? optValue.data : '';
+
+						// 判断格式
+						if (typeof (optData) == 'object') {
+							// 清空赋值
+							optData = {};
+							// 多值处理
+							$.each(optValue.data, function (odi, odv) {
+								optData[odv] = row[odv];
+							});
+
+						} else {
+							SugarTables.comms.errorMsg("SugarTables plus is error: btnOptions[" + optIndex + "] is not array!");
+						}
+
+						// 处理点击调用
+						if (optValue.btnClick !== undefined && typeof (optValue.btnClick) == 'function') {
+							btnHtml = $(btnHtml).click(function (e) {
+								optValue.btnClick(e, optData);
+							});
+						}
+
+						// 加入icon图标
+						btnHtml = btnHtml.html(btnIconHtml);
+
+						// 添加入单元格内
+						table_td.append(btnHtml);
 					});
 				}
 
-				// td内容添加
-				table_td = $(table_td).html(td_content);				
-
 				// td通用属性处理
 				$.each(column.td, function (key, value) {
-					if (key != 'btnList') {
+					// 过滤处理,操作按钮设置和模版设置参数不加入内
+					if (key != 'btnOptions' && key!=='template') {
 						table_td.attr(key, value);
 					}
 				});
@@ -715,7 +757,7 @@ var SugarTables = {
 		page_pre = page_pre <= 0 ? 1 : page_pre;
 		// 下一页
 		var page_next = page_now + 1;
-		page_next = page_next >= page_total ? 1 : page_next;
+		page_next = page_next >= page_total ? page_total : page_next;
 
 		// 重新赋值
 		SugarTables.sts[form_id].pager.page_now = page_now;

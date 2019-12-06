@@ -50,7 +50,8 @@ class UserController extends BaseController
 
 		// 关键字处理
 		if (isset($_GET['user_keyword']) && trim($_GET['user_keyword']) != '') {
-			$query['where']['username'] = array('like', '^' . trim($_GET['user_keyword']));
+			// $query['where']['username'] = array('like', '^' . trim($_GET['user_keyword']));
+			$query['where']['username'] = array('like', trim($_GET['user_keyword']));
 		}
 
 		// 用户类型条件处理
@@ -87,7 +88,11 @@ class UserController extends BaseController
 			$query['where']['user_id'] = $user_id;
 			$rs = $this->getOne($query);
 		}
-		$this->assign('user', $rs['data']);
+		// $this->assign('user', json_encode($rs['data'], JSON_UNESCAPED_UNICODE));
+		// 移除密码信息
+		unset($rs['data']['password']);
+		// 数据赋值
+		$this->assignToJson('user', $rs['data']);
 		$this->display();
 	}
 
@@ -102,6 +107,7 @@ class UserController extends BaseController
 		$user_model = new UserModel();
 		$data = array();
 
+		// 校验及初始化
 		$data['user_id'] = intval($_GET['user_id']);
 		// $data['user_id'] = 2;
 		$data['username'] = trim($_GET['username']);
@@ -117,6 +123,17 @@ class UserController extends BaseController
 		$data['add_time'] = $time;
 		$data['upd_time'] = $time;
 		$data['las_time'] = 0;
+
+		// 当user_id不为0表示为保存处理
+		if ($data['user_id']) {
+			unset($data['username']);
+			// 密码为空表示不修改
+			if (!$_GET['password']) {
+				unset($data['password']);
+			}
+			unset($data['add_time']);
+			unset($data['las_time']);
+		}
 
 		$options = array();
 		// $options ['id'] = 1;

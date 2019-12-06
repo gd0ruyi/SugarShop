@@ -1,0 +1,71 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>用于测试js</title>
+    <script language="javascript" src="/Public/jquery/jquery-1.11.3.min.js"></script>
+</head>
+
+<body style="padding: 100px;">
+    <div>
+        <p>
+            <h3>用于验证table的operator操作方法回调处理</h3>
+        </p>
+        <button type="button" name="add">添加</button>
+        <hr />
+        <div id="abc"></div>
+    </div>
+    <div>
+        <textarea>abcd</textarea>
+        <hr />
+    </div>
+    <div>
+        <select name="testSelect">
+            <option value="a" selected="selected">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+        </select>
+        <hr />
+    </div>
+</body>
+
+</html>
+<script>
+    var i = 0;
+
+    // 按钮触发
+    $('[name="add"]').click(function (e) {
+
+        var key = 'button';
+
+        key = key + (i++);
+
+        var html = '<button type="button">' + key + '</button>';
+
+        html = $(html).click(function (e) {
+            $(this).attr('key', key);
+            $(this).attr('style', 'background-color: green;');
+            alert(key);
+        });
+
+        $('#abc').append(html);
+    });
+
+    /* var str = 'c';
+    switch (str) {
+        case 'a':
+            alert(str);
+            break;
+        case 'b' || 'c':
+            alert(str);
+            break;
+        default:
+            alert(str);
+            break;
+    } */
+    $('[name="testSelect"]').val('b');
+</script>

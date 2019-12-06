@@ -21,6 +21,12 @@ var SugarCommons = {
 	// 是否开启debug信息
 	debug: false,
 
+	// 关闭弹窗刷新标记
+	close_refresh: false,
+
+	//插入提示的自动关闭默认时间
+	inner_alert_close_time: 6000,
+
 	/**
 	 * 公用函数库名称设置
 	 * @param {string} commons_namess
@@ -332,8 +338,10 @@ var SugarCommons = {
 	/**
 	 * bootstrapValidator表单验证提交方式
 	 * @param {bvObject} e bootstrapValidator的bv方式使用的e对象
+	 * @param {function} sucFun 成功时回调方法
+	 * @param {function} errFun 失败时回调方法
 	 */
-	bvAjaxSubmit: function (e) {
+	bvAjaxSubmit: function (e, sucFun, errFun) {
 		// 取消提交
 		e.preventDefault();
 
@@ -351,6 +359,10 @@ var SugarCommons = {
 		// 开启禁用
 		SugarCommons.setFromDisabled(e.target, true);
 
+		// 设置按钮为等待样式
+		// var btnHtml = $form.find('button[type="submit"]').html();
+		$form.find('button[type="submit"]').append('<span class="glyphicon glyphicon-refresh refresh-animation"></span>');
+
 		// ajax提交处理
 		$.ajax({
 			url: $form.attr('action'),
@@ -361,29 +373,38 @@ var SugarCommons = {
 			success: function (res, status, xhr) {
 				// 解除禁用
 				SugarCommons.setFromDisabled(e.target, false);
+
+				// 每次调用成功后关闭则可刷新
+				SugarCommons.close_refresh = true;
+
 				// 重新启用提交按钮
 				// $($form).bootstrapValidator('disableSubmitButtons', false);
+
+				// 去掉加载等待图标
+				$form.find('button[type="submit"] span').remove();
 
 				// 当为debug时处理
 				if (SugarCommons.debug == true) {
 					SugarCommons.makeInnerAlert(e.target, 'alert-info', 'Debug Info:', res);
 					return true;
 				}
-				
+
 				// 返回成功时处理
 				if (res.status == 0) {
 					res.title = res.title ? res.title : 'success';
 					res.msg = res.msg ? res.msg : 'is ok';
-					SugarCommons.makeInnerAlert(e.target, 'alert-success', res.title, res.msg);
-					// 重置表单内容
-					$form[0].reset();
-					// 表单验证重置
-					$form.data('bootstrapValidator').resetForm();
+					SugarCommons.makeInnerAlert(e.target, 'alert-success', res.title, res.msg, SugarCommons.inner_alert_close_time);
+
+					// 成功后回调方法执行
+					sucFun(e);
 				} else {
 					// 业务逻辑处理错误抛出
 					res.title = res.title ? res.title : 'danger';
 					res.msg = res.msg ? res.msg : 'is error';
 					SugarCommons.makeInnerAlert(e.target, 'alert-danger', res.title, res.msg, 'keep');
+
+					// 失败后回调方法执行
+					errFun(e);
 				}
 			},
 			error: function (xhr, status, error) {
@@ -400,8 +421,9 @@ var SugarCommons = {
 	 * @param {sting} title 提示框的标题
 	 * @param {sting} msg 提示框的内容
 	 * @param {int||string} closeTime 自动关闭时间，若为keep则不进行关闭
+	 * @param {function} afterCloseFun 关闭后方法回调处理
 	 */
-	makeInnerAlert: function (target, alertClass, title, msg, closeTime) {
+	makeInnerAlert: function (target, alertClass, title, msg, closeTime, afterCloseFun) {
 		// 模版内容赋值
 		var tpl = $(SugarCommons.alert_tpl_id).html();
 
@@ -414,10 +436,18 @@ var SugarCommons = {
 		$(target).find('[alert-id="title"]').html(title);
 		$(target).find('[alert-id="msg"]').html(msg);
 
+		// 关闭时方法调用
+		$(target).find('[role="alert"]').on('closed.bs.alert', function () {
+			if (afterCloseFun !== undefined) {
+				afterCloseFun();
+			}
+		});
+
+
 		// 判断是否自动关闭
-		if (closeTime != 'keep') {
+		if (closeTime != 'keep' && SugarCommons.debug != true) {
 			// 默认关闭窗口时间
-			closeTime = parseInt(closeTime) ? parseInt(closeTime) : 6000;
+			closeTime = parseInt(closeTime) ? parseInt(closeTime) : SugarCommons.inner_alert_close_time;
 			// 定时自动关闭
 			setTimeout(function () {
 				$('[alert-id="close"]').click();
@@ -464,8 +494,9 @@ var SugarCommons = {
 	/**
 	 * 创建表单重置按钮
 	 * @param {string} target 表单的标识
+	 * @param {function} resetFun 确认重置后的触发方法
 	 */
-	createRestFormButton: function (target) {
+	createResetFormButton: function (target, resetFun) {
 		// 取消重复绑定
 		$(target).unbind('click');
 
@@ -482,6 +513,9 @@ var SugarCommons = {
 					$(target)[0].reset();
 					// 表单验证重置
 					$(target).data('bootstrapValidator').resetForm();
+					if (typeof (resetFun) == 'function') {
+						resetFun(e);
+					}
 				},
 				cancelClick: function (e) {
 					// alert('cancle is ok');
@@ -500,11 +534,53 @@ var SugarCommons = {
 			$(target).find('input').attr('disabled', true);
 			$(target).find('select').attr('disabled', true);
 			$(target).find('button').attr('disabled', true);
+			$(target).find('textarea').attr('disabled', true);
 		} else {
 			$(target).find('input').removeAttr('disabled');
 			$(target).find('select').removeAttr('disabled');
 			$(target).find('button').removeAttr('disabled');
+			$(target).find('textarea').removeAttr('disabled');
 		}
+	},
+
+	/**
+	 * 对表单内元素进行赋值
+	 * @param {string} target 表单标识
+	 * @param {object} data 传入的数据
+	 */
+	setFormInputValue: function (target, data) {
+		// 当为空时不处理
+		if(!data){
+			return false;
+		}
+		// 遍历form_id
+		$.each(data, function (index, value) {
+			var $element = $(target).find('[name="' + index + '"]');
+			var type = $element.attr('type');
+			// 不同的输入框类型处理
+			switch (type) {
+				case 'text' || 'hidden':
+					$element.val(value);
+					break;
+				case 'radio' || 'checkbox':
+					$element.each(function () {
+						if ($(this).val() == value) {
+							$(this).click();
+						} else {
+							$(this).removeAttr('checked');
+						}
+					});
+					break;
+				default:
+					if ($element.prop('tagName') == 'textarea') {
+						$element.text(value);
+					}
+					if ($element.prop('tagName') == 'select') {
+						$element.val(value);
+					}
+					break;
+			}
+		});
 	}
 }
 

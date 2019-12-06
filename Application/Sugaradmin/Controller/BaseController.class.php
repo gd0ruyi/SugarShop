@@ -581,6 +581,18 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * 模板变量赋值（json赋值）
+	 *
+	 * @param mixed $name 要显示的模板变量，可以为数组，当为数组时直接遍历赋值
+	 * @param mixed $value 变量的值
+	 * @param int $json_options json编码常量
+	 * @return void
+	 */
+	public function assignToJson($name, $value = '', $json_options = JSON_UNESCAPED_UNICODE){
+		return $this->assign($name, json_encode($value, $json_options));
+	}
+
+	/**
 	 * 通用获取分页列表信息，注意使用前务必导入对应的Model（use YournameModel）
 	 *
 	 * @param array $query 查询条件参数，当为空值时表示默认全部

@@ -213,6 +213,7 @@ body {
     /* 动画效果*/
     animation: loading-rotation 1s infinite;
     animation-timing-function: linear;
+    margin-left: 12px;
 }
 
 .loading-waiting .animation {
@@ -359,6 +360,18 @@ body {
     color: #C00;
     display: inline-block;
     cursor: not-allowed;
+}
+/* 鼠标移动到表格上的颜色 */
+.ajax-tables > tbody > tr:hover{
+    background-color: #F0FFFF;
+}
+
+.ajax-tables tbody td{
+    vertical-align: middle !important;
+}
+
+.ajax-tables tbody td .btn{
+    margin-left: 6px;
 }
 
 /*** 分页样式 ***/

@@ -47,9 +47,9 @@ class UserModel extends BaseModel
 	// thinkphp自动验证
 	protected $_validate = array(
 		array('user_id', '', '用户ID错误，该ID已存在！', self::EXISTS_VALIDATE, 'unique', self::MODEL_INSERT),
-		array('username', 'require', '管理员用户名不能为空！', self::MUST_VALIDATE),
+		array('username', 'require', '用户名不能为空！', self::EXISTS_VALIDATE),
 		array('username', '', '用户名称已存在！', self::EXISTS_VALIDATE, 'unique', self::MODEL_INSERT),
-		array('password', 'require', '管理员密码不能为空！', self::MUST_VALIDATE)
+		array('password', 'require', '密码不能为空！', self::EXISTS_VALIDATE)
 	);
 
 	// 自动完成

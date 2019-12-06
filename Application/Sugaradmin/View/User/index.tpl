@@ -28,7 +28,7 @@
   </div>
   <div class="panel-body">
     <!-- 表单 -->
-    <form class="form-inline" id="user-form">
+    <form class="form-inline" id="user-table-form">
 
       <div class="form-group form-group-sm">
         <div class="input-group">
@@ -142,6 +142,7 @@
       th: { title: '描述说明', title_length: 12, class: 'text-center' },
       td: { template: '{username} 用户的登录时间为： {las_time_format}' }
     },
+    
     'operation': {
       th: { title: '操作', class: 'text-center' },
       td: {
@@ -149,25 +150,55 @@
         class: 'text-center',
 
         // 按钮配置
-        btnList: {
+        btnOptions: {
+
           // 编辑按钮
           'edit': {
             title: '编辑',
-            content: '<button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-edit"></span></button>',
+            btnCss: 'btn btn-info btn-sm',
+            btnIconCss: 'glyphicon glyphicon-edit',
+            // 所需表格字段中的数据信息
+            data: ['user_id', 'username'],
             // 点击事件
-            btnClick: function (e, key, value) {
-              SugarCommons.runEditDialogByAjax(target_id, title, url, data);
+            btnClick: function (e, optData) {
+              var url = '/Sugaradmin/User/edit';
+              var title = '编辑用户[' + optData.username + ']';
+              // 弹出编辑窗口
+              SugarCommons.runEditDialogByAjax('user-edit', title, url, optData);
             }
-          }
+          },
+
+          // 删除按钮
+          'delete': {
+            title: '删除',
+            btnCss: 'btn btn-danger btn-sm',
+            btnIconCss: 'glyphicon glyphicon-trash',
+            // 所需表格字段中的数据信息
+            data: ['user_id', 'username'],
+            // 点击事件
+            btnClick: function (e, optData) {
+              var url = '/Sugaradmin/User/delete';
+              // var title = '编辑用户[' + optData.username + ']';
+              // 弹出编辑窗口
+              // SugarCommons.runEditDialogByAjax('user-edit', title, url, optData);
+              alert('delete:'+optData.username);
+            }
+          },
+          
         }
 
       }
     },
   };
-  SugarTables.create('#user-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
+  SugarTables.create('#user-table-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
 
   // 当编辑等模拟框关闭时触发重新刷新列表
-  $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal', function (e) {
-    $('#user-form [name="search"]').click();
-  });
+  /* $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal', function (e) {
+    // 判断是否关闭刷新，若不然每次关闭都会刷新
+    if(SugarCommons.close_refresh){
+      $('#user-table-form [name="search"]').click();
+      // 重置关闭刷新标记
+      SugarCommons.close_refresh = false;
+    }    
+  }); */
 </script>
