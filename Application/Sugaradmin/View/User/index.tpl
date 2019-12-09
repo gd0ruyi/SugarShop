@@ -115,7 +115,21 @@
     // },
     'status': {
       th: { title: '状态', sort_icon: true, class: 'text-center' },
-      td: { template: "{status_name}", class: 'text-center' }
+      // td: { template: "{status_name}", class: 'text-center' }
+      // 特殊内容通过方法回调处理，当为禁用时显示红色，启用显示绿色
+      td: {
+        template: function (index, row) {
+          var $td = { content: '', title: '' };
+          $td.title = row['status_name']
+          if (row['status'] == '1') {
+            $td.content = '<font class="red">' + row['status_name'] + '</font>';
+          } else {
+            $td.content = '<font class="green">' + row['status_name'] + '</font>';
+          }
+          return $td;
+        },
+        class: 'text-center'
+      }
     },
     'truename': {
       th: { title: '姓名', sort_icon: true, class: 'text-center' },
@@ -142,7 +156,7 @@
       th: { title: '描述说明', title_length: 12, class: 'text-center' },
       td: { template: '{username} 用户的登录时间为： {las_time_format}' }
     },
-    
+
     'operation': {
       th: { title: '操作', class: 'text-center' },
       td: {
@@ -181,10 +195,10 @@
               // var title = '编辑用户[' + optData.username + ']';
               // 弹出编辑窗口
               // SugarCommons.runEditDialogByAjax('user-edit', title, url, optData);
-              alert('delete:'+optData.username);
+              alert('delete:' + optData.username);
             }
           },
-          
+
         }
 
       }
@@ -199,6 +213,6 @@
       $('#user-table-form [name="search"]').click();
       // 重置关闭刷新标记
       SugarCommons.close_refresh = false;
-    }    
+    }
   }); */
 </script>

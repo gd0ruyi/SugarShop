@@ -17,6 +17,16 @@
     text-align: right;
 }
 
+/* 字体颜色 */
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+
 /* body样式 */
 body {
     position: relative;
@@ -209,7 +219,7 @@ body {
 }
 
 /* 刷新图标的动画效果 */
-.refresh-animation{
+.refresh-animation {
     /* 动画效果*/
     animation: loading-rotation 1s infinite;
     animation-timing-function: linear;
@@ -361,16 +371,17 @@ body {
     display: inline-block;
     cursor: not-allowed;
 }
+
 /* 鼠标移动到表格上的颜色 */
-.ajax-tables > tbody > tr:hover{
+.ajax-tables>tbody>tr:hover {
     background-color: #F0FFFF;
 }
 
-.ajax-tables tbody td{
+.ajax-tables tbody td {
     vertical-align: middle !important;
 }
 
-.ajax-tables tbody td .btn{
+.ajax-tables tbody td .btn {
     margin-left: 6px;
 }
 

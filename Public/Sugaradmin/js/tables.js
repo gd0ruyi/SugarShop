@@ -539,7 +539,7 @@ var SugarTables = {
 			$.each(columns, function (index, column) {
 				//定义单元格
 				var table_td = SugarTables.table_td;
-				var td_content = row[index] == undefined ? index + '-undefined' : row[index];				
+				var td_content = row[index] == undefined ? index + '-undefined' : row[index];
 
 				// 默认初始化处理
 				// column.td = column.td == undefined ? {} : column.td;
@@ -553,20 +553,32 @@ var SugarTables = {
 				column.td.title = index == 'operation' ? '' : td_content;
 
 				// td模版配置替换处理
-				if (column.td.template !== undefined && typeof (column.td.template) == 'string') {
-					// 保留原有模版信息，并用于替换
-					td_content = column.td.template
+				if (column.td.template !== undefined) {
+					if (typeof (column.td.template) == 'string') {
+						// 保留原有模版信息，并用于替换
+						td_content = column.td.template
 
-					// 再次全部遍历替换，用于支持全部字段替换
-					$.each(row, function (rk, rc) {
-						//创建正则RegExp对象
-						var reg = new RegExp(SugarTables.template_symbol_pre + rk + SugarTables.template_symbol_suf, "g");
-						td_content = String(td_content).replace(reg, row[rk]);
-					});
+						// 再次全部遍历替换，用于支持全部字段替换
+						$.each(row, function (rk, rc) {
+							//创建正则RegExp对象
+							var reg = new RegExp(SugarTables.template_symbol_pre + rk + SugarTables.template_symbol_suf, "g");
+							td_content = String(td_content).replace(reg, row[rk]);
+						});
 
-					// 替换后的赋值title
-					column.td.title = td_content;
+						// 替换后的赋值title
+						column.td.title = td_content;
+					}
+
+					// 通过方法回调处理
+					if (typeof (column.td.template) == 'function') {
+						// 传入当前表格的索引以及当前行的值，需要返回为html内容
+						var tpl_fun = column.td.template(index, row);
+
+						td_content = tpl_fun.content != undefined ? tpl_fun.content : td_content;
+						column.td.title = tpl_fun.title != undefined ? tpl_fun.title : column.td.title;
+					}
 				}
+
 
 				// td默认内容长度处理
 				column.td.content_length = column.td.content_length == undefined ? 0 : parseInt(column.td.content_length);
@@ -628,7 +640,7 @@ var SugarTables = {
 				// td通用属性处理
 				$.each(column.td, function (key, value) {
 					// 过滤处理,操作按钮设置和模版设置参数不加入内
-					if (key != 'btnOptions' && key!=='template') {
+					if (key != 'btnOptions' && key !== 'template') {
 						table_td.attr(key, value);
 					}
 				});
