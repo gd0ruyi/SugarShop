@@ -215,7 +215,7 @@ var SugarCommons = {
 				var url = $(that).attr('sugar-url');
 				var data = $(that).attr('sugar-data');
 				var target = $(that).attr('sugar-target-id');
-				SugarCommons.showEditDialogByAjax(target, title, url, data);
+				SugarCommons.showEditDialogByAjax('#' + target, title, url, data);
 			});
 		});
 	},
@@ -223,26 +223,23 @@ var SugarCommons = {
 	/**
 	 * 执行弹出对话框
 	 * 
-	 * @param {string} target 弹窗定义的ID
+	 * @param {string} target 弹窗定义的ID（需带#）
 	 * @param {string} title 弹窗标题
 	 * @param {string} url 弹窗加载地址
 	 * @param {string} data 字符串的对象"{}"
 	 */
 	showEditDialogByAjax: function (target, title, url, sugar_data) {
-		// 动态的targetID
-		var target = "#" + target;
 		// 弹出对话框的默认模版ID
-		var modal_target = SugarCommons.edit_dialog_tpl_id;
-		$(modal_target).modal('show');
+		var edt_id = SugarCommons.edit_dialog_tpl_id;
+		$(edt_id).modal('show');
 
 		// 判断原有模版是否存在，不存在重新绑定ID
 		if ($(target).length <= 0) {
-			$(modal_target + ' .modal-body').attr('id', target);
+			$(edt_id + ' .modal-body').attr('id', target.substring(1));
 		}
 
-		// loading的选择器名称
-		var loading_target_title = modal_target + ' .edit-title';
-		$(loading_target_title).html(title);
+		// 编辑框的标题名称
+		$(edt_id + ' .edit-title').html(title);
 
 		// 判断地址是否为空
 		if (url == "") {

@@ -176,9 +176,9 @@
             // 点击事件
             btnClick: function (e, optData) {
               var $url = '/Sugaradmin/User/edit';
-              var $title = '编辑用户[' + optData.username + ']';
+              var $title = '编辑用户【' + optData.username + '】';
               // 弹出编辑窗口
-              SugarCommons.showEditDialogByAjax('user-edit', $title, $url, optData);
+              SugarCommons.showEditDialogByAjax('#user-edit', $title, $url, optData);
             }
           },
 
@@ -192,17 +192,17 @@
             // 点击事件
             btnClick: function (e, optData) {
               var $url = '/Sugaradmin/User/removeByPK';
-              var $title = '删除用户[' + optData.username + ']';
-              var $msg = '请您确认是否删除该[' + optData.username + ']用户？';
+              var $title = '删除用户确认【' + optData.username + '】';
+              var $msg = '请您确认是否删除ID为【' + optData.user_id + '】，用户名为【' + optData.username + '】的用户？';
               var $data = { 'user_id': optData.user_id };
 
               // 调用弹出确认窗口
               SugarCommons.makeConfirm({
                 title: $title,
                 msg: $msg,
-                url : $url,
-                data : $data,
-                complete : function(e){
+                url: $url,
+                data: $data,
+                complete: function (e) {
                   // 完成时刷新列表
                   $('#user-table-form [name="search"]').click();
                 },
@@ -221,6 +221,7 @@
       }
     },
   };
+
   SugarTables.create('#user-table-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
 
   // 当编辑等模拟框关闭时触发重新刷新列表
