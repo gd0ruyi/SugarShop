@@ -388,19 +388,12 @@ var SugarTables = {
 		// 创建表格的loading的tbody
 		$(table_id).prepend(tbody);
 
-		// 创建表格的loading的tbody（坑，简写，不使用对象生成）
-		// $(table_id).prepend('<tbody><tr><td id="' + td_loading_id + '" colspan="' + SugarTables.sts[form_id].table.columns_count + '"></td></tr></tbody>');
-
-
 		// 当为表格内嵌加载等待条时处理
 		var loading_waiting_style = SugarTables.loading_waiting_style;
-
 		// 显示加载对应的信息
-		var loading_waiting_id = TimeKeeper.loadingWaitingStart(td_loading_id, SugarTables.loading_waiting_speed, loading_waiting_style);
 		title = title ? title : SugarTables.sts[form_id].table.title;
-		$(loading_waiting_id).find('.loading-title').html(title);
-		// console.log(loading_waiting_id);
-
+		TimeKeeper.loadingWaitingStart(td_loading_id, title, SugarTables.loading_waiting_speed, loading_waiting_style);
+		
 		// console.log($(form_id).serialize());
 
 		// 表提交数据

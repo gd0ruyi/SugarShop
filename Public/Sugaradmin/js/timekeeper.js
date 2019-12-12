@@ -124,13 +124,15 @@ var TimeKeeper = {
     /**
      * 加载条开始
      * @param {string} target 加载条植入的元素ID
+     * @param {string} title 加载条内的显示标题
      * @param {int} speed 加载条移动的速度，为秒
      * @param {*} style 加载条样式
      * @returns string loading_waiting_id 返回加载条的（任务）ID
      */
-    loadingWaitingStart: function (target, speed, style) {
+    loadingWaitingStart: function (target, title, speed, style) {
         // 校验
         var target = TimeKeeper.comms.checkValue('target', target, 'string', 'loadingWaitingStart');
+        var title = title !== undefined ? title : 'title is undefined';
         var speed = speed == undefined ? TimeKeeper.loading_waiting_speed : parseInt(speed);
         speed = TimeKeeper.comms.checkValue('speed', speed, 'number', 'loadingWaitingStart');
 
@@ -153,65 +155,65 @@ var TimeKeeper = {
         // 加载条ID定义
         var loading_waiting_id = TimeKeeper._getLoadingWaitingIdByTarget(target);
         // 复制loading的tpl并形成新的loading内容
-        var loading_waiting_tpl = $(TimeKeeper.loading_waiting_tpl).html();
-        loading_waiting_tpl = $(loading_waiting_tpl).attr('id', loading_waiting_id.substring(1));
-        //赋值
-        TimeKeeper.lws[target].loading_waiting_tpl = loading_waiting_tpl;
+        var $loading_waiting_tpl = $(TimeKeeper.loading_waiting_tpl).html();
+        $loading_waiting_tpl = $($loading_waiting_tpl);
+
+        // 赋值处理
+        $loading_waiting_tpl.attr('id', loading_waiting_id.substring(1));
+        $loading_waiting_tpl.find('.loading-title').html(title);
+
+        // 初始化隐藏progress和进度
+        $loading_waiting_tpl.find('.loading-loaded-span').hide();
+        $loading_waiting_tpl.find('.progress').hide();
+
+        //赋值        
         TimeKeeper.lws[target].loading_waiting_id = loading_waiting_id;
 
         // 处理不同的样式效果（inner or dialog）
-        switch (style) {
-            // 处理inner效果
-            case 'inner':
-                // 目标容器植入内容并显示加载，为保证loading唯一性，因此为inner处理时，将在end后放入历史记录中。
-                $(target).html(loading_waiting_tpl);
-
-                // 初始化隐藏progress和进度
-                $(target).find('.loading-loaded-span').hide();
-                $(target).find('.progress').hide();
-                break;
-
-            // 处理dialog效果
-            case 'dialog':
-                // dialog弹窗任务数显示
-                $(TimeKeeper.dialog_tpl_id).find('.loading-tasks-count').html(TimeKeeper.lws_count);
-
-                // 如果存在重复的历史的显示则移除
-                if ($(TimeKeeper.dialog_tpl_id).find(loading_waiting_id).index() > -1) {
-                    // 移除加载内容
-                    $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
-                }
-
-                // dialog弹窗内容堆叠新增
-                $(TimeKeeper.dialog_tpl_id).find('.modal-body').prepend(loading_waiting_tpl);
-                // 初始化隐藏progress和进度
-                $(TimeKeeper.dialog_tpl_id).find('.loading-loaded-span').hide();
-                $(TimeKeeper.dialog_tpl_id).find('.progress').hide();
-
-                // 弹窗隐藏设置（当关闭时停止计时）
-                $(TimeKeeper.dialog_tpl_id).on('hidden.bs.modal', function (e) {
-                    TimeKeeper.end(target);
-                });
-
-                // 单项历史点击关闭删除时进行重新计数
-                $(loading_waiting_id + ' .close').on('click', function (event) {
-                    delete TimeKeeper.lws[target];
-                    TimeKeeper._resetDialogCount();
-                });
-                // 显示弹窗
-                $(TimeKeeper.dialog_tpl_id).modal('show');
-                break;
-
-            // 默认报错，并清理赋值
-            default:
-                TimeKeeper.destructor(target);
-                error = "TimeKeeper is error by loadingWaitingStart(): not found style, input value must be (inner or dialog)!";
-                this.comms.errorMsg(error);
-                break;
+        if (!style) {
+            TimeKeeper.destructor(target);
+            error = "TimeKeeper is error by loadingWaitingStart(): not found style, input value must be (inner or dialog)!";
+            this.comms.errorMsg(error);
         }
+
+        // dialog弹窗任务数显示
+        $(TimeKeeper.dialog_tpl_id).find('.loading-tasks-count').html(TimeKeeper.lws_count);
+
+        // 如果存在重复的历史的显示则移除
+        if ($(TimeKeeper.dialog_tpl_id).find(loading_waiting_id).index() > -1) {
+            // 移除加载内容
+            $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
+        }
+
+        // dialog弹窗内容堆叠新增
+        $(TimeKeeper.dialog_tpl_id).find('.modal-body').prepend($loading_waiting_tpl);
+
+
+        // 单项历史点击关闭删除时进行重新计数
+        $(TimeKeeper.dialog_tpl_id).find(loading_waiting_id).on('closed.bs.alert', function () {
+            delete TimeKeeper.lws[target];
+            TimeKeeper._resetDialogCount();
+        });
+
+        // 弹窗隐藏设置（当关闭时停止计时）
+        // $(TimeKeeper.dialog_tpl_id).on('hidden.bs.modal', function (e) {
+        //     TimeKeeper.end(target);
+        // });
+
+        // 显示弹窗
+        $(TimeKeeper.dialog_tpl_id).modal('show');
 
         // TimeKeeper.tps[target].times = 0;
         // TimeKeeper.destructor(target);
+
+        // 如果为嵌入方式则进行克隆处理
+        if (style == 'inner') {
+            // 目标容器植入内容并显示加载
+            $(target).html($loading_waiting_tpl.clone(true));
+        }
+
+        // 赋值到存储对象处理
+        TimeKeeper.lws[target].loading_waiting_tpl = $loading_waiting_tpl;
 
         // 定时执行效果
         TimeKeeper.start(target, function () {
@@ -222,13 +224,9 @@ var TimeKeeper = {
             var second = TimeKeeper.tps[target].times * speed / 1000;
             second = second.toFixed(1);
             // 秒显示处理
-            // 判断因历史任务记录出现多个相同的loading_waiting_id导致秒不显示的情况
-            if ($(target).find(loading_waiting_id).length > 0) {
-                $(target).find(loading_waiting_id).find(".loading-second").html(second);
-            } else {
-                $(loading_waiting_id).find(".loading-second").html(second);
-            }
+            $('[id=' + loading_waiting_id.substring(1) + ']').find(".loading-second").html(second);
         }, speed);
+
         return loading_waiting_id;
     },
 
@@ -317,53 +315,26 @@ var TimeKeeper = {
             // 清理定时器
             TimeKeeper.clear(target);
 
-            // 处理不同的样式效果（inner or dialog）
-            switch (TimeKeeper.lws[target].style) {
-                // 嵌入型处理
-                case "inner":
-                    // 移除嵌入的内容
-                    $(target).find(TimeKeeper.lws[target].loading_waiting_id).remove();
+            // 移除历史任务弹窗内loading的旋转动画效果
+            $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
 
-                    // 如果存在历史的显示则移除
-                    if ($(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).index() > -1) {
-                        // 移除加载内容
-                        $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).remove();
-                    }
-
-                    // 将其放置dialog中，作为历史记录处理
-                    $(TimeKeeper.dialog_tpl_id).find('.modal-body').prepend(TimeKeeper.lws[target].loading_waiting_tpl);
-
-                    // 移除loading的旋转动画效果
-                    $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
-
-                    // 重新计数
-                    TimeKeeper._resetDialogCount();
-
-                    // 单项历史点击关闭删除时进行重新计数
-                    $(TimeKeeper.lws[target].loading_waiting_id + ' .close').on('click', function (event) {
-                        delete TimeKeeper.lws[target];
-                        TimeKeeper._resetDialogCount();
-                    });
-
-                    break;
-
-                // 处理dialog效果
-                case 'dialog':
-                    // 移除loading的旋转动画效果
-                    $(TimeKeeper.dialog_tpl_id).find(TimeKeeper.lws[target].loading_waiting_id).find('.glyphicon-refresh').removeClass('animation');
-
-                    // 关闭任务显示dialog
-                    $(TimeKeeper.dialog_tpl_id).modal('hide');
-                    // 因bostrap的modal使用动画效果存在延时情况，会出现多个背景的情况，因此将强制将其背景移除
-                    // $('.modal-backdrop').remove();
-                    break;
-                // 默认报错，并清理赋值
-                default:
-                    TimeKeeper.destructor(target);
-                    error = "TimeKeeper is error by loadingWaitingEnd(): not found style, input value must be (inner or dialog)!";
-                    this.comms.errorMsg(error);
-                    break;
+            if (!TimeKeeper.lws[target].style) {
+                TimeKeeper.destructor(target);
+                error = "TimeKeeper is error by loadingWaitingEnd(): not found style, input value must be (inner or dialog)!";
+                this.comms.errorMsg(error);
             }
+
+            // 当为inner时移除
+            if (TimeKeeper.lws[target].style == 'inner') {
+                // 移除嵌入的内容
+                $(target).find(TimeKeeper.lws[target].loading_waiting_id).remove();
+            }
+
+            // 关闭任务显示dialog
+            $(TimeKeeper.dialog_tpl_id).modal('hide');
+            // 因bostrap的modal使用动画效果存在延时情况，会出现多个背景的情况，因此将强制将其背景移除
+            // $('.modal-backdrop').remove();
+
             return true;
         } else {
             // 默认清理全部loading

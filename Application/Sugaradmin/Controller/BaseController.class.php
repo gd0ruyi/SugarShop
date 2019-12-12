@@ -4,6 +4,8 @@ namespace Sugaradmin\Controller;
 
 use Think\Controller;
 use Behavior\ShowPageTraceBehavior;
+use Sugaradmin\Model\BaseModel;
+use Think\Model;
 
 /**
  * 基础控制类
@@ -19,13 +21,12 @@ class BaseController extends Controller
 	public $non_checkLogin_action = array(
 		'/Login/index'
 	);
-	// 真实的get传入
-	protected $_isset_get_map = array();
-	// 当期用户id
+
+	// 当前用户id
 	public $self_user_id = 0;
 
 	// 返回json的格式
-	private $_res = array(
+	protected $_res = array(
 		'status' => 0,
 		'title' => 'info',
 		'msg' => 'success',
@@ -39,7 +40,7 @@ class BaseController extends Controller
 	public $pager_size = 10;
 
 	// 动态的mode
-	public $auto_model = array();
+	protected $_auto_model = array();
 
 	/**
 	 * 初始化方法
@@ -70,7 +71,7 @@ class BaseController extends Controller
 
 		// 判断是否需要校验登录的控制器或者具体的方法
 		if (!in_array(__CONTROLLER__, $this->non_checkLogin_controller) && !in_array(__ACTION__, $this->non_checkLogin_action)) {
-			$this->checkLogin();
+			$this->checkLogin();			
 		}
 
 		$this->_after_initialize();
@@ -117,7 +118,7 @@ class BaseController extends Controller
 		// 自动化构建Model处理
 		$model_name = CONTROLLER_NAME;
 		$model_name = MODULE_NAME . '\\Model\\' . ucfirst($model_name) . 'Model';
-		return $this->auto_model = new $model_name;
+		return $this->_auto_model = empty($this->_auto_model) ? new $model_name : $this->_auto_model;
 	}
 
 	/**
@@ -321,15 +322,6 @@ class BaseController extends Controller
 	} */
 
 	/**
-	 * 自定义debug输出，用于查看php打印返回结果集
-	 *
-	 * @author gd0ruyi@163.com 2016-6-9
-	 * @return boolean
-	 */
-	public function resDebug()
-	{ }
-
-	/**
 	 * 打印debug信息
 	 * 
 	 * @author ruyi <gd0ruyi@163.com>
@@ -430,13 +422,13 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * 自动转换类型
+	 * 自动转换类型（暂时无用）
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
 	 * @param unknown $res        	
 	 * @return unknown|Ambigous
 	 */
-	public function resFormat($res)
+	/* public function resFormat($res)
 	{
 		if (!is_array($res) || empty($res)) {
 			return $res;
@@ -448,16 +440,16 @@ class BaseController extends Controller
 		}
 
 		return $res;
-	}
+	} */
 
 	/**
-	 * 结果值自动格式化转换
+	 * 结果值自动格式化转换（暂时无用）
 	 *
 	 * @author gd0ruyi@163.com 2016-6-9
 	 * @param unknown $values        	
 	 * @return Ambigous <string, number>
 	 */
-	public function resValueFormat($values)
+	/* public function resValueFormat($values)
 	{
 		foreach ($values as $k => $v) {
 			// 类型处理
@@ -480,7 +472,7 @@ class BaseController extends Controller
 		}
 
 		return $values;
-	}
+	} */
 
 	/**
 	 * 操作错误的跳转快捷方法
@@ -561,26 +553,6 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * 模板变量赋值
-	 * 注：自定义覆盖，用于数组方式赋值
-	 *
-	 * @access protected
-	 * @param mixed $name 要显示的模板变量，可以为数组，当为数组时直接遍历赋值
-	 * @param mixed $value 变量的值
-	 * @return BaseController
-	 */
-	public function assign($name, $value = '')
-	{
-		// 判断是否为数组
-		if (is_array($name)) {
-			foreach ($name as $k => $v) {
-				parent::assign($k, $v);
-			}
-		}
-		return parent::assign($name, $value);
-	}
-
-	/**
 	 * 模板变量赋值（json赋值）
 	 *
 	 * @param mixed $name 要显示的模板变量，可以为数组，当为数组时直接遍历赋值
@@ -588,7 +560,8 @@ class BaseController extends Controller
 	 * @param int $json_options json编码常量
 	 * @return void
 	 */
-	public function assignToJson($name, $value = '', $json_options = JSON_UNESCAPED_UNICODE){
+	public function assignToJson($name, $value = '', $json_options = JSON_UNESCAPED_UNICODE)
+	{
 		return $this->assign($name, json_encode($value, $json_options));
 	}
 
@@ -646,4 +619,19 @@ class BaseController extends Controller
 		// 重新赋值到统一输入的rs上
 		return $this->setRes($rs);
 	}
+
+	// 通用删除方法，通过主键ID进行删除处理
+	public function remove()
+	{
+		$pk = $this->makeAutoModel()->getPk();
+		$pkv = isset($_GET[$pk]) ? $_GET[$pk] : 0;
+		if (!$pkv) {
+			$this->err('非法操作，没有对应的主键！');
+		}
+		$rs = $this->makeAutoModel()->delete();
+	}
+
+	// 通用更改字段值，需要加入允许变更字段的过滤
+	public function changeFieldValue()
+	{ }
 }

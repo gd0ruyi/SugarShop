@@ -175,10 +175,10 @@
             data: ['user_id', 'username'],
             // 点击事件
             btnClick: function (e, optData) {
-              var url = '/Sugaradmin/User/edit';
-              var title = '编辑用户[' + optData.username + ']';
+              var $url = '/Sugaradmin/User/edit';
+              var $title = '编辑用户[' + optData.username + ']';
               // 弹出编辑窗口
-              SugarCommons.runEditDialogByAjax('user-edit', title, url, optData);
+              SugarCommons.showEditDialogByAjax('user-edit', $title, $url, optData);
             }
           },
 
@@ -191,10 +191,36 @@
             data: ['user_id', 'username'],
             // 点击事件
             btnClick: function (e, optData) {
-              var url = '/Sugaradmin/User/delete';
-              // var title = '编辑用户[' + optData.username + ']';
-              // 弹出编辑窗口
-              // SugarCommons.runEditDialogByAjax('user-edit', title, url, optData);
+              var $url = '/Sugaradmin/User/delete';
+              var $title = '删除用户[' + optData.username + ']';
+              var $msg = '请您确认是否删除该[' + optData.username + ']用户？';
+              var $data = { 'user_id': optData.user_id };
+
+              // 调用弹出确认窗口
+              SugarCommons.makeConfirm({
+                title: $title,
+                msg: $msg,
+                sureClick: function (e) {
+                  // ajax请求处理
+                  $.ajax({
+                    url: $url,
+                    type: "GET",
+                    dataType: "html",
+                    data: $data,
+                    cache: false,
+                    success: function (res, status, xhr) {
+                      $(target).find()
+                    },
+                    error: function (xhr, status, error) {
+                      // 关闭加载状态
+                      SugarCommons.errorMsg("");
+                    }
+                  });
+                },
+                cancelClick: function (e) {
+                  // alert('cancle is ok');
+                }
+              });
               alert('delete:' + optData.username);
             }
           },

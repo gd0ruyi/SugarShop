@@ -151,10 +151,7 @@ var SugarTabs = {
 		var href = href;
 		var title = title;
 		// loadingWaiting等待加载
-		var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, that.loading_waiting_speed, that.loading_waiting_style);
-
-		// 显示加载对应的信息
-		$(loading_waiting_id).find('.loading-title').html(title);
+		TimeKeeper.loadingWaitingStart(target, title, that.loading_waiting_speed, that.loading_waiting_style);
 
 		var currentAjax = $.ajax({
 			url: href,

@@ -449,6 +449,90 @@ class MongoModel extends Model
 	}
 
 	/**
+	 * 删除数据(覆盖model方法)
+	 *
+	 * @access public
+	 * @param mixed $options 表达式
+	 * @return mixed
+	 */
+	public function delete($options = array())
+	{
+		$pk = $this->getPk();
+		$result = null;
+		if (empty($options) && empty($this->options['where'])) {
+			// 如果删除条件为空 则删除当前数据对象所对应的记录
+			if (!empty($this->data) && isset($this->data[$pk])) {
+				$result = $this->delete($this->data[$pk]);
+				// 判断结果是否正常
+				if ($result['rs'] !== null || $result['rs']['ok'] != 1) {
+					$this->error = 'MongoModel类delete出现错误 >> ';
+					$this->error .= print_r($result, true);
+					return false;
+				}
+			} else {
+				$this->error = L('_DATA_TYPE_INVALID_');
+				return false;
+			}
+		}
+		if (is_numeric($options) || is_string($options)) {
+			// 根据主键删除记录
+			if (strpos($options, ',')) {
+				$where[$pk] = array(
+					'IN',
+					$options
+				);
+			} else {
+				$where[$pk] = $options;
+			}
+			$options = array();
+			$options['where'] = $where;
+		}
+		// 根据复合主键删除记录
+		if (is_array($options) && (count($options) > 0) && is_array($pk)) {
+			$count = 0;
+			foreach (array_keys($options) as $key) {
+				if (is_int($key))
+					$count++;
+			}
+			if ($count == count($pk)) {
+				$i = 0;
+				foreach ($pk as $field) {
+					$where[$field] = $options[$i];
+					unset($options[$i++]);
+				}
+				$options['where'] = $where;
+			} else {
+				$this->error = '复合主键删除异常！';
+				return false;
+			}
+		}
+		// 分析表达式
+		$options = $this->_parseOptions($options);
+		if (empty($options['where'])) {
+			// 如果条件为空 不进行删除操作 除非设置 1=1
+			$this->error = L('_DATA_TYPE_INVALID_');
+			return false;
+		}
+		if (is_array($options['where']) && isset($options['where'][$pk])) {
+			$pkValue = $options['where'][$pk];
+		}
+
+		if (false === $this->_before_delete($options)) {
+			return false;
+		}
+		$result = $this->db->delete($options);
+		if (false !== $result && is_numeric($result)) {
+			$data = array();
+			if (isset($pkValue))
+				$data[$pk] = $pkValue;
+			$this->_after_delete($data, $options);
+		}
+		$this->error = isset($result['err']) ? $result['err'] : null;
+		// 返回删除记录个数
+		return $result;
+	}
+
+	/**
 	 * 获取最终插入的主键自增ID
 	 *
 	 * @author gd0ruyi@163.com 2016-01-08

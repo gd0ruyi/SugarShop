@@ -218,7 +218,7 @@ var SugarCommons = {
 				var url = $(that).attr('sugar-url');
 				var data = $(that).attr('sugar-data');
 				var target_id = $(that).attr('sugar-target-id');
-				SugarCommons.runEditDialogByAjax(target_id, title, url, data);
+				SugarCommons.showEditDialogByAjax(target_id, title, url, data);
 			});
 		});
 	},
@@ -230,7 +230,7 @@ var SugarCommons = {
 	 * @param {string} url 弹窗加载地址
 	 * @param {string} data 字符串的对象"{}"
 	 */
-	runEditDialogByAjax: function (target_id, title, url, sugar_data) {
+	showEditDialogByAjax: function (target_id, title, url, sugar_data) {
 		// 动态的targetID
 		var target = "#" + target_id;
 		// 弹出对话框的默认模版ID
@@ -248,7 +248,7 @@ var SugarCommons = {
 
 		// 判断地址是否为空
 		if (url == "") {
-			SugarCommons.errorMsg("SugarCommons plus is error:: ajax error in function runEditDialogByAjax(), sugar-url is empty !");
+			SugarCommons.errorMsg("SugarCommons plus is error:: ajax error in function showEditDialogByAjax(), sugar-url is empty !");
 		}
 
 		sugar_data = sugar_data ? sugar_data : {};
@@ -258,9 +258,7 @@ var SugarCommons = {
 		}
 
 		// 显示加载对应的信息
-		// var loading_waiting_id = TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
-		TimeKeeper.loadingWaitingStart(target, SugarTabs.loading_waiting_speed, 'inner');
-		$(target).find('.loading-title').html(title);
+		TimeKeeper.loadingWaitingStart(target, title, SugarTabs.loading_waiting_speed, 'inner');
 
 		// ajax请求处理
 		$.ajax({
@@ -279,7 +277,7 @@ var SugarCommons = {
 				// 关闭加载
 				TimeKeeper.loadingWaitingEnd(target);
 				// 关闭加载状态
-				SugarCommons.errorMsg("SugarCommons plus is error: ajax error in function runEditDialogByAjax(), info(" + status + ":" + error + ")");
+				SugarCommons.errorMsg("SugarCommons plus is error: ajax error in function showEditDialogByAjax(), info(" + status + ":" + error + ")");
 			}
 		});
 	},
@@ -450,7 +448,7 @@ var SugarCommons = {
 			closeTime = parseInt(closeTime) ? parseInt(closeTime) : SugarCommons.inner_alert_close_time;
 			// 定时自动关闭
 			setTimeout(function () {
-				$('[alert-id="close"]').click();
+				$(target).find('[alert-id="close"]').click();
 			}, closeTime);
 		}
 	},
@@ -474,20 +472,64 @@ var SugarCommons = {
 		$(target).find('#msg-btn-sure').unbind('click');
 		$(target).find('#msg-btn-sure').click(function (e) {
 			if (typeof (options.sureClick) == 'function') {
-				options.sureClick(e);
-				// alert('sureClick is ok');
+				// 传入点击事件句柄以及消息框对象ID
+				options.sureClick(e, target);
+			}
+
+			// 如果为ajax处理
+			if (options.remote !== undefined) {
+				$(target).find('#msg-btn-sure').attr('disabled', 'disabled');
+				$(target).find('#msg-btn-sure').append('<span class="glyphicon glyphicon-refresh refresh-animation"></span>');
+
+				// ajax请求处理
+				$.ajax({
+					url: options.remote,
+					type: 'GET',
+					// dataType: "html",
+					data: options.data != undefined ? options.data : {},
+					cache: false,
+					success: function (res, status, xhr) {
+						$(target).find('#msg-btn-sure span').remove();
+
+						// 当为debug时处理
+						if (SugarCommons.debug == true) {
+							SugarCommons.makeInnerAlert(e.target, 'alert-info', 'Debug Info:', res);
+							return true;
+						}
+
+						if (res.status == 0) {
+							// 显示提示框并自动关闭窗口
+							SugarCommons.makeInnerAlert(target, 'alert-success', res.title, res.msg, 3, function () {
+								$(target).modal('hide');
+							});
+						}
+						else {
+							// 显示提示框并关闭窗口
+							SugarCommons.makeInnerAlert(target, 'alert-danger', res.title, res.msg, 'keep');
+						}
+					},
+					error: function (xhr, status, error) {
+						//移除加载图标
+						$(target).find('#msg-btn-sure span').remove();
+						// 关闭加载状态
+						SugarCommons.errorMsg("SugarCommons plus is error: ajax error in function makeConfirm(), info(" + status + ":" + error + ")");
+					}
+				});
+			} else {
+				// 当没有ajax处理时关闭窗口
 				$(target).modal('hide');
 			}
+
 		});
 
 		// 覆盖原有点击取消时的调用
 		$(target).find('#msg-btn-cancel').unbind('click');
 		$(target).find('#msg-btn-cancel').click(function (e) {
 			if (typeof (options.cancelClick) == 'function') {
-				options.cancelClick(e);
-				// alert('cancelClick is ok');
-				$(target).modal('hide');
+				// 传入点击事件句柄以及消息框对象ID
+				options.cancelClick(e, target);
 			}
+			$(target).modal('hide');
 		});
 	},
 
@@ -550,7 +592,7 @@ var SugarCommons = {
 	 */
 	setFormInputValue: function (target, data) {
 		// 当为空时不处理
-		if(!data){
+		if (!data) {
 			return false;
 		}
 		// 遍历form_id

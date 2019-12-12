@@ -110,7 +110,11 @@
       <!-- 选项卡内容填充 -->
       <div class="main-content container-fluid">
         <div class="tab-content" id="top-tabs-contents">
-          <div role="tabpanel" class="tab-pane fade" id="target" aria-labelledby="target-tab">Loading...</div>
+          <div role="tabpanel" class="tab-pane fade" id="target" aria-labelledby="target-tab">
+            <div class="alert alert-dismissible alert-info" role="alert">
+              <strong>Loading tab-content, Please waitting  <span class="glyphicon glyphicon-hourglass refresh-animation"></span></strong>
+            </div>
+          </div>
         </div>
       </div>
 

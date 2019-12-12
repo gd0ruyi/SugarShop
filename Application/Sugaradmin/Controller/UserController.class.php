@@ -146,7 +146,11 @@ class UserController extends BaseController
 		if ($data = $user_model->create($data)) {
 			$last_info = $user_model->save($data, $options);
 			$this->setRes('last_info', $last_info);
-			$this->suc($data, '保存用户成功', '提示');
+			if($user_model->getError()){
+				$this->err($user_model->getError(), '警告');
+			}else{
+				$this->suc($data, '保存用户成功', '提示');
+			}
 		} else {
 			$this->err($user_model->getError(), '警告');
 		}
