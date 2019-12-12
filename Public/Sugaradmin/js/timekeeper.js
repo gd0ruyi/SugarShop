@@ -200,9 +200,6 @@ var TimeKeeper = {
         //     TimeKeeper.end(target);
         // });
 
-        // 显示弹窗
-        $(TimeKeeper.dialog_tpl_id).modal('show');
-
         // TimeKeeper.tps[target].times = 0;
         // TimeKeeper.destructor(target);
 
@@ -210,6 +207,9 @@ var TimeKeeper = {
         if (style == 'inner') {
             // 目标容器植入内容并显示加载
             $(target).html($loading_waiting_tpl.clone(true));
+        } else {
+            // 显示弹窗
+            $(TimeKeeper.dialog_tpl_id).modal('show');
         }
 
         // 赋值到存储对象处理
