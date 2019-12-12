@@ -291,7 +291,7 @@ body {
 }
 
 .form-inline .form-group {
-    padding-right: 24px;
+    padding-right: 26px;
 }
 
 .form-inline .form-control {
@@ -329,7 +329,9 @@ body {
 }
 
 /* 表格头部工具 */
-.table-toolbar {}
+.table-toolbar {
+    padding-right: 0px !important;
+}
 
 .ajax-tables th {
     border-bottom: none !important;

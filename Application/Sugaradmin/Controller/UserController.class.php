@@ -145,6 +145,7 @@ class UserController extends BaseController
 		// 判断是否符合规则
 		if ($data = $user_model->create($data)) {
 			$last_info = $user_model->save($data, $options);
+			// 赋值到返回结果中
 			$this->setRes('last_info', $last_info);
 			if($user_model->getError()){
 				$this->err($user_model->getError(), '警告');

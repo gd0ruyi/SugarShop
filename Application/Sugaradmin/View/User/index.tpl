@@ -113,24 +113,6 @@
     //   th: { title: '帐号类型', sort_icon: true, class: 'text-center' },
     //   td: { template: "{use_type_name}", class: 'text-center' }
     // },
-    'status': {
-      th: { title: '状态', sort_icon: true, class: 'text-center' },
-      // td: { template: "{status_name}", class: 'text-center' }
-      // 特殊内容通过方法回调处理，当为禁用时显示红色，启用显示绿色
-      td: {
-        template: function (index, row) {
-          var $td = { content: '', title: '' };
-          $td.title = row['status_name']
-          if (row['status'] == '1') {
-            $td.content = '<font class="red">' + row['status_name'] + '</font>';
-          } else {
-            $td.content = '<font class="green">' + row['status_name'] + '</font>';
-          }
-          return $td;
-        },
-        class: 'text-center'
-      }
-    },
     'truename': {
       th: { title: '姓名', sort_icon: true, class: 'text-center' },
     },
@@ -151,6 +133,24 @@
     'las_time': {
       th: { title: '登录时间', class: 'text-center', sort_icon: true },
       td: { template: "{las_time_format}", class: 'text-center' }
+    },
+    'status': {
+      th: { title: '状态', sort_icon: true, class: 'text-center' },
+      // td: { template: "{status_name}", class: 'text-center' }
+      // 特殊内容通过方法回调处理，当为禁用时显示红色，启用显示绿色
+      td: {
+        template: function (index, row) {
+          var $td = { content: '', title: '' };
+          $td.title = row['status_name']
+          if (row['status'] == '1') {
+            $td.content = '<font class="red">' + row['status_name'] + '</font>';
+          } else {
+            $td.content = '<font class="green">' + row['status_name'] + '</font>';
+          }
+          return $td;
+        },
+        class: 'text-center'
+      }
     },
     'other': {
       th: { title: '描述说明', title_length: 12, class: 'text-center' },
@@ -191,7 +191,7 @@
             data: ['user_id', 'username'],
             // 点击事件
             btnClick: function (e, optData) {
-              var $url = '/Sugaradmin/User/delete';
+              var $url = '/Sugaradmin/User/removeByPK';
               var $title = '删除用户[' + optData.username + ']';
               var $msg = '请您确认是否删除该[' + optData.username + ']用户？';
               var $data = { 'user_id': optData.user_id };
@@ -200,28 +200,19 @@
               SugarCommons.makeConfirm({
                 title: $title,
                 msg: $msg,
+                url : $url,
+                data : $data,
+                complete : function(e){
+                  // 完成时刷新列表
+                  $('#user-table-form [name="search"]').click();
+                },
                 sureClick: function (e) {
-                  // ajax请求处理
-                  $.ajax({
-                    url: $url,
-                    type: "GET",
-                    dataType: "html",
-                    data: $data,
-                    cache: false,
-                    success: function (res, status, xhr) {
-                      $(target).find()
-                    },
-                    error: function (xhr, status, error) {
-                      // 关闭加载状态
-                      SugarCommons.errorMsg("");
-                    }
-                  });
+                  // alert('sure is ok');
                 },
                 cancelClick: function (e) {
                   // alert('cancle is ok');
                 }
               });
-              alert('delete:' + optData.username);
             }
           },
 

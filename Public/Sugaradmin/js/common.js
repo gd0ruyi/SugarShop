@@ -4,16 +4,13 @@
 var SugarCommons = {
 	coms: {},
 	commons_name: 'SugarCommons',
-	// 消息对话框ID
+	// 消息对话框ID或confirm提示框模版ID（用于弹出的消息提示）
 	msg_dialog_tpl_id: '#msg-dialog-tpl',
 	// 编辑对话框ID:
 	edit_dialog_tpl_id: '#edit-dialog-tpl',
 
 	// alert提示框模版ID（用于内嵌的alert消息提示）
 	alert_tpl_id: '#alert-tmp',
-
-	// confirm提示框模版ID（用于弹出的消息提示）
-	msg_dialog_tpl: '#msg-dialog-tpl',
 
 	// 全局ajax是否使用缓存（暂时无用，后续需加入到方法）
 	ajaxCache: false,
@@ -151,7 +148,7 @@ var SugarCommons = {
 
 	/**
 	 * 创建select下拉，用于表单提交。
-	 * @param {string} target_id Bootstrap下拉元素ID
+	 * @param {string} target Bootstrap下拉元素ID
 	 */
 	createSelectInput: function () {
 		var target_selector = '[sugar-selector="true"]';
@@ -195,12 +192,12 @@ var SugarCommons = {
 	 * @param {function} callback 对话框确定回调方法
 	 */
 	/* createConfirmDialog: function (title, content, callback) {
-		var target_id = SugarCommons.msg_dialog_tpl_id;
-		$(target_id + ' #msg-title').html(title);
-		$(target_id + ' #msg-content').html(content);
-		$(target_id).modal('show');
+		var target = SugarCommons.msg_dialog_tpl_id;
+		$(target + ' #msg-title').html(title);
+		$(target + ' #msg-content').html(content);
+		$(target).modal('show');
 
-		$(target_id + ' .modal-footer .btn-primary').click(callback);
+		$(target + ' .modal-footer .btn-primary').click(callback);
 	}, */
 
 	/**
@@ -217,33 +214,34 @@ var SugarCommons = {
 				var title = $(that).attr('title');
 				var url = $(that).attr('sugar-url');
 				var data = $(that).attr('sugar-data');
-				var target_id = $(that).attr('sugar-target-id');
-				SugarCommons.showEditDialogByAjax(target_id, title, url, data);
+				var target = $(that).attr('sugar-target-id');
+				SugarCommons.showEditDialogByAjax(target, title, url, data);
 			});
 		});
 	},
 
 	/**
 	 * 执行弹出对话框
-	 * @param {string} target_id 动态的targetID
+	 * 
+	 * @param {string} target 弹窗定义的ID
 	 * @param {string} title 弹窗标题
 	 * @param {string} url 弹窗加载地址
 	 * @param {string} data 字符串的对象"{}"
 	 */
-	showEditDialogByAjax: function (target_id, title, url, sugar_data) {
+	showEditDialogByAjax: function (target, title, url, sugar_data) {
 		// 动态的targetID
-		var target = "#" + target_id;
+		var target = "#" + target;
 		// 弹出对话框的默认模版ID
-		var modal_target_id = SugarCommons.edit_dialog_tpl_id;
-		$(modal_target_id).modal('show');
+		var modal_target = SugarCommons.edit_dialog_tpl_id;
+		$(modal_target).modal('show');
 
 		// 判断原有模版是否存在，不存在重新绑定ID
 		if ($(target).length <= 0) {
-			$(modal_target_id + ' .modal-body').attr('id', target_id);
+			$(modal_target + ' .modal-body').attr('id', target);
 		}
 
 		// loading的选择器名称
-		var loading_target_title = modal_target_id + ' .edit-title';
+		var loading_target_title = modal_target + ' .edit-title';
 		$(loading_target_title).html(title);
 
 		// 判断地址是否为空
@@ -418,7 +416,7 @@ var SugarCommons = {
 	 * @param {sting} alertClass Bootstrap的aler样式
 	 * @param {sting} title 提示框的标题
 	 * @param {sting} msg 提示框的内容
-	 * @param {int||string} closeTime 自动关闭时间，若为keep则不进行关闭
+	 * @param {int||string} closeTime 自动关闭时间，若为keep则不进行关闭，为毫秒
 	 * @param {function} afterCloseFun 关闭后方法回调处理
 	 */
 	makeInnerAlert: function (target, alertClass, title, msg, closeTime, afterCloseFun) {
@@ -458,7 +456,7 @@ var SugarCommons = {
 	 * @param {Object} options 构造参数{title:string, msg:sting, sureClick:callback function(), cancelClick:callback function()}
 	 */
 	makeConfirm: function (options) {
-		var target = SugarCommons.msg_dialog_tpl;
+		var target = SugarCommons.msg_dialog_tpl_id;
 		options.title = options.title ? options.title : 'confirm title';
 		options.msg = options.msg ? options.msg : 'confirm content';
 		// 赋值标题和消息内容
@@ -477,35 +475,40 @@ var SugarCommons = {
 			}
 
 			// 如果为ajax处理
-			if (options.remote !== undefined) {
+			if (options.url !== undefined) {
 				$(target).find('#msg-btn-sure').attr('disabled', 'disabled');
 				$(target).find('#msg-btn-sure').append('<span class="glyphicon glyphicon-refresh refresh-animation"></span>');
 
 				// ajax请求处理
 				$.ajax({
-					url: options.remote,
+					url: options.url,
 					type: 'GET',
 					// dataType: "html",
 					data: options.data != undefined ? options.data : {},
 					cache: false,
 					success: function (res, status, xhr) {
 						$(target).find('#msg-btn-sure span').remove();
+						var targetModalBody = target + ' .modal-body';
 
 						// 当为debug时处理
 						if (SugarCommons.debug == true) {
-							SugarCommons.makeInnerAlert(e.target, 'alert-info', 'Debug Info:', res);
+							SugarCommons.makeInnerAlert(targetModalBody, 'alert-info', 'Debug Info:', res);
 							return true;
 						}
 
 						if (res.status == 0) {
 							// 显示提示框并自动关闭窗口
-							SugarCommons.makeInnerAlert(target, 'alert-success', res.title, res.msg, 3, function () {
+							SugarCommons.makeInnerAlert(targetModalBody, 'alert-success', res.title, res.msg, 3000, function () {
+								if (typeof (options.complete) == 'function') {
+									// 传入点击事件句柄以及消息框对象ID
+									options.complete(e, target);
+								}
 								$(target).modal('hide');
 							});
 						}
 						else {
-							// 显示提示框并关闭窗口
-							SugarCommons.makeInnerAlert(target, 'alert-danger', res.title, res.msg, 'keep');
+							// 显示提示框
+							SugarCommons.makeInnerAlert(targetModalBody + ' .modal-body', 'alert-danger', res.title, res.msg, 'keep');
 						}
 					},
 					error: function (xhr, status, error) {

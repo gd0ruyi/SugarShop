@@ -4,8 +4,6 @@ namespace Sugaradmin\Controller;
 
 use Think\Controller;
 use Behavior\ShowPageTraceBehavior;
-use Sugaradmin\Model\BaseModel;
-use Think\Model;
 
 /**
  * 基础控制类
@@ -28,11 +26,12 @@ class BaseController extends Controller
 	// 返回json的格式
 	protected $_res = array(
 		'status' => 0,
-		'title' => 'info',
-		'msg' => 'success',
+		'title' => 'title',
+		'msg' => 'message',
 		'jump' => '',
 		'data' => array(),
 		'pager' => array(),
+		// 该值用于bootstrapValidator验证返回结果
 		'valid' => false
 	);
 
@@ -71,7 +70,7 @@ class BaseController extends Controller
 
 		// 判断是否需要校验登录的控制器或者具体的方法
 		if (!in_array(__CONTROLLER__, $this->non_checkLogin_controller) && !in_array(__ACTION__, $this->non_checkLogin_action)) {
-			$this->checkLogin();			
+			$this->checkLogin();
 		}
 
 		$this->_after_initialize();
@@ -187,7 +186,8 @@ class BaseController extends Controller
 	{
 		if (is_string($res)) {
 			$this->setResKeyValue($res, $value);
-		} else {
+		}
+		if (is_array($res)) {
 			foreach ($res as $k => $v) {
 				$this->_res[$k] = $v;
 			}
@@ -594,8 +594,10 @@ class BaseController extends Controller
 			$listRows = $listRows < 0 ? 10 : $listRows;
 		}
 
-		// 自动化构建model重新赋值到统一输入的rs上
-		return $this->setRes($this->makeAutoModel()->getList($query, $listRows, $nowPage));
+		$rs = $this->makeAutoModel()->getList($query, $listRows, $nowPage);
+
+		// 通过model的值覆盖到controller的结果值上
+		return $this->setRes($rs);
 	}
 
 	/**
@@ -612,26 +614,81 @@ class BaseController extends Controller
 		}
 		// 自动化构建model
 		$rs = $this->makeAutoModel()->getOne($query);
-		// 用于判断查询出现多条值的情况处理
+		// 用于判断查询出现多条值的情况处理(结果值不正确)
 		if (intval($rs['status'])) {
 			$this->err($rs['msg']);
 		}
-		// 重新赋值到统一输入的rs上
+		// 通过model的值覆盖到controller的结果值上
 		return $this->setRes($rs);
 	}
 
-	// 通用删除方法，通过主键ID进行删除处理
-	public function remove()
+	/**
+	 * 通用通过主键删除
+	 *
+	 * @param array $query 查询条件参数
+	 * @return array() $rs 删除结果信息
+	 */
+	public function removeByPK()
 	{
 		$pk = $this->makeAutoModel()->getPk();
 		$pkv = isset($_GET[$pk]) ? $_GET[$pk] : 0;
 		if (!$pkv) {
 			$this->err('非法操作，没有对应的主键！');
 		}
-		$rs = $this->makeAutoModel()->delete();
+
+		// 查询处理
+		$query = array();
+		$query[$pk] = $pkv;
+		if (is_integer($pkv)) {
+			$query[$pk] = intval($pkv);
+		}
+		if (is_array($pkv)) {
+			$query[$pk] = array('in', $pkv);
+		}
+
+		$rs = $this->makeAutoModel()->where($query)->delete();
+
+		if ($this->makeAutoModel()->getError()) {
+			$this->err($this->makeAutoModel()->getError(), '警告', $rs);
+		} else {
+			$this->suc($rs, '删除成功', '提示');
+		}
 	}
 
-	// 通用更改字段值，需要加入允许变更字段的过滤
-	public function changeFieldValue()
-	{ }
+	/**
+	 * 通用通过主键修改值
+	 *
+	 * @return void
+	 */
+	public function changeFieldValueByPK()
+	{
+		$pk = $this->makeAutoModel()->getPk();
+		$pkv = isset($_GET[$pk]) ? $_GET[$pk] : 0;
+		if (!$pkv) {
+			$this->err('非法操作，没有对应的主键！');
+		}
+
+		// 查询处理
+		$query = array();
+		$query[$pk] = $pkv;
+		if (is_integer($pkv)) {
+			$query[$pk] = intval($pkv);
+		}
+		if (is_array($pkv)) {
+			$query[$pk] = array('in', $pkv);
+		}
+
+		// data赋值
+		$data = $_GET;
+		// 避免主键变更进行移除
+		unset($data[$pk]);
+
+		$rs = $this->makeAutoModel()->where($query)->setField($data);
+
+		if ($this->makeAutoModel()->getError()) {
+			$this->err($this->makeAutoModel()->getError(), '警告', $rs);
+		} else {
+			$this->suc($rs, '变更成功', '提示');
+		}
+	}
 }
