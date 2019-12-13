@@ -28,6 +28,9 @@ var SugarTables = {
 	sort_multiply: false,
 	sort_input_name: 'sort',
 
+	// 操作按钮元素
+	button_html : '<button type="button" class="btn"><span class="glyphicon"></span></button>',
+
 	// 分页配置
 	// 是否自动创建分页，默认自动创建
 	pager_auto_create: true,
@@ -393,7 +396,7 @@ var SugarTables = {
 		// 显示加载对应的信息
 		title = title ? title : SugarTables.sts[form_id].table.title;
 		TimeKeeper.loadingWaitingStart(td_loading_id, title, SugarTables.loading_waiting_speed, loading_waiting_style);
-		
+
 		// console.log($(form_id).serialize());
 
 		// 表提交数据
@@ -591,40 +594,15 @@ var SugarTables = {
 
 					// 遍历操作配置项并进行处理
 					$.each(column.td.btnOptions, function (optIndex, optValue) {
-						// 默认初始化处理
-						var btnTitle = optValue.title !== undefined ? optValue.title : 'undefined';
-						var btnCss = optValue.btnCss !== undefined && optValue.btnCss ? optValue.btnCss : '';
-						var btnIconCss = optValue.btnIconCss !== undefined && optValue.btnIconCss ? optValue.btnIconCss : '';
 
-						var btnHtml = '<button type="button" name="' + optIndex + '" title="' + btnTitle + '" class="' + btnCss + '" ></button>';
-						var btnIconHtml = btnIconCss ? '<span class="' + btnIconCss + '"></span>' : btnTitle;
-
-						// 处理操作按钮所需的数据
-						var optData = optValue.data !== undefined ? optValue.data : '';
-
-						// 判断格式
-						if (typeof (optData) == 'object') {
-							// 清空赋值
-							optData = {};
-							// 多值处理
-							$.each(optValue.data, function (odi, odv) {
-								optData[odv] = row[odv];
-							});
-
+						var btnHtml = '';
+						// 判断是否存在关键字并且为函数方法
+						if (optIndex.indexOf('CustomBtn') > -1 && typeof(optValue) == 'function') {
+							btnHtml = optValue(index, row);
 						} else {
-							SugarTables.comms.errorMsg("SugarTables plus is error: btnOptions[" + optIndex + "] is not array!");
+							// 按钮默认的处理方式
+							btnHtml = SugarTables._createTdBtnDefalut(optIndex, optValue, row);
 						}
-
-						// 处理点击调用
-						if (optValue.btnClick !== undefined && typeof (optValue.btnClick) == 'function') {
-							btnHtml = $(btnHtml).click(function (e) {
-								optValue.btnClick(e, optData);
-							});
-						}
-
-						// 加入icon图标
-						btnHtml = btnHtml.html(btnIconHtml);
-
 						// 添加入单元格内
 						table_td.append(btnHtml);
 					});
@@ -662,6 +640,61 @@ var SugarTables = {
 
 		// 返回表格表体句柄对象
 		return $(table_tbody);
+	},
+
+	/**
+	 * 创建单元格操作按钮（内置用）
+	 * 
+	 * @param {string} optIndex 每个单元格按钮配置的索引
+	 * @param {array|object} optValue 每个单元格配置参数
+	 * @param {array|object} row 传入每行的值
+	 */
+	_createTdBtnDefalut: function (optIndex, optValue, row) {
+		// 默认初始化处理
+		var btnTitle = optValue.title !== undefined ? optValue.title : 'undefined';
+		var btnCss = optValue.btnCss !== undefined && optValue.btnCss ? optValue.btnCss : '';
+		var btnIconCss = optValue.btnIconCss !== undefined && optValue.btnIconCss ? optValue.btnIconCss : '';
+
+		// 后续需移出html代码，作为模版属性赋值
+		// var btnHtml = '<button type="button" name="' + optIndex + '" title="' + btnTitle + '" class="' + btnCss + '" ></button>';		
+		// var btnIconHtml = btnIconCss ? '<span class="' + btnIconCss + '"></span>' : btnTitle;
+		// 加入icon图标
+		// btnHtml = $(btnHtml).html(btnIconHtml);
+		var $btnHtml = $(SugarTables.button_html);
+		$btnHtml.attr('name', optIndex);
+		$btnHtml.attr('title', btnTitle);
+		$btnHtml.addClass(btnCss);
+
+		if(btnIconCss){
+			$btnHtml.find('span').addClass(btnIconCss);
+		}else{
+			$btnHtml.html(btnTitle);
+		}
+
+		// 处理操作按钮所需的数据
+		var optData = optValue.data !== undefined ? optValue.data : '';
+
+		// 判断格式
+		if (typeof (optData) == 'object') {
+			// 清空赋值
+			optData = {};
+			// 多值处理
+			$.each(optValue.data, function (odi, odv) {
+				optData[odi] = row[odv];
+				optData[odv] = row[odv];
+			});
+
+		} else {
+			SugarTables.comms.errorMsg("SugarTables plus is error: btnOptions[" + optIndex + "] is not array!");
+		}
+
+		// 处理点击调用
+		if (optValue.btnClick !== undefined && typeof (optValue.btnClick) == 'function') {
+			$btnHtml.click(function (e) {
+				optValue.btnClick(e, optData);
+			});
+		}
+		return $btnHtml;
 	},
 
 	/**

@@ -2,6 +2,7 @@
  * 公共JS方法加载
  **/
 var SugarCommons = {
+	version : '1.0',
 	coms: {},
 	commons_name: 'SugarCommons',
 	// 消息对话框ID或confirm提示框模版ID（用于弹出的消息提示）
@@ -23,6 +24,9 @@ var SugarCommons = {
 
 	//插入提示的自动关闭默认时间
 	inner_alert_close_time: 6000,
+
+	// 默认刷新按钮图标模版
+	refresh_icon_tpl: '<span class="glyphicon glyphicon-refresh refresh-animation"></span>',
 
 	/**
 	 * 公用函数库名称设置
@@ -354,7 +358,7 @@ var SugarCommons = {
 
 		// 设置按钮为等待样式
 		// var btnHtml = $form.find('button[type="submit"]').html();
-		$form.find('button[type="submit"]').append('<span class="glyphicon glyphicon-refresh refresh-animation"></span>');
+		$form.find('button[type="submit"]').append(SugarCommons.refresh_icon_tpl);
 
 		// ajax提交处理
 		$.ajax({
@@ -474,7 +478,7 @@ var SugarCommons = {
 			// 如果为ajax处理
 			if (options.url !== undefined) {
 				$(target).find('#msg-btn-sure').attr('disabled', 'disabled');
-				$(target).find('#msg-btn-sure').append('<span class="glyphicon glyphicon-refresh refresh-animation"></span>');
+				$(target).find('#msg-btn-sure').append(SugarCommons.refresh_icon_tpl);
 
 				// ajax请求处理
 				$.ajax({
@@ -484,6 +488,7 @@ var SugarCommons = {
 					data: options.data != undefined ? options.data : {},
 					cache: false,
 					success: function (res, status, xhr) {
+						$(target).find('#msg-btn-sure').removeAttr('disabled');
 						$(target).find('#msg-btn-sure span').remove();
 						var targetModalBody = target + ' .modal-body';
 

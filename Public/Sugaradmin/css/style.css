@@ -160,6 +160,12 @@ body {
     color: #F00;
 }
 
+/* 选项卡内容刷新按钮样式 */
+.tab-refresh-btn {
+    margin-top: 7px;
+    margin-right: 6px;
+}
+
 /* 选项卡下拉样式 */
 .main-header .top-tabs-bar .nav li .dropdown-menu li a {
     background-color: #FFF;

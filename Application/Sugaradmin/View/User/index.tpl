@@ -166,11 +166,55 @@
         // 按钮配置
         btnOptions: {
 
+          // 自定义按钮，key需带CoustomBtn（大小写区分）并且为方法，其返回值为一个元素对象或是html
+          'statusCustomBtn': function (index, row) {
+            var $btnHtml = $('<button type="button" class="btn btn-sm"><span class="glyphicon"></span></button>');
+            var $title = '';
+            var $msg = '';
+            var $url = '/Sugaradmin/User/changeFieldValueByPK';
+            var $data = { 'user_id': row['user_id'] };
+
+            // 判断使用状态
+            if (row['status'] == 0) {
+              $title = '禁用';
+              $btnHtml.addClass('btn-warning');
+              $btnHtml.find('span').addClass('glyphicon-pause');
+              $data.status = 1;
+            } else {
+              $title = '启用';
+              $btnHtml.addClass('btn-success');
+              $btnHtml.find('span').addClass('glyphicon-play');
+              $data.status = 0;
+            }
+            $btnHtml.attr('title', $title);
+
+            $msg = '请您确认是否' + $title + 'ID为【' + row['user_id'] + '】，<br/>用户名为【' + row['username'] + '】的用户？';
+            $title = $title + '用户【' + row['username'] + '】';
+
+            // 点击事件
+            $btnHtml.click(function (e) {
+              // 调用弹出确认窗口
+              SugarCommons.makeConfirm({
+                title: $title,
+                msg: $msg,
+                url: $url,
+                data: $data,
+                complete: function (e) {
+                  // 完成时刷新列表
+                  $('#user-table-form [name="search"]').click();
+                }
+              });
+            });
+
+            // 返回按钮对象
+            return $btnHtml;
+          },
+
           // 编辑按钮
           'edit': {
             title: '编辑',
-            btnCss: 'btn btn-info btn-sm',
-            btnIconCss: 'glyphicon glyphicon-edit',
+            btnCss: 'btn-info btn-sm',
+            btnIconCss: 'glyphicon-edit',
             // 所需表格字段中的数据信息
             data: ['user_id', 'username'],
             // 点击事件
@@ -185,15 +229,15 @@
           // 删除按钮
           'delete': {
             title: '删除',
-            btnCss: 'btn btn-danger btn-sm',
-            btnIconCss: 'glyphicon glyphicon-trash',
+            btnCss: 'btn-danger btn-sm',
+            btnIconCss: 'glyphicon-trash',
             // 所需表格字段中的数据信息
             data: ['user_id', 'username'],
             // 点击事件
             btnClick: function (e, optData) {
               var $url = '/Sugaradmin/User/removeByPK';
               var $title = '删除用户确认【' + optData.username + '】';
-              var $msg = '请您确认是否删除ID为【' + optData.user_id + '】，用户名为【' + optData.username + '】的用户？';
+              var $msg = '请您确认是否删除ID为【' + optData.user_id + '】，<br/>用户名为【' + optData.username + '】的用户？';
               var $data = { 'user_id': optData.user_id };
 
               // 调用弹出确认窗口

@@ -4,6 +4,7 @@
  * 1、当使用loadingWaiting时，一个target目标只允许一个出现，重复的将会被覆盖
  */
 var TimeKeeper = {
+    version : '1.0',
     // 定时器栈多对象
     tps: {},
     // 公共函数对象，必须要加载自定义的commons.js文件

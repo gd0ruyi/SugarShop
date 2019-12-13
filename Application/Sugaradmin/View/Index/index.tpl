@@ -110,9 +110,9 @@
       <!-- 选项卡内容填充 -->
       <div class="main-content container-fluid">
         <div class="tab-content" id="top-tabs-contents">
-          <div role="tabpanel" class="tab-pane fade" id="target" aria-labelledby="target-tab">
+          <div role="tabpanel" class="tab-pane fade" id="tabs-tab-content-tpl" aria-labelledby="target-tab">
             <div class="alert alert-dismissible alert-info" role="alert">
-              <strong>Loading tab-content, Please waitting  <span class="glyphicon glyphicon-hourglass refresh-animation"></span></strong>
+              <strong>Loading tab-content, Please waitting <span class="glyphicon glyphicon-hourglass refresh-animation"></span></strong>
             </div>
           </div>
         </div>
@@ -136,6 +136,9 @@
   <!-- ***自定义控件js的模版html内容start*** -->
   <!-- ****************************** -->
   <div class="html-tpl">
+    <div id='tab-refresh-btn'>
+      <button type="button" class="btn btn-success btn-xs pull-right tab-refresh-btn"><span class="glyphicon glyphicon-refresh"></span></button>
+    </div>
     <!-- 简单读秒或百分比等待loading，植入 -->
     <div id="loading-waiting-tpl">
       <div class="loading-waiting alert alert-success" id="loading-waiting-inner">

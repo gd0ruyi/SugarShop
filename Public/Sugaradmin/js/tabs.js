@@ -1,6 +1,7 @@
 // 动态选项卡处理JS
 // 自定义Tabs构建
 var SugarTabs = {
+	version : '1.0',
 	// 公共函数对象，必须要加载自定义的commons.js文件
 	comms: SugarCommons.setCommonsName('SugarTabs'),
 
@@ -17,7 +18,7 @@ var SugarTabs = {
 	// 选项卡模版
 	tabs_tab_tpl_id: '#tabs-tab-tpl',
 	// 选项卡内容模版
-	tabs_tab_content_tpl_id: '#target',
+	tabs_tab_content_tpl_id: '#tabs-tab-content-tpl',
 
 	// 选项卡按钮监听按钮延时
 	tab_button_time_delay: 500,
@@ -26,6 +27,9 @@ var SugarTabs = {
 	loading_waiting_style: 'inner',
 	// 加载条速度,为毫秒
 	loading_waiting_speed: 100,
+
+	// 默认选项卡内容刷新按钮ID
+	tab_refresh_btn_id: '#tab-refresh-btn',
 
 	// 标签栏自动固定顶部
 	autoTabsFiex: function () {
@@ -41,7 +45,7 @@ var SugarTabs = {
 
 	// 点击菜单事件处理
 	clickManuEvent: function () {
-		var that = this;
+		var $that = this;
 		// 触发ajax事件
 		$("#top-manu-bar li [sgtab-target]").on('click', function (e) {
 			// 不使用跳转
@@ -57,13 +61,13 @@ var SugarTabs = {
 
 
 			// 若不存在访问历史中，则进行创建
-			if (that.getHistory(target) === undefined) {
+			if ($that.getHistory(target) === undefined) {
 				// 添加访问记录
-				that.setHistory(target, href, title);
+				$that.setHistory(target, href, title);
 				// 添加选项卡
-				that.addTabs(target, title, href);
+				$that.addTabs(target, title, href);
 				// 加载ajax
-				that.loadAjax(target, href, title);
+				$that.loadAjax(target, href, title);
 			}
 
 			// 联动触发选中选项卡
@@ -74,7 +78,7 @@ var SugarTabs = {
 
 	// 点击选项卡事件
 	clickTabEvent: function () {
-		var that = this;
+		var $that = this;
 		// 触发选项卡处理，使用bootstrap
 		$("#top-tabs-bar-list li a").on("click", function (e) {
 			// 不使用跳转
@@ -90,7 +94,7 @@ var SugarTabs = {
 			// 不使用跳转
 			e.preventDefault();
 			var tps_id = '#top-tabs-bar-list';
-			var tab_button_time_delay = that.tab_button_time_delay;
+			var tab_button_time_delay = $that.tab_button_time_delay;
 			var times = 0;
 
 			// 避免重复处理
@@ -134,7 +138,7 @@ var SugarTabs = {
 			var target = '#' + $(this).parent().attr('aria-controls');
 
 			// 移除访问历史记录
-			that.removeHistory(target);
+			$that.removeHistory(target);
 
 			// 移除标签页按钮及内容
 			$(tab).remove();
@@ -145,13 +149,19 @@ var SugarTabs = {
 		return true;
 	},
 
+	/**
+	 * 加载ajax时处理
+	 * @param {string} target 目标容器标识
+	 * @param {string} href 目标容器连接请求
+	 * @param {string} title 目标容器标题
+	 */
 	loadAjax: function (target, href, title) {
-		var that = this;
-		var target = that.comms.checkValue('target', target, 'string', 'loadAjax');
+		var $that = this;
+		var target = $that.comms.checkValue('target', target, 'string', 'loadAjax');
 		var href = href;
 		var title = title;
 		// loadingWaiting等待加载
-		TimeKeeper.loadingWaitingStart(target, title, that.loading_waiting_speed, that.loading_waiting_style);
+		TimeKeeper.loadingWaitingStart(target, title, $that.loading_waiting_speed, $that.loading_waiting_style);
 
 		var currentAjax = $.ajax({
 			url: href,
@@ -160,6 +170,7 @@ var SugarTabs = {
 			data: {},
 			cache: false,
 			xhrFields: {
+				// 用于过程加载显示百分比，需支持持续输出
 				onprogress: function (event) {
 					if (event.lengthComputable) {
 						TimeKeeper.loadingWaitingProgress(target, event, currentAjax);
@@ -169,14 +180,24 @@ var SugarTabs = {
 			success: function (res) {
 				// 加载条结束
 				TimeKeeper.loadingWaitingEnd(target);
+
+				// 处理加入刷新按钮
+				var tab_refresh_btn = $(SugarTabs.tab_refresh_btn_id).html();
+				var $refresh_button = $(tab_refresh_btn).click(function () {
+					$(target).html($(SugarTabs.tabs_tab_content_tpl_id).html());
+					// 重新进行回调处理
+					SugarTabs.loadAjax(target, href, title);
+				});
+				// 放入内容
 				$(target).html(res);
+				$(target).prepend($refresh_button);
 			},
 			error: function (res) {
 				// 加载条结束
 				TimeKeeper.destructor(target);
 				error = "SugarTabs plus is error by loadAjax()! state : " + res.readyState + ", status : " + res.status + ", statusText : " + res.statusText + ", responseText : " + res.responseText + "";
 				$(target).html(error);
-				that.comms.errorMsg(error);
+				$that.comms.errorMsg(error);
 			}
 		});
 	},

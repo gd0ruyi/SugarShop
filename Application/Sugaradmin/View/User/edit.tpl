@@ -1,9 +1,9 @@
 <!--导航条-->
-<ol class="breadcrumb">
+<!-- <ol class="breadcrumb">
   <li><a href="#">首页</a></li>
   <li><a href="#">用户管理</a></li>
   <li class="active">创建用户</li>
-</ol>
+</ol> -->
 
 <div class="panel panel-primary">
   <div class="panel-body">
