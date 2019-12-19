@@ -291,7 +291,7 @@ body {
 }
 
 /**************** * 表单功能菜单样式 *****************/
-.sgtable-toolbar {
+.form-toolbar {
     padding: 6px;
     background-color: #f8f8f8;
 }
@@ -337,6 +337,15 @@ body {
 /* 表格头部工具 */
 .table-toolbar {
     padding-right: 0px !important;
+}
+
+.table-toolbar a{
+    cursor: pointer;
+}
+
+.table-toolbar a label{
+    cursor: pointer;
+    width: 100%;
 }
 
 .ajax-tables th {

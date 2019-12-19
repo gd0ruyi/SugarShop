@@ -13,10 +13,13 @@ var SugarTables = {
 	table_tr: '<tr></tr>',
 	table_th: '<th></th>',
 	table_td: '<td></td>',
-	// 是否开启表格工具
-	table_toolbar_open: true,
+
 	// 表格工具头模版
 	table_toolbar_tpl_id: '#table-toolbar-tpl-id',
+	// 默认的联合排序按钮名称
+	sort_multiply_btn: 'sort-multiply',
+	// 设置字段下拉的名称
+	table_setting_btn: 'table-setting',
 
 	// 转义的标点符号
 	template_symbol_pre: "{",
@@ -29,7 +32,7 @@ var SugarTables = {
 	sort_input_name: 'sort',
 
 	// 操作按钮元素
-	button_html : '<button type="button" class="btn"><span class="glyphicon"></span></button>',
+	button_html: '<button type="button" class="btn"><span class="glyphicon"></span></button>',
 
 	// 分页配置
 	// 是否自动创建分页，默认自动创建
@@ -52,9 +55,10 @@ var SugarTables = {
 	 * @param {string} url 表格控件请求加载jeson数据的地址
 	 * @param {object} columns 表格控件的列配置
 	 * @param {string} title 表格的标题名称，用于显示loading的标题
+	 * @param {boolean} toolbar 表格头部工具自定义的传参{toolbar-name:{ btnClass,btnIconClass,btnClick}}
 	 * @returns SugarTables 返回整个对象
 	 */
-	create: function (form_id, table_id, url, columns, title) {
+	create: function (form_id, table_id, url, columns, title, toolbar) {
 		// 清理无效对象
 		SugarTables.destructor();
 
@@ -93,9 +97,10 @@ var SugarTables = {
 		// 表格排序信息
 		SugarTables.sts[form_id].table.sort_multiply = SugarTables.sort_multiply;
 		SugarTables.sts[form_id].table.sort = {};
-		// 表格工具
-		SugarTables.sts[form_id].table.table_toolbar_open = SugarTables.table_toolbar_open;
-		SugarTables.sts[form_id].table.table_toolbar_tpl_id = SugarTables.table_toolbar_tpl_id;
+
+		// 表格自定义工具栏赋值
+		toolbar = toolbar ? toolbar : {};
+		SugarTables.sts[form_id].table.toolbar = toolbar;
 
 		// 分页信息初始化
 		var pager_id = form_id + '-pager';
@@ -114,16 +119,14 @@ var SugarTables = {
 			SugarTables.createPager(form_id, pager_id, pager_tpl_id);
 		}
 
-		// 判断是否创建表格工具
-		if (SugarTables.sts[form_id].table.table_toolbar_open == true) {
-			SugarTables.createTableToolbar(form_id, table_id);
-		}
-
 		// 创建表头
 		SugarTables.createTableThead(form_id, table_id, columns);
 
 		// ajax请求产生表体
 		SugarTables.createTableTbody(form_id, table_id, url, columns);
+
+		// 创建表格头部工具栏按钮
+		SugarTables.createTableToolbar(form_id, table_id, toolbar);
 
 		// console.log(SugarTables.sts);
 
@@ -157,33 +160,6 @@ var SugarTables = {
 	},
 
 	/**
-	 * 创建表格工具
-	 * @param {string} form_id 表单ID
-	 * @param {string} table_id 表单内的表格ID
-	 */
-	createTableToolbar: function (form_id, table_id) {
-		var toolbar = $(SugarTables.sts[form_id].table.table_toolbar_tpl_id).html();
-		toolbar = $(toolbar);
-
-		// 组合排序按钮绑定事件
-		$(toolbar).find(".glyphicon-magnet").parent().click(function () {
-			if (SugarTables.sts[form_id].table.sort_multiply == true) {
-				$(this).removeClass("btn-primary active");
-				$(this).addClass("btn-default");
-				SugarTables.sts[form_id].table.sort_multiply = false;
-			} else {
-				$(this).removeClass("btn-default");
-				$(this).addClass("btn-primary active");
-				SugarTables.sts[form_id].table.sort_multiply = true;
-			}
-
-		});
-
-		$(table_id).parent().before(toolbar);
-		// SugarTables.sts[form_id].form.table_toolbar = toolbar;
-	},
-
-	/**
 	 * 创建表头
 	 * @param {string} form_id 表单ID
 	 * @param {string} table_id 表单内的表格ID
@@ -197,18 +173,23 @@ var SugarTables = {
 		SugarTables.comms.checkValue('columns', columns, 'object', 'createTableThead');
 
 		// 表头定义	
-		var table_thead = SugarTables.table_thead;
-		var table_tr = SugarTables.table_tr;
-		var columns = SugarTables.sts[form_id].table.columns;
+		var $table_thead = $(SugarTables.table_thead);
+		var $table_tr = $(SugarTables.table_tr);
+		var columns = columns ? columns : SugarTables.sts[form_id].table.columns;
 
 		// 遍历配置
 		$.each(columns, function (index, column) {
-			var table_th = SugarTables.table_th;
+
+			var $table_th = $(SugarTables.table_th);
 
 			// th配置验证
 			if (column.th == undefined) {
 				SugarTables.comms.errorMsg("SugarTables plus is error: columns[" + index + "] is empty!");
 			}
+			// 自定义列名赋值
+			column.th.column_name = index;
+			// id赋值处理
+			column.th.id = index;
 			// 默认不使用title属性时，将为index的名称
 			column.th.title = column.th.title == undefined ? index : column.th.title;
 
@@ -220,15 +201,27 @@ var SugarTables = {
 
 			// 标题过长处理
 			if (column.th.title.length > column.th.title_length) {
-				table_th = $(table_th).html(column.th.title.substring(0, column.th.title_length) + '...');
+				$table_th.html(column.th.title.substring(0, column.th.title_length) + '...');
 			} else {
-				table_th = $(table_th).html(column.th.title);
+				$table_th.html(column.th.title);
 			}
 
-			// th通用属性赋值处理
-			$.each(column.th, function (key, value) {
-				table_th = $(table_th).attr(key, value);
-			});
+			// 加入checkbox按钮
+			if (column.th.checkbox == true) {
+				var $checkbox = $('<label><input type="checkbox" name="' + index + '-all" /> ' + $table_th.html() + '</label>');
+				$checkbox.find('input').on('click', function () {
+					if ($(this).is(':checked')) {
+						$(form_id).find('[name="' + index + '"]').each(function () {
+							$(this).prop('checked', true);
+						});
+					} else {
+						$(form_id).find('[name="' + index + '"]').each(function () {
+							$(this).prop('checked', false);
+						});
+					}
+				});
+				$table_th.html($checkbox);
+			}
 
 			// 加入排序按钮（排序处理）
 			if (column.th.sort_icon == true) {
@@ -279,32 +272,41 @@ var SugarTables = {
 				});
 
 
-				table_th = $(table_th).append(sort_icon);
+				$table_th.append(sort_icon);
 			}
 
-			$(table_th).attr('id', index);
+			// 显示赋值处理
+			column.th.display = column.th.display != undefined ? column.th.display : true;
+
+			// th通用属性赋值处理
+			$.each(column.th, function (key, value) {
+				$table_th.attr(key, value);
+			});
+
+			// 显示处理
+			if (column.th.display == false) {
+				$table_th.addClass('hidden');
+			}
 
 			// tr添加th
-			table_tr = $(table_tr).append(table_th);
+			$table_tr.append($table_th);
 			// thead添加tr
-			table_thead = $(table_thead).append(table_tr);
+			$table_thead.append($table_tr);
 
 			// 处理后重新赋值
 			columns[index] = column;
 		});
-		//console.log(SugarTables.table_thead);
-		//console.log(SugarTables.columns);
 
 		// table添加thead		
-		$(table_id).html(table_thead);
+		$(table_id).html($table_thead);
 
 		// 重新赋值
 		SugarTables.sts[form_id].table.table = $(table_id);
 		SugarTables.sts[form_id].table.columns = columns;
-		SugarTables.sts[form_id].table.table_thead = $(table_thead);
+		SugarTables.sts[form_id].table.table_thead = $table_thead;
 
 		// 返回表格头部句柄对象
-		return $(table_thead);
+		return $table_thead;
 	},
 
 	/**
@@ -463,7 +465,6 @@ var SugarTables = {
 
 		// 重新赋值
 		SugarTables.sts[form_id].form.url = url;
-
 		SugarTables.sts[form_id].table.table_id = table_id;
 		SugarTables.sts[form_id].table.table = $(table_id);
 		SugarTables.sts[form_id].table.columns = columns;
@@ -484,44 +485,42 @@ var SugarTables = {
 		SugarTables.comms.checkValue('table_id', table_id, 'string', 'makeTbody');
 		SugarTables.comms.checkValue('columns', columns, 'object', 'makeTbody');
 
+		// 定义赋值
+		var $table_tbody = $(SugarTables.table_tbody);
+		// 定义表行
+		var $table_tr = $(SugarTables.table_tr);
+		//定义单元格
+		var $table_td = $(SugarTables.table_td);
+		var td_content = "暂无数据";
+
 		// 空数据处理
 		if ($.isEmptyObject(table_data)) {
-			// 定义赋值
-			var table_tbody = SugarTables.table_tbody;
 			// 对象赋值
 			SugarTables.sts[form_id].table.table_data = table_data;
-			// 定义表行
-			var table_tr = SugarTables.table_tr;
-			//定义单元格
-			var table_td = SugarTables.table_td;
-			var td_content = "暂无数据";
 			// td内容添加			
-			table_td = $(table_td).html(td_content);
-			$(table_td).attr("colspan", SugarTables.sts[form_id].table.columns_count);
-			$(table_td).addClass("text-center");
+			$table_td.html(td_content);
+			$table_td.attr("colspan", SugarTables.sts[form_id].table.columns_count);
+			$table_td.addClass("text-center");
 			// tr添加td
-			table_tr = $(table_tr).append(table_td);
+			$table_tr.append($table_td);
 			// tbody添加tr
-			table_tbody = $(table_tbody).append(table_tr);
+			$table_tbody.append($table_tr);
 
 			// 移除原有tbody
 			$(table_id).find('tbody').remove();
 			// 表格添加tbody
-			$(table_id).append(table_tbody);
+			$(table_id).append($table_tbody);
 
 
 			// 重新赋值
 			SugarTables.sts[form_id].table.table = $(table_id);
 			// SugarTables.sts[form_id].table.columns = columns;
-			SugarTables.sts[form_id].table.table_tbody = $(table_tbody);
+			SugarTables.sts[form_id].table.table_tbody = $table_tbody;
 
 			// 返回表格表体句柄对象
-			return $(table_tbody);
+			return $table_tbody;
 		}
 		SugarTables.comms.checkValue('table_data', table_data, 'object', 'makeTbody');
-
-		// 定义赋值
-		var table_tbody = SugarTables.table_tbody;
 
 		// 对象赋值
 		SugarTables.sts[form_id].table.table_data = table_data;
@@ -529,22 +528,22 @@ var SugarTables = {
 		// 遍历数据（每行）
 		$.each(table_data, function (i, row) {
 			// 定义表行
-			var table_tr = SugarTables.table_tr;
+			var $table_tr = $(SugarTables.table_tr);
 
 			// 遍历配置（每列），用于处理TD
 			$.each(columns, function (index, column) {
-				//定义单元格
-				var table_td = SugarTables.table_td;
-				var td_content = row[index] == undefined ? index + '-undefined' : row[index];
+				//重新定义单元格
+				$table_td = $(SugarTables.table_td);
+				td_content = row[index] == undefined ? index + '-undefined' : row[index];
 
 				// 默认初始化处理
-				// column.td = column.td == undefined ? {} : column.td;
-				// column.td.title = column.td.title == undefined ? td_content : column.td.title;
 				// 如果没有td赋值,将重新赋值
 				if (column.td === undefined || !column.td) {
 					column.td = {};
 					column.td.title = table_id;
 				}
+				// 自定义列名赋值
+				column.td.column_name = index;
 				// 当为特殊字符operation，表示为操作处理，因此td标题为空
 				column.td.title = index == 'operation' ? '' : td_content;
 
@@ -563,83 +562,93 @@ var SugarTables = {
 
 						// 替换后的赋值title
 						column.td.title = td_content;
+
+						// td默认内容长度处理
+						column.td.content_length = column.td.content_length == undefined ? 0 : parseInt(column.td.content_length);
+
+						// td内容过长截取处理
+						if (column.td.content_length > 0) {
+							td_content = td_content.substring(0, column.td.content_length) + '...';
+						}
 					}
 
 					// 通过方法回调处理
 					if (typeof (column.td.template) == 'function') {
 						// 传入当前表格的索引以及当前行的值，需要返回为html内容
-						var tpl_fun = column.td.template(index, row);
-
-						td_content = tpl_fun.content != undefined ? tpl_fun.content : td_content;
-						column.td.title = tpl_fun.title != undefined ? tpl_fun.title : column.td.title;
+						td_content = column.td.template(index, row);
+						// 清除td中的title
+						column.td.title = '';
 					}
 				}
 
-
-				// td默认内容长度处理
-				column.td.content_length = column.td.content_length == undefined ? 0 : parseInt(column.td.content_length);
-
-				// td内容过长截取处理
-				if (column.td.content_length > 0) {
-					td_content = td_content.substring(0, column.td.content_length) + '...';
+				// 加入checkbox按钮
+				if (column.th.checkbox == true) {
+					var $checkbox = $('<label><input type="checkbox" name="' + index + '" value="' + row[index] + '"/> </label>');
+					$checkbox.append(td_content);
+					td_content = $checkbox;
 				}
 
 				// td内容添加
-				table_td = $(table_td).html(td_content);
+				$table_td.html(td_content);
 
 				// 操作按钮处理
 				if (column.td.btnOptions !== undefined && typeof (column.td.btnOptions) == 'object') {
 					// 单元格清空处理
-					table_td.html('');
+					$table_td.html('');
 
 					// 遍历操作配置项并进行处理
 					$.each(column.td.btnOptions, function (optIndex, optValue) {
 
 						var btnHtml = '';
 						// 判断是否存在关键字并且为函数方法
-						if (optIndex.indexOf('CustomBtn') > -1 && typeof(optValue) == 'function') {
+						if (optIndex.indexOf('CustomBtn') > -1 && typeof (optValue) == 'function') {
 							btnHtml = optValue(index, row);
 						} else {
 							// 按钮默认的处理方式
 							btnHtml = SugarTables._createTdBtnDefalut(optIndex, optValue, row);
 						}
 						// 添加入单元格内
-						table_td.append(btnHtml);
+						$table_td.append(btnHtml);
 					});
 				}
 
-				// td通用属性处理
+				// 显示赋值处理
+				column.th.display = column.th.display != undefined ? column.th.display : true;
+
+				// td通用属性赋值处理
 				$.each(column.td, function (key, value) {
 					// 过滤处理,操作按钮设置和模版设置参数不加入内
 					if (key != 'btnOptions' && key !== 'template') {
-						table_td.attr(key, value);
+						$table_td.attr(key, value);
 					}
 				});
 
-				// 处理后重新赋值
-				// columns[index] = column;
+				// 显示处理
+				if (column.th.display == false) {
+					$table_td.addClass('hidden');
+				}
 
 				// tr添加td
-				table_tr = $(table_tr).append(table_td);
+				$table_tr.append($table_td);
 			});
 
 			// tbody添加tr
-			table_tbody = $(table_tbody).append(table_tr);
+			$table_tbody.append($table_tr);
 		});
 
 		// 移除原有tbody
 		$(table_id).find('tbody').remove();
 		// 表格添加tbody
-		$(table_id).append(table_tbody);
+		$(table_id).append($table_tbody);
 
 
 		// 重新赋值
 		SugarTables.sts[form_id].table.table = $(table_id);
 		// SugarTables.sts[form_id].table.columns = columns;
-		SugarTables.sts[form_id].table.table_tbody = $(table_tbody);
+		SugarTables.sts[form_id].table.table_tbody = $table_tbody;
 
 		// 返回表格表体句柄对象
-		return $(table_tbody);
+		return $table_tbody;
 	},
 
 	/**
@@ -652,22 +661,22 @@ var SugarTables = {
 	_createTdBtnDefalut: function (optIndex, optValue, row) {
 		// 默认初始化处理
 		var btnTitle = optValue.title !== undefined ? optValue.title : 'undefined';
-		var btnCss = optValue.btnCss !== undefined && optValue.btnCss ? optValue.btnCss : '';
-		var btnIconCss = optValue.btnIconCss !== undefined && optValue.btnIconCss ? optValue.btnIconCss : '';
+		var btnClass = optValue.btnClass !== undefined && optValue.btnClass ? optValue.btnClass : '';
+		var btnIconClass = optValue.btnIconClass !== undefined && optValue.btnIconClass ? optValue.btnIconClass : '';
 
 		// 后续需移出html代码，作为模版属性赋值
-		// var btnHtml = '<button type="button" name="' + optIndex + '" title="' + btnTitle + '" class="' + btnCss + '" ></button>';		
-		// var btnIconHtml = btnIconCss ? '<span class="' + btnIconCss + '"></span>' : btnTitle;
+		// var btnHtml = '<button type="button" name="' + optIndex + '" title="' + btnTitle + '" class="' + btnClass + '" ></button>';		
+		// var btnIconHtml = btnIconClass ? '<span class="' + btnIconClass + '"></span>' : btnTitle;
 		// 加入icon图标
 		// btnHtml = $(btnHtml).html(btnIconHtml);
 		var $btnHtml = $(SugarTables.button_html);
 		$btnHtml.attr('name', optIndex);
 		$btnHtml.attr('title', btnTitle);
-		$btnHtml.addClass(btnCss);
+		$btnHtml.addClass(btnClass);
 
-		if(btnIconCss){
-			$btnHtml.find('span').addClass(btnIconCss);
-		}else{
+		if (btnIconClass) {
+			$btnHtml.find('span').addClass(btnIconClass);
+		} else {
 			$btnHtml.html(btnTitle);
 		}
 
@@ -696,6 +705,93 @@ var SugarTables = {
 		}
 		return $btnHtml;
 	},
+
+	/**
+	 * 创建表格工具
+	 * 注：自定义按钮请放到table_toolbar_tpl_id对应ID的html模版内即可
+	 * @param {string} form_id 表单ID
+	 * @param {string} table_id 表单内的表格ID
+	 * @param {object} toolbar 表格头部工具自定义的传参{toolbar-name:{ btnClass,btnIconClass,btnClick}}
+	 * @returns $(toolbar) 表格工具句柄
+	 */
+	createTableToolbar: function (form_id, table_id, toolbar) {
+		// 默认的toolbar处理
+		var $toolbarDf = $($(SugarTables.table_toolbar_tpl_id).html());
+
+		// 默认组合排序按钮处理
+		$toolbarDf.find('[toolbar-name="sort-multiply"]').click(function () {
+			if (SugarTables.sts[form_id].table.sort_multiply == true) {
+				$(this).removeClass("btn-info active");
+				$(this).addClass("btn-default");
+				SugarTables.sts[form_id].table.sort_multiply = false;
+			} else {
+				$(this).removeClass("btn-default");
+				$(this).addClass("btn-info active");
+				SugarTables.sts[form_id].table.sort_multiply = true;
+			}
+		});
+
+		// 自定义显示表格列处理
+		var columns = SugarTables.sts[form_id].table.columns;
+
+		// 遍历columns配置
+		$.each(columns, function (index, column) {
+			var title = column.th.title ? column.th.title : index;
+			var $li = $($(SugarTables.table_toolbar_tpl_id).find('[toolbar-name="table-setting-li"]').html());
+
+			$li.find('input').attr('value', index);
+			// 判断是否有隐藏的字段
+			if (column.th.display != undefined) {
+				$li.find('input').prop('checked', column.th.display);
+			}
+			$li.find('font').html(title);
+
+			// 添加入li
+			$toolbarDf.find('[toolbar-name="table-setting-li"]').after($li);
+		});
+
+		// 模版已无用，因此移除加入的模版
+		$toolbarDf.find('[toolbar-name="table-setting-li"]').remove();
+
+		// 全选按钮操作
+		$toolbarDf.find('[toolbar-name="table-setting-all"]').click(function () {
+			var ckav = $(this).is(':checked');
+			$toolbarDf.find('[toolbar-name="table-setting-menu"] input').each(function () {
+				$(this).prop('checked', ckav);
+			});
+		});
+
+		// 不使用Bootstrap自带的下拉菜单处理事件，因此通过自定义处理
+		$toolbarDf.find('[toolbar-name="table-setting"]').click(function () {
+			$(this).parent().addClass('open');
+		});
+
+		// 点击确定显示列处理
+		$toolbarDf.find('[toolbar-name="table-setting-sure"]').click(function () {
+			// 处理赋值
+			$toolbarDf.find('[toolbar-name="table-setting-menu"] input:not([toolbar-name="table-setting-all"])').each(function (k, v) {
+				var key = $(v).val();
+				if ($(v).is(':checked')) {
+					$(table_id).find('[column_name="' + key + '"]').each(function () {
+						$(this).removeClass('hidden');
+					});
+				} else {
+					$(table_id).find('[column_name="' + key + '"]').each(function () {
+						$(this).addClass('hidden');
+					});
+				}
+			});
+
+			// 隐藏下拉
+			$toolbarDf.find('[toolbar-name="table-setting-menu"]').parent().removeClass('open');
+		});
+
+		// 在表格之前创建
+		$(table_id).parent().before($toolbarDf);
+		// return $toolbar;
+	},
+
+	makeTableToolbar: function (form_id, table_id, toolbar) { },
 
 	/**
 	 * 创建表格的分页项

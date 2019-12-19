@@ -2,7 +2,7 @@
  * 公共JS方法加载
  **/
 var SugarCommons = {
-	version : '1.0',
+	version: '1.0',
 	coms: {},
 	commons_name: 'SugarCommons',
 	// 消息对话框ID或confirm提示框模版ID（用于弹出的消息提示）
@@ -614,7 +614,7 @@ var SugarCommons = {
 						if ($(this).val() == value) {
 							$(this).click();
 						} else {
-							$(this).removeAttr('checked');
+							$(this).prop('checked', false);
 						}
 					});
 					break;

@@ -221,10 +221,35 @@
 
     <!-- 表格工具模版 -->
     <div class="html-tpl" id="table-toolbar-tpl-id">
-      <div class="table-toolbar form-group form-group-sm btn-group btn-group-xs pull-right">
-        <button type="button" class="btn btn-default" aria-label="Sort Multiply" title="联合排序"><span class="glyphicon glyphicon-magnet" aria-hidden="true"></span></button>
-        <button type="button" class="btn btn-default" aria-label="Tbale Setting" title="表格设置"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
+      <div class="table-toolbar btn-toolbar pull-right">
+
+        <div class="btn-group" role="group">
+          <!-- 需要实现批量处理，以及表格列的选择配置等 -->
+          <button type="button" class="btn btn-default btn-xs" aria-label="Batch Play" title="批量启动"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+          <button type="button" class="btn btn-default btn-xs" aria-label="Batch Pause" title="批量暂停"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button>
+          <button type="button" class="btn btn-default btn-xs" aria-label="Batch Trash" title="批量删除"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+        </div>
+
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-default btn-xs" aria-label="Sort Multiply" title="组合排序" toolbar-name="sort-multiply"><span class="glyphicon glyphicon-magnet" aria-hidden="true"></span></button>
+          <button type="button" class="btn btn-default btn-xs" aria-label="Tbale Setting" title="表格设置" toolbar-name="table-setting"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>
+          <ul class="dropdown-menu dropdown-menu-right" toolbar-name="table-setting-menu">
+            <li><a><label> <input toolbar-name="table-setting-all" type="checkbox" value="checked-all"/>
+                  <font>全选</font>
+                </label> </a></li>
+            <li role="separator" class="divider" toolbar-name="table-setting-divider"></li>
+            <div toolbar-name="table-setting-li" class="hide">
+              <li><a><label> <input id="" type="checkbox" />
+                    <font>table th name</font>
+                  </label></a></li>
+            </div>
+            <li role="separator" class="divider"></li>
+            <li><a class="text-center" toolbar-name="table-setting-sure">确 定</a></li>
+          </ul>
+        </div>
+
       </div>
+
     </div>
 
     <!-- 用于弹窗的警告 -->
