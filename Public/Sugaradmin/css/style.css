@@ -350,6 +350,7 @@ body {
 
 .ajax-tables th {
     border-bottom: none !important;
+    background-color: #eee;
 }
 
 .ajax-tables .sort-icon {

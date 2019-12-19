@@ -119,14 +119,14 @@ var SugarTables = {
 			SugarTables.createPager(form_id, pager_id, pager_tpl_id);
 		}
 
+		// 创建表格头部工具栏按钮
+		SugarTables.createTableToolbar(form_id, table_id, SugarTables.sts[form_id].table.columns, toolbar);
+
 		// 创建表头
-		SugarTables.createTableThead(form_id, table_id, columns);
+		SugarTables.createTableThead(form_id, table_id, SugarTables.sts[form_id].table.columns);
 
 		// ajax请求产生表体
-		SugarTables.createTableTbody(form_id, table_id, url, columns);
-
-		// 创建表格头部工具栏按钮
-		SugarTables.createTableToolbar(form_id, table_id, toolbar);
+		SugarTables.createTableTbody(form_id, table_id, url, SugarTables.sts[form_id].table.columns);
 
 		// console.log(SugarTables.sts);
 
@@ -167,15 +167,15 @@ var SugarTables = {
 	 * @returns table_thead 表格头部句柄对象
 	 */
 	createTableThead: function (form_id, table_id, columns) {
+		// 表头定义	
+		var $table_thead = $(SugarTables.table_thead);
+		var $table_tr = $(SugarTables.table_tr);
+		columns = columns ? columns : SugarTables.sts[form_id].table.columns;
+
 		// 验证部份
 		SugarTables.comms.checkValue('form_id', form_id, 'string', 'createTableThead');
 		SugarTables.comms.checkValue('table_id', table_id, 'string', 'createTableThead');
 		SugarTables.comms.checkValue('columns', columns, 'object', 'createTableThead');
-
-		// 表头定义	
-		var $table_thead = $(SugarTables.table_thead);
-		var $table_tr = $(SugarTables.table_tr);
-		var columns = columns ? columns : SugarTables.sts[form_id].table.columns;
 
 		// 遍历配置
 		$.each(columns, function (index, column) {
@@ -303,6 +303,7 @@ var SugarTables = {
 		// 重新赋值
 		SugarTables.sts[form_id].table.table = $(table_id);
 		SugarTables.sts[form_id].table.columns = columns;
+		SugarTables.sts[form_id].table.columns_count = $.count(columns);
 		SugarTables.sts[form_id].table.table_thead = $table_thead;
 
 		// 返回表格头部句柄对象
@@ -321,6 +322,7 @@ var SugarTables = {
 		// 初始化验证
 		SugarTables.comms.checkValue('form_id', form_id, 'string', 'createTableTbody');
 		SugarTables.comms.checkValue('table_id', table_id, 'string', 'createTableTbody');
+		columns = columns ? columns : SugarTables.sts[form_id].table.columns;
 		SugarTables.comms.checkValue('columns', columns, 'object', 'createTableTbody');
 
 		// 判断是否为路径
@@ -352,7 +354,7 @@ var SugarTables = {
 		SugarTables.comms.checkValue('url', url, 'string', 'string', 'ajaxRequest');
 		// 默认使用原有form_id对应的columns
 
-		var columns = columns == undefined ? SugarTables.sts[form_id].table.columns : columns;
+		columns = columns != undefined ? columns : SugarTables.sts[form_id].table.columns;
 		// 默认使用原有form_id对应的title
 		var title = title == undefined ? SugarTables.sts[form_id].table.title : title;
 
@@ -436,7 +438,7 @@ var SugarTables = {
 					TimeKeeper.loadingWaitingEnd(td_loading_id);
 
 					// 产生动态表格
-					SugarTables.makeTbody(form_id, table_id, res.data, columns);
+					SugarTables.makeTbody(form_id, table_id, res.data);
 
 					// 分页信息处理
 					if (SugarTables.pager_auto_create == true) {
@@ -468,6 +470,7 @@ var SugarTables = {
 		SugarTables.sts[form_id].table.table_id = table_id;
 		SugarTables.sts[form_id].table.table = $(table_id);
 		SugarTables.sts[form_id].table.columns = columns;
+		SugarTables.sts[form_id].table.columns_count = $.count(columns);
 		SugarTables.sts[form_id].table.title = title;
 	},
 
@@ -483,6 +486,7 @@ var SugarTables = {
 		// 初始化验证
 		SugarTables.comms.checkValue('form_id', form_id, 'string', 'makeTbody');
 		SugarTables.comms.checkValue('table_id', table_id, 'string', 'makeTbody');
+		columns = columns != undefined ? columns : SugarTables.sts[form_id].table.columns;
 		SugarTables.comms.checkValue('columns', columns, 'object', 'makeTbody');
 
 		// 定义赋值
@@ -707,14 +711,15 @@ var SugarTables = {
 	},
 
 	/**
-	 * 创建表格工具
+	 * 创建表格工具（初始化创建）
 	 * 注：自定义按钮请放到table_toolbar_tpl_id对应ID的html模版内即可
 	 * @param {string} form_id 表单ID
 	 * @param {string} table_id 表单内的表格ID
-	 * @param {object} toolbar 表格头部工具自定义的传参{toolbar-name:{ btnClass,btnIconClass,btnClick}}
+	 * @param {object} columns 表格控件的列配置
+	 * @param {object} toolbar 表格头部工具自定义的传参{{toolbar-name:{ btnClass,btnIconClass,btnClick}, ...},...}
 	 * @returns $(toolbar) 表格工具句柄
 	 */
-	createTableToolbar: function (form_id, table_id, toolbar) {
+	createTableToolbar: function (form_id, table_id, columns, toolbar) {
 		// 默认的toolbar处理
 		var $toolbarDf = $($(SugarTables.table_toolbar_tpl_id).html());
 
@@ -731,17 +736,18 @@ var SugarTables = {
 			}
 		});
 
-		// 自定义显示表格列处理
-		var columns = SugarTables.sts[form_id].table.columns;
+		columns = columns != undefined ? columns : SugarTables.sts[form_id].table.columns;
 
-		// 遍历columns配置
+		// 开始处理自定义显示列，遍历columns配置
 		$.each(columns, function (index, column) {
 			var title = column.th.title ? column.th.title : index;
 			var $li = $($(SugarTables.table_toolbar_tpl_id).find('[toolbar-name="table-setting-li"]').html());
 
 			$li.find('input').attr('value', index);
 			// 判断是否有隐藏的字段
-			if (column.th.display != undefined) {
+			if (column.th.display == undefined) {
+				$li.find('input').prop('checked', true);
+			} else {
 				$li.find('input').prop('checked', column.th.display);
 			}
 			$li.find('font').html(title);
@@ -762,8 +768,18 @@ var SugarTables = {
 		});
 
 		// 不使用Bootstrap自带的下拉菜单处理事件，因此通过自定义处理
-		$toolbarDf.find('[toolbar-name="table-setting"]').click(function () {
+		$(document).click(function () {
+			$('[toolbar-name="table-setting"]').parent().removeClass('open');
+		});
+		// 点击表格设置按钮处理
+		$toolbarDf.find('[toolbar-name="table-setting"]').click(function (e) {
+			// 排除document点击
+			e.stopPropagation();
 			$(this).parent().addClass('open');
+		});
+		// 点击ul排他
+		$toolbarDf.find('[toolbar-name="table-setting-menu"]').click(function (e) {
+			e.stopPropagation();
 		});
 
 		// 点击确定显示列处理
@@ -772,10 +788,12 @@ var SugarTables = {
 			$toolbarDf.find('[toolbar-name="table-setting-menu"] input:not([toolbar-name="table-setting-all"])').each(function (k, v) {
 				var key = $(v).val();
 				if ($(v).is(':checked')) {
+					SugarTables.sts[form_id].table.columns[key].th.display = true;
 					$(table_id).find('[column_name="' + key + '"]').each(function () {
 						$(this).removeClass('hidden');
 					});
 				} else {
+					SugarTables.sts[form_id].table.columns[key].th.display = false;
 					$(table_id).find('[column_name="' + key + '"]').each(function () {
 						$(this).addClass('hidden');
 					});
