@@ -221,7 +221,7 @@
 
     <!-- 表格工具模版 -->
     <div class="html-tpl" id="table-toolbar-tpl-id">
-      <div class="table-toolbar btn-toolbar pull-right">
+      <div class="btn-toolbar pull-right table-toolbar">
 
         <div class="btn-group" role="group">
           <!-- 需要实现批量处理，以及表格列的选择配置等 -->

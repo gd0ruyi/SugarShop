@@ -218,10 +218,7 @@ body {
 
 /* 加载等待样式 */
 .loading-waiting {
-    /* color:#6C0;
-	background-color:#eee;
-	padding:2px;
-	*/
+    font-size: 12px;
 }
 
 /* 刷新图标的动画效果 */
@@ -312,9 +309,9 @@ body {
     padding-left: 12px;
 }
 
-.form-group .btn-group .btn-default {
+/* .form-group .btn-group .btn-default {
     background-image: none;
-}
+} */
 
 /* 自动验证表单样式修正 */
 .has-feedback .form-control {
@@ -339,11 +336,11 @@ body {
     padding-right: 0px !important;
 }
 
-.table-toolbar a{
+.table-toolbar a {
     cursor: pointer;
 }
 
-.table-toolbar a label{
+.table-toolbar a label {
     cursor: pointer;
     width: 100%;
 }
@@ -468,17 +465,28 @@ body {
 }
 
 .pager ul.dropdown-menu li a {
-    display: inline-block;
+    display: block;
     float: left;
     width: 50px;
     border-radius: 0;
 }
 
-.pager .input-group>select.form-control {
+/* .pager .input-group>select.form-control {
     font-size: 14px;
     height: 18px;
     line-height: 18px;
     border-left: none;
     width: 42px;
     border-radius: 0 16px 16px 0;
+    cursor: pointer;
+} */
+
+.pager .pager-size {
+    font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    border-left: none;
+    width: 42px;
+    border-radius: 0 16px 16px 0;
+    cursor: pointer;
 }

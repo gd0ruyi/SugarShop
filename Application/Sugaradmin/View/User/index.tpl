@@ -33,7 +33,7 @@
       <div class="form-group form-group-sm">
         <div class="input-group">
           <div class="input-group-btn" sugar-selector="true">
-            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
               aria-expanded="false">
               <font>关键字</font> <span class="caret"></span>
             </button>
