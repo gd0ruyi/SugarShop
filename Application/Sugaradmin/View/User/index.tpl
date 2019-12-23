@@ -302,7 +302,43 @@
       },
     };
 
-    SugarTables.create('#user-table-form', '#user-table', '/Sugaradmin/User/loadAjax', columns);
+    // 自定义表格头部工具
+    var toolbar = [
+      {
+        'batchPlay': {
+          title: '批量启用',
+          btnClass: 'btn-default',
+          aria_label: 'Batch Start',
+          btnIconClass: 'glyphicon-play',
+          btnClick: function (e, formData) {
+            var $title = '批量启用';
+            var $msg = '请您确认是否批量启用？';
+            var $url = '';
+            $data.status = 0;
+
+            SugarCommons.makeConfirm({
+              title: $title,
+              msg: $msg,
+              url: $url,
+              data: $data,
+              complete: function (e) {
+                // 完成时刷新列表
+                $('#user-table-form [name="search"]').click();
+              }
+            });
+          }
+        },
+
+        'batchStop': {
+          title: '批量禁用',
+          btnIconClass: 'glyphicon-pause',
+          btnClick: function (e, formData) {
+          }
+        },
+      }
+    ];
+
+    SugarTables.create('#user-table-form', '#user-table', '/Sugaradmin/User/loadAjax', columns, toolbar);
 
     // 当编辑等模拟框关闭时触发重新刷新列表
     /* $(SugarCommons.edit_dialog_tpl_id).on('hide.bs.modal', function (e) {

@@ -54,11 +54,11 @@ var SugarTables = {
 	 * @param {string} table_id 表单内的表格ID
 	 * @param {string} url 表格控件请求加载jeson数据的地址
 	 * @param {object} columns 表格控件的列配置
-	 * @param {string} title 表格的标题名称，用于显示loading的标题
 	 * @param {boolean} toolbar 表格头部工具自定义的传参{toolbar-name:{ btnClass,btnIconClass,btnClick}}
+	 * @param {string} title 表格的标题名称，用于显示loading的标题
 	 * @returns SugarTables 返回整个对象
 	 */
-	create: function (form_id, table_id, url, columns, title, toolbar) {
+	create: function (form_id, table_id, url, columns, toolbar, title) {
 		// 清理无效对象
 		SugarTables.destructor();
 
@@ -93,11 +93,14 @@ var SugarTables = {
 		// 表格标题
 		var title = title === undefined ? $(table_id).attr("title") : title;
 		title = title ? title : table_id + '(Table is not set title)';
+		$(table_id).attr("title", title)
 		SugarTables.sts[form_id].table.title = title;
 		// 表格排序信息
 		SugarTables.sts[form_id].table.sort_multiply = SugarTables.sort_multiply;
 		SugarTables.sts[form_id].table.sort = {};
 
+		// 表格自定义工具栏赋值
+		SugarTables.sts[form_id].table.toolbarDf = {};
 		// 表格自定义工具栏赋值
 		toolbar = toolbar ? toolbar : {};
 		SugarTables.sts[form_id].table.toolbar = toolbar;
@@ -722,6 +725,7 @@ var SugarTables = {
 	createTableToolbar: function (form_id, table_id, columns, toolbar) {
 		// 默认的toolbar处理
 		var $toolbarDf = $($(SugarTables.table_toolbar_tpl_id).html());
+		var toolbar = toolbar ? toolbar : SugarTables.sts[form_id].table.toolbar;
 
 		// 默认组合排序按钮处理
 		$toolbarDf.find('[toolbar-name="sort-multiply"]').click(function () {
@@ -804,12 +808,39 @@ var SugarTables = {
 			$toolbarDf.find('[toolbar-name="table-setting-menu"]').parent().removeClass('open');
 		});
 
+		// 自定义工具按钮组对象
+		$.each(toolbar, function (index, btnG) {
+			var $btnGroup = $('<div class="btn-group" role="group"></div>');
+			$.each(btnG, function (key, value) {
+				var $btn = $('<button type="button" class="btn btn-xs" aria-label="" title="" toolbar-name=""><span class="glyphicon"></span></button>');
+
+				// 属性赋值
+				$btn.attr('toolbar-name', key);
+				$btn.attr('title', value.title);
+				$btn.attr('aria-label', value.aria_label ? value.aria_label : '');
+
+				// 添加样式
+				$btn.addClass(value.btnClass ? value.btnClass : 'btn-default');
+				$btn.find('span').addClass(value.btnIconClass ? value.btnIconClass : 'glyphicon-edit');
+
+				// 点击事件处理
+				if (value.btnClick != undefined && typeof (value.btnClick) == 'function') {
+					$btn.click(function (e) {
+						var formData = $(form_id).serializeJson();
+						value.btnClick(e, formData);
+					});
+				}
+				// 添加入按钮组
+				$btnGroup.append($btn);
+			});
+			// 添加到工具按钮栏
+			$toolbarDf.prepend($btnGroup);
+		});
+
 		// 在表格之前创建
 		$(table_id).parent().before($toolbarDf);
 		// return $toolbar;
 	},
-
-	makeTableToolbar: function (form_id, table_id, toolbar) { },
 
 	/**
 	 * 创建表格的分页项

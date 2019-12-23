@@ -60,12 +60,12 @@ class BaseController extends Controller
 
 		// 格式化正确的不检查登录的控制器
 		foreach ($this->non_checkLogin_controller as $key => $value) {
-			$this->non_checkLogin_controller[$key] = __MODULE__ . $value;
+			$this->non_checkLogin_controller[$key] = strtolower(__MODULE__ . $value);
 		}
 
 		// 格式化正确的不检查登录的控制器
 		foreach ($this->non_checkLogin_action as $key => $value) {
-			$this->non_checkLogin_action[$key] = __MODULE__ . $value;
+			$this->non_checkLogin_action[$key] = strtolower(__MODULE__ . $value);
 		}
 
 		// 判断是否需要校验登录的控制器或者具体的方法
@@ -80,19 +80,22 @@ class BaseController extends Controller
 	 * 通用初始化方法前置执行
 	 */
 	public function _before_initialize()
-	{ }
+	{
+	}
 
 	/**
 	 * 通用初始化方法
 	 */
 	public function _initialize()
-	{ }
+	{
+	}
 
 	/**
 	 * 通用初始化方法后置执行
 	 */
 	public function _after_initialize()
-	{ }
+	{
+	}
 
 	/**
 	 * 校验登录
