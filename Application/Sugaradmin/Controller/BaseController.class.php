@@ -23,6 +23,9 @@ class BaseController extends Controller
 	// 当前用户id
 	public $self_user_id = 0;
 
+	// 是否已登录
+	public $is_login = false;
+
 	// 返回json的格式
 	protected $_res = array(
 		'status' => 0,
@@ -46,6 +49,11 @@ class BaseController extends Controller
 	 */
 	public function __construct()
 	{
+		// 登录当前用户ID
+		$this->self_user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
+		// 是否已登录
+		$this->is_login = $this->self_user_id ? true : false;
+		
 		// 自定义初始化前方法，construct初始化前调用，因initialize是在construct内调用
 		$this->_before_initialize();
 
@@ -69,7 +77,7 @@ class BaseController extends Controller
 		}
 
 		// 判断是否需要校验登录的控制器或者具体的方法
-		if (!in_array(__CONTROLLER__, $this->non_checkLogin_controller) && !in_array(__ACTION__, $this->non_checkLogin_action)) {
+		if (!in_array(strtolower(__CONTROLLER__), $this->non_checkLogin_controller) && !in_array(strtolower(__ACTION__), $this->non_checkLogin_action)) {
 			$this->checkLogin();
 		}
 
@@ -102,8 +110,7 @@ class BaseController extends Controller
 	 */
 	public function checkLogin()
 	{
-		$this->self_user_id = intval($_SESSION['user_id']);
-		if (!$this->self_user_id) {
+		if (!$this->is_login) {
 			$this->error('您尚未登录或登录超时，请重新登录！', __MODULE__ . '/Login/index');
 			// 默认访问跳转到登录页
 			// $this->redirect ( __MODULE__ . '/Login/index' );
@@ -674,19 +681,35 @@ class BaseController extends Controller
 		// 查询处理
 		$query = array();
 		$query[$pk] = $pkv;
-		if (is_integer($pkv)) {
-			$query[$pk] = intval($pkv);
-		}
+		$options = array();
+
+		$fields = $this->makeAutoModel()->fields;
+
+		// 判断是否多值传入
 		if (is_array($pkv)) {
+			// 主键值过滤并进行类型转换
+			foreach ($pkv as $k => $v) {
+				$pkv[$k] = forceType($v, $fields['_type'][$pk]);
+			}
+			$options['_options'] = array(
+				'multi' => true
+			);
 			$query[$pk] = array('in', $pkv);
+		} else {
+			$query[$pk] = intval($pkv);
 		}
 
 		// data赋值
-		$data = $_GET;
-		// 避免主键变更进行移除
-		unset($data[$pk]);
+		$data = array();
+		foreach ($_GET as $key => $value) {
+			// 过滤不需要的字段，并避免主键变更
+			if (in_array($key, $fields) && $key != $pk) {
+				// 类型转换
+				$data[$key] = forceType($value, $fields['_type'][$key]);
+			}
+		}
 
-		$rs = $this->makeAutoModel()->where($query)->setField($data);
+		$rs = $this->makeAutoModel()->where($query)->save($data, $options);
 
 		if ($this->makeAutoModel()->getError()) {
 			$this->err($this->makeAutoModel()->getError(), '警告', $rs);

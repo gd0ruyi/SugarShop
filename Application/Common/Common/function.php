@@ -161,3 +161,24 @@ function isDebug()
 	$param_allow = array('true', '1');
 	return isset($_GET['debug']) && in_array($_GET['debug'], $param_allow) && APP_DEBUG == true;
 }
+
+/**
+ * 强制类型转换方法
+ *
+ * @param [type] $value
+ * @param [type] $type
+ * @return void
+ */
+function forceType($value, $type)
+{
+	if ($type == 'int') {
+		$value = intval($value);
+	} elseif ($type == 'float' || $type == 'double') {
+		$value = floatval($value);
+	} elseif ($type == 'string') {
+		$value = strval($type);
+	} else {
+		$value = $value;
+	}
+	return $value;
+}

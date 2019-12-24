@@ -16,7 +16,8 @@ class UserModel extends BaseModel
 	protected $pk = 'user_id';
 	protected $_idType = self::TYPE_INT;
 	protected $_autoinc = true;
-	protected $fields = array(
+	// 使用public用于BaseController处理
+	public $fields = array(
 		'_id',
 		'user_id',
 		'username',

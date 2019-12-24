@@ -167,7 +167,7 @@ class BaseModel extends MongoModel
      * @param array $data
      * @return $data array()
      */
-    private function _parseResValue($data)
+    protected function _parseResValue($data)
     {
         if (empty($data) || !is_array($data)) {
             return $data;

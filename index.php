@@ -18,9 +18,7 @@
 if (version_compare(PHP_VERSION, '5.3.0', '<'))  die('require PHP > 5.3.0 !');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
-$_REQUEST['debug'] = isset($_REQUEST['debug']) ? intval($_REQUEST['debug']) : false;
-$_REQUEST['debug'] = $_REQUEST['debug'] ? true : false;
-define('APP_DEBUG', $_REQUEST['debug']);
+define('APP_DEBUG', true);
 
 // 开启调试模式时方可生效，用于常量调试输出调试
 define('DEBUG_PRINT_CONSTANTS', false);

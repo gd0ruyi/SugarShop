@@ -14,6 +14,10 @@ class LoginController extends BaseController
 	 */
 	public function index()
 	{
+		// 如果已登录则自动跳转到管理页面
+		if ($this->is_login) {
+			header("Location: ../Index/index");
+		}
 		$this->display();
 	}
 
@@ -28,7 +32,7 @@ class LoginController extends BaseController
 		if (!check_verify($_GET['verification'])) {
 			$this->error("验证码不正确！请重新尝试！", '../Login/index');
 		}
-		
+
 		// $user_model = D ( "User" );
 		$user_model = new UserModel();
 		$query = array();
@@ -66,7 +70,9 @@ class LoginController extends BaseController
 			// 用于调试输出
 			// printR($sess_data, true);
 
-			$this->success('登录成功！', '../Index/index');
+			// $this->success('登录成功！', '../Index/index');
+			header("Location: ../Index/index");
+			// die();
 		}
 		$this->error('用户名密码不正确！', '../Login/index');
 	}

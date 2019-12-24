@@ -480,12 +480,18 @@ var SugarCommons = {
 				$(target).find('#msg-btn-sure').attr('disabled', 'disabled');
 				$(target).find('#msg-btn-sure').append(SugarCommons.refresh_icon_tpl);
 
+				options.data != undefined ? options.data : {}
+
+				if (SugarCommons.debug == true) {
+					options.data.debug = true;
+				}
+
 				// ajax请求处理
 				$.ajax({
 					url: options.url,
 					type: 'GET',
-					// dataType: "html",
-					data: options.data != undefined ? options.data : {},
+					dataType: SugarCommons.debug ? "html" : 'json',
+					data: options.data,
 					cache: false,
 					success: function (res, status, xhr) {
 						$(target).find('#msg-btn-sure').removeAttr('disabled');

@@ -161,8 +161,10 @@ class MongoModel extends Model
 		// gdoruyi@163.com 为了保持存入mongodb的字段顺序性，这里进行重新按定义的field进行顺序排序
 		$_stor_data = array();
 		foreach ($this->fields as $value) {
-			if (isset($data[$value])) {
-				$_stor_data[$value] = $data[$value];
+			if (!is_array($value)) {
+				if (isset($data[$value])) {
+					$_stor_data[$value] = $data[$value];
+				}
 			}
 		}
 		$data = $_stor_data;
@@ -965,7 +967,8 @@ class MongoModel extends Model
 		// 按条件整理索引
 		if (isset($options['where']) && !empty($options['where']) && (is_string($options['where']) || is_array($options['where']))) {
 			// 若为字符串处理
-			if (is_string($options['where'])) { }
+			if (is_string($options['where'])) {
+			}
 
 			//
 			foreach ($options['where'] as $key => $value) {

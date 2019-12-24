@@ -311,9 +311,17 @@
           aria_label: 'Batch Start',
           btnIconClass: 'glyphicon-play',
           btnClick: function (e, formData) {
+            if ($.isEmptyObject(formData.user_id)) {
+              SugarCommons.makeConfirm({
+                title: '警告',
+                msg: '请您选择对应的ID'
+              });
+              return false;
+            }
             var $title = '批量启用';
-            var $msg = '请您确认是否批量启用？';
-            var $url = '';
+            var $msg = '请您确认是否批量【启用】？用户ID为：' + (formData.user_id).join(',');
+            var $url = '/Sugaradmin/User/changeFieldValueByPK';
+            var $data = formData;
             $data.status = 0;
 
             SugarCommons.makeConfirm({
@@ -333,6 +341,29 @@
           title: '批量禁用',
           btnIconClass: 'glyphicon-pause',
           btnClick: function (e, formData) {
+            if ($.isEmptyObject(formData.user_id)) {
+              SugarCommons.makeConfirm({
+                title: '警告',
+                msg: '请您选择对应的ID'
+              });
+              return false;
+            }
+            var $title = '批量启用';
+            var $msg = '请您确认是否批量【禁用】？用户ID为：' + (formData.user_id).join(',');
+            var $url = '/Sugaradmin/User/changeFieldValueByPK';
+            var $data = formData;
+            $data.status = 1;
+
+            SugarCommons.makeConfirm({
+              title: $title,
+              msg: $msg,
+              url: $url,
+              data: $data,
+              complete: function (e) {
+                // 完成时刷新列表
+                $('#user-table-form [name="search"]').click();
+              }
+            });
           }
         },
       }
