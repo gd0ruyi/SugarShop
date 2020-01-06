@@ -60,9 +60,36 @@
                   <span class="glyphicon glyphicon-home"></span> 首页
                 </a>
               </li>
-              <li role="presentation">
-                <a href="/Sugaradmin/User/index" sgtab-target="#user-list" title="用户管理">用户管理</a>
+              <!-- 用户管理 -->
+              <li class="dropdown" role="presentation">
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="用户管理"">
+                  用户管理
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="/Sugaradmin/User/index" sgtab-target="#user-list" title="帐号管理">帐号管理</a>
+                  </li>
+                  <li>
+                    <a href="/Sugaradmin/User/sessionList" sgtab-target="#session-list" title="Session列表">Session列表</a>
+                  </li>
+                </ul>
               </li>
+
+              <!-- 数据输入管理 -->
+              <li class="dropdown" role="presentation">
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="数据输入管理">
+                  数据输入管理
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="#" sgtab-target="#data-source-list" title="数据源配置">数据源配置</a>
+                  </li>                  
+                </ul>
+              </li>
+
+              <!-- 示例 -->
               <li class="dropdown" role="presentation">
                 <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" title="示例">
                   示例
@@ -88,6 +115,7 @@
                   </li>
                 </ul>
               </li>
+
             </ul>
           </div>
         </div>
@@ -231,7 +259,7 @@
                 </label> </a></li>
             <li role="separator" class="divider" toolbar-name="table-setting-divider"></li>
             <div toolbar-name="table-setting-li" class="hidden">
-              <li><a><label> <input id="" type="checkbox" />
+              <li><a><label> <input type="checkbox" />
                     <font>table th name</font>
                   </label></a></li>
             </div>

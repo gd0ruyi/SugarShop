@@ -3,6 +3,7 @@
 namespace Sugaradmin\Controller;
 
 use Sugaradmin\Controller\BaseController;
+use Sugaradmin\Model\SessionModel;
 use Sugaradmin\Model\UserModel;
 
 /**
@@ -174,6 +175,27 @@ class UserController extends BaseController
 		} else {
 			$this->err('用户名重复，用户已存在！');
 		}
+	}
+
+	/**
+	 * 获取session列表信息
+	 *
+	 * @return void
+	 */
+	public function sessionList(){
+		$sm = new SessionModel();
+		$rs = $sm->select();
+
+		// 时间配置处理
+        $date_format_c = C('DATE_FORMAT');
+		foreach($rs as $k => $v){
+			$v['lifeTime'] = date($date_format_c['TIME'], $v['lifeTime']);
+			$v['sessData']['upd_time'] = date($date_format_c['TIME'], $v['sessData']['upd_time']);
+			$v['sessData']['add_time'] = date($date_format_c['TIME'], $v['sessData']['add_time']);
+			$v['sessData']['las_time'] = date($date_format_c['TIME'], $v['sessData']['las_time']);
+			$rs[$k] = $v;
+		}
+		printR($rs);
 	}
 
 	// 用于BootstrapValidator测试问题

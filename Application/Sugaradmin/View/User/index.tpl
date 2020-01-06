@@ -1,12 +1,13 @@
 <!--导航条-->
 <ol class="breadcrumb">
   <li><a href="#">首页</a></li>
-  <li class="active">用户管理</li>
+  <li>用户管理</li>
+  <li class="active">帐号管理</li>
 </ol>
 
 <div class="panel panel-primary">
   <div class="panel-heading">
-    <h3 class="panel-title">用户列表</h3>
+    <h3 class="panel-title">帐号列表</h3>
   </div>
   <div class="panel-body form-toolbar">
     <!-- 工具组 -->
@@ -84,7 +85,7 @@
       </div>
 
       <div class="table-responsive">
-        <table id="user-table" title="管理员列表-表格内容" class="table table-striped table-bordered table-hover ajax-tables">
+        <table id="user-table" title="帐号列表-表格" class="table table-striped table-bordered table-hover ajax-tables">
         </table>
       </div>
     </form>
